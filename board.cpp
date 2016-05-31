@@ -2,7 +2,9 @@
 #include <iostream>
 #include <sstream>
 #include <vector>
+
 #include "board.hpp"
+#include "tile.hpp"
 
 
 std::vector<std::string> split(const std::string &str, char delim){
@@ -24,12 +26,17 @@ int Board::load_tile_file(std::string filename) {
   getline(ifs, dummy); // ignore first line
   std::string edge_type, farm_connection, city_connection, road_connection;
   int tile_id;
-  int num_tiles, has_cloister, has_pennant;
+  int num_tiles, cloister_flag, pennant_flag;
+  ifs >> tile_id >> edge_type >> num_tiles;
+  ifs >> farm_connection >> city_connection >> road_connection;
+  ifs >> cloister_flag >> pennant_flag;
   while(!ifs.eof()) {
+    Tile tile = Tile(tile_id, num_tiles,
+                     cloister_flag==1, pennant_flag==1);
+    tile.setEdgeID(edge_type);
     ifs >> tile_id >> edge_type >> num_tiles;
     ifs >> farm_connection >> city_connection >> road_connection;
-    ifs >> has_cloister >> has_pennant;
-    std::cout << tile_id << "," << edge_type << "," << num_tiles << "," << has_pennant << std::endl;
+    ifs >> cloister_flag >> pennant_flag;
   }
   return 0;
 }
