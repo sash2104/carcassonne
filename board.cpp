@@ -33,7 +33,10 @@ int Board::load_tile_file(std::string filename) {
   while(!ifs.eof()) {
     Tile tile = Tile(tile_id, num_tiles,
                      cloister_flag==1, pennant_flag==1);
-    tile.setEdgeID(edge_type);
+    tile.setEdgeInfo(edge_type);
+    tile.setRoadInfo(road_connection);
+    tile.setCityInfo(city_connection);
+    tile.setFarmInfo(farm_connection);
     ifs >> tile_id >> edge_type >> num_tiles;
     ifs >> farm_connection >> city_connection >> road_connection;
     ifs >> cloister_flag >> pennant_flag;
