@@ -26,7 +26,7 @@ Board::~Board() {
   };
 }
 
-int Board::load_tile_file(std::string filename) {
+int Board::loadTileFile(std::string filename) {
   std::ifstream ifs(filename);
   if (ifs.fail())
   {
@@ -60,3 +60,5 @@ int Board::load_tile_file(std::string filename) {
   }
   return 0;
 }
+
+int Board::getCurrentTileId(int turn) { return pile_[turn]->getId(); }

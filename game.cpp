@@ -5,11 +5,14 @@ Game::Game()
   : turn_(0), board_(Board())
 {}
 
+Game::~Game() {}
+
 void Game::init() {
+  board_.loadTileFile("tiles.txt");
 }
 
 void Game::process_turn() {
-  std::cerr << turn_ << std::endl;
+  std::cerr << turn_ << " " << board_.getCurrentTileId(turn_) << std::endl;
   ++turn_;
 }
 

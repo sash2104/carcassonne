@@ -11,6 +11,8 @@ TileHolder::TileHolder(int id, int dir) :
     determine_direction(dir);
   }
 
+int TileHolder::getId() { return id_; }
+
 // タイルの向きを決定
 void TileHolder::determine_direction(int dir) {
   dir_ = dir;

@@ -17,6 +17,7 @@ class TileHolder {
     void determine_direction(int dir); // タイルの向きを決定する
     void print(); // タイル表示簡易版
     int rotate(int bit_tile, int n); // タイルの回転
+    int getId();
   private:
     int id_;
     int dir_;
