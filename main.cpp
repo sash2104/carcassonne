@@ -2,6 +2,7 @@
 #include <iostream>
 #include <set>
 
+#include "game.hpp"
 #include "board.hpp"
 #include "tile_holder.hpp"
 
@@ -19,8 +20,15 @@ bool is_valid_tile(int bit_tile) {
 
 int main(int argc, char const* argv[])
 {
-  Board board;
-  board.load_tile_file("tiles.txt");
+  Game game = Game();
+  game.init();
+  while (!game.is_game_end()) {
+    game.process_turn();
+  }
+  game.process_game_end();
+  
+  // Board board;
+  // board.load_tile_file("tiles.txt");
   // std::set<int> valid_tiles;
   // for (int bit_tile = 0; bit_tile <= 0xfff; ++bit_tile) {
   //   if (is_valid_tile(bit_tile)) {

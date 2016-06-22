@@ -3,10 +3,8 @@
 
 #include <string>
 
-struct Segment {
-    enum Type {
-      ROAD, CITY, CLOISTER, FARM
-    };
+enum class ESegment{
+  ROAD, CITY, CLOISTER, FARM
 };
 
 class Tile {
@@ -16,6 +14,8 @@ class Tile {
     void setRoadInfo(std::string road_connection);
     void setCityInfo(std::string city_connection);
     void setFarmInfo(std::string farm_connection);
+    int getId();
+    int getNumTiles();
   private:
     int id_; // タイルの種類ごとに固有のid
     int edge_id_; // 辺の種類ごとに固有のid (ex. マナカナと三角は同じ)
@@ -25,7 +25,7 @@ class Tile {
     int farms_[9];
     bool has_cloister_;
     bool has_pennant_;
-    Segment::Type top_, bottom_, left_, right_;
+    ESegment top_, bottom_, left_, right_;
 };
 
 #endif

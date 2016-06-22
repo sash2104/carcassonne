@@ -1,7 +1,7 @@
 CXX = g++
 TARGET = carcassonne
 CXXFLAGS = -Wall -std=c++11
-SRCS = main.cpp tile.cpp tile_holder.cpp board.cpp
+SRCS = main.cpp tile.cpp tile_holder.cpp board.cpp city.cpp game.cpp
 OBJS := $(SRCS:.cpp=.o)
 
 $(TARGET): $(OBJS)
