@@ -11,10 +11,10 @@ class Board {
   public:
     Board();
     ~Board();
-    int loadTileFile(std::string filename);
     static const int N_TILES = 72;
 
     int getCurrentTileId(int turn);
+    void setPile(const std::vector<Tile*> &tiles);
   private:
     std::array<TileHolder*, N_TILES> pile_;
     int num_remain_tiles_;

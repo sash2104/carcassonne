@@ -14,8 +14,8 @@ class Tile {
     void setRoadInfo(std::string road_connection);
     void setCityInfo(std::string city_connection);
     void setFarmInfo(std::string farm_connection);
-    int getId();
-    int getNumTiles();
+    int getId() const;
+    int getNumTiles() const;
   private:
     int id_; // タイルの種類ごとに固有のid
     int edge_id_; // 辺の種類ごとに固有のid (ex. マナカナと三角は同じ)

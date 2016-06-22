@@ -12,16 +12,15 @@ static const int ROTATE_MASKS_2[4] = {0xfff, 0xeee, 0xccc, 0x888};
 
 class TileHolder {
   public:
-    TileHolder(int id);
+    TileHolder(int tile_id);
     TileHolder(int id, int dir);
-    void determine_direction(int dir); // タイルの向きを決定する
     void print(); // タイル表示簡易版
     int rotate(int bit_tile, int n); // タイルの回転
-    int getId();
+    int getTileId();
   private:
-    int id_;
+    int tile_id_;
     int dir_;
-    int rotate_id_;
+    int bit_tile_id_; // タイルの向きと辺の組み合わせ毎に固有のid
 };
 
 #endif

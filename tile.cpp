@@ -19,9 +19,9 @@ Tile::Tile(int id, int num_tiles, bool has_cloister, bool has_pennant)
     has_cloister_(has_cloister), has_pennant_(has_pennant) {
     }
 
-int Tile::getId() { return id_; }
+int Tile::getId() const { return id_; }
 
-int Tile::getNumTiles() { return num_tiles_; } 
+int Tile::getNumTiles() const { return num_tiles_; }
 
 void Tile::setEdgeInfo(std::string edge_type) {
   assert(edge_type.size() == 4);
