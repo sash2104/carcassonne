@@ -3,16 +3,13 @@
 #include <string>
 #include "tile_holder.hpp"
 
-TileHolder::TileHolder(int tile_id) :
-  tile_id_(tile_id) {}
+TileHolder::TileHolder(const Tile* tile, int dir) :
+  tile_(tile), dir_(dir) {}
 
-TileHolder::TileHolder(int tile_id, int dir) :
-  tile_id_(tile_id), dir_(dir) {
-    // TODO: bit_tile_id_ のセット
-  }
+TileHolder::TileHolder(const Tile* tile) :
+  tile_(tile), dir_(-1) {}
 
-int TileHolder::getTileId() { return tile_id_; }
-
+int TileHolder::getTileId() { return tile_->getId(); }
 
 // 道->r, 都市->c, 草原->fとして文字でタイルを表示.
 void TileHolder::print() {
@@ -42,4 +39,18 @@ int TileHolder::rotate(int bit_tile, int n) {
   // road, city, farmの各4フラグの, 下位 n bitの回転後
   rotate_bit_2 = (bit_tile & ROTATE_MASKS_2[n]) >> n;
   return rotate_bit_1 | rotate_bit_2;
+}
+
+LargeTileHolder::LargeTileHolder() {
+  for (int i = 0; i < BATCH_SIZE; ++i) { batch_field_[i] = nullptr; }
+}
+
+LargeTileHolder::~LargeTileHolder() {
+  for (int i = 0; i < BATCH_SIZE; ++i) {
+    if (batch_field_[i] != nullptr) { delete batch_field_[i]; }
+  }
+}
+
+void LargeTileHolder::setTileHolder(int x, int y, TileHolder* th) {
+  batch_field_[y*W+x] = th;
 }

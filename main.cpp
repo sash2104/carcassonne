@@ -26,18 +26,6 @@ int main(int argc, char const* argv[])
     game.process_turn();
   }
   game.process_game_end();
-  
-  // Board board;
-  // board.load_tile_file("tiles.txt");
-  // std::set<int> valid_tiles;
-  // for (int bit_tile = 0; bit_tile <= 0xfff; ++bit_tile) {
-  //   if (is_valid_tile(bit_tile)) {
-  //     TileHolder tile(bit_tile, 0); tile.print();
-  //     tile = TileHolder(bit_tile, 1); tile.print();
-  //     tile = TileHolder(bit_tile, 2); tile.print();
-  //     tile = TileHolder(bit_tile, 3); tile.print();
-  //     std::cerr << std::endl;
-  //   }
-  // }
+
   return 0;
 }

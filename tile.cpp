@@ -43,9 +43,9 @@ void Tile::setEdgeInfo(std::string edge_type) {
     }
     edge_id |= (1 << edge_offset);
   }
-  std::cout << id_ << " " << edge_type << std::endl;
+  // std::cout << id_ << " " << edge_type << std::endl;
   edge_id_ = edge_id;
-  print_bit_tile(edge_id_);
+  // print_bit_tile(edge_id_);
 }
 
 // つながっている道は同じid, 分かれている道は異なるidとなるように各道にidを付与
@@ -53,9 +53,9 @@ void Tile::setRoadInfo(std::string road_connection) {
   assert(road_connection.size() == 4);
   for (int i = 0; i < 4; ++i) {
     roads_[i] = road_connection[i] - '0';
-    std::cout << roads_[i];
+    // std::cout << roads_[i];
   }
-  std::cout << std::endl;
+  // std::cout << std::endl;
 }
 
 // つながっている都市は同じid, 分かれている都市は異なるidとなるように各都市にidを付与
@@ -63,9 +63,9 @@ void Tile::setCityInfo(std::string city_connection) {
   assert(city_connection.size() == 4);
   for (int i = 0; i < 4; ++i) {
     cities_[i] = city_connection[i] - '0';
-    std::cout << cities_[i];
+    // std::cout << cities_[i];
   }
-  std::cout << std::endl;
+  // std::cout << std::endl;
 }
 
 // つながっている草原は同じid, 分かれている草原は異なるidとなるように各草原にidを付与
@@ -73,7 +73,7 @@ void Tile::setFarmInfo(std::string farm_connection) {
   assert(farm_connection.size() == 9);
   for (int i = 0; i < 9; ++i) {
     farms_[i] = farm_connection[i] - '0';
-    std::cout << farms_[i];
+    // std::cout << farms_[i];
   }
-  std::cout << std::endl;
+  // std::cout << std::endl;
 }

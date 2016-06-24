@@ -30,8 +30,16 @@ int Board::getCurrentTileId(int turn) { return pile_[turn]->getTileId(); }
 void Board::setPile(const std::vector<Tile*> & tiles) {
   for (const Tile* tile : tiles) {
     for (int i = 0; i < tile->getNumTiles(); ++i) {
-      pile_[num_remain_tiles_] = new TileHolder(tile->getId());
+      pile_[num_remain_tiles_] = new TileHolder(tile);
       ++num_remain_tiles_;
     }
   }
+}
+
+int Board::getPosId(int x, int y) { return y * N_TILES + x; }
+
+// field_の(x, y)にタイルをdirの向きに配置
+void Board::placeTile(const Tile* tile, int dir, int x, int y) {
+  int pos_id = getPosId(x, y);
+  field_[pos_id] = new TileHolder(tile, dir);
 }
