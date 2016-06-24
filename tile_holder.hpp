@@ -4,6 +4,7 @@
 #include <array>
 #include <string>
 
+#include "common.hpp"
 #include "tile.hpp"
 
 static const int ROAD_MASK = 0x00f;
@@ -33,6 +34,7 @@ class LargeTileHolder {
     LargeTileHolder();
     ~LargeTileHolder();
     void setTileHolder(int x, int y, TileHolder* th);
+    void setTileHolder(const Pos& p, TileHolder* th);
   private:
     std::array<TileHolder*, BATCH_SIZE> batch_field_;
 };

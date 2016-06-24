@@ -6,8 +6,9 @@
 TileHolder::TileHolder(const Tile* tile, int dir) :
   tile_(tile), dir_(dir) {}
 
+// タイルのデフォルトは無回転.
 TileHolder::TileHolder(const Tile* tile) :
-  tile_(tile), dir_(-1) {}
+  tile_(tile), dir_(0) {}
 
 int TileHolder::getTileId() { return tile_->getId(); }
 
@@ -53,4 +54,8 @@ LargeTileHolder::~LargeTileHolder() {
 
 void LargeTileHolder::setTileHolder(int x, int y, TileHolder* th) {
   batch_field_[y*W+x] = th;
+}
+
+void LargeTileHolder::setTileHolder(const Pos& p, TileHolder* th) {
+  batch_field_[p.y()*W+p.x()] = th;
 }
