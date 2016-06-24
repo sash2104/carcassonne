@@ -4,6 +4,7 @@
 #include <vector>
 
 #include "board.hpp"
+#include "player.hpp"
 #include "tile.hpp"
 
 class Game {
@@ -16,8 +17,10 @@ class Game {
     void process_game_end(); // ゲーム終了時の処理. 得点計算と勝者決定
     int loadTileFile(std::string filename); // タイルの情報が書かれたファイルを読み込みtiles_に格納
   private:
-    std::vector<Tile*> tiles_; // 使う全種類のタイルへのポインタを格納
     int turn_; // ターンは0から始まる
+    int n_players_; // ゲームに参加するプレーヤーの数. 今は二人のみを想定.
+    std::vector<Player*> players_; // ゲームに参加するプレーヤーのリスト
+    std::vector<Tile*> tiles_; // 使う全種類のタイルへのポインタを格納
     Board board_; // 配置済みのタイルと未設置のタイルの山をそれぞれ管理
 
 };
