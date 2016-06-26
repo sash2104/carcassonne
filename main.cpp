@@ -21,7 +21,6 @@ bool is_valid_tile(int bit_tile) {
 int main(int argc, char const* argv[])
 {
   Game game = Game();
-  game.init();
   while (!game.is_game_end()) {
     game.process_turn();
   }

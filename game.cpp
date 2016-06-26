@@ -2,17 +2,21 @@
 #include <iostream>
 #include "game.hpp"
 
+// TODO : n_players_ とタイルの種類はconfigファイルから読み込む
 Game::Game()
-  : turn_(0), board_(Board())
-{}
-
-Game::~Game() {
-  for (Tile* tile : tiles_) { delete tile; }
-}
-
-void Game::init() {
+  : turn_(0), n_players_(2), board_(Board())
+{
   loadTileFile("tiles.txt");
   board_.setPile(tiles_);
+  for (int pid = 0; pid < n_players_; ++pid) {
+    Player *player = new Player(pid);
+    players_.push_back(player);
+  }
+}
+
+Game::~Game() {
+  for (Tile *tile : tiles_) { delete tile; }
+  for (Player *player : players_) { delete player; }
 }
 
 void Game::process_turn() {
