@@ -12,6 +12,8 @@ TileHolder::TileHolder(const Tile* tile) :
 
 int TileHolder::getTileId() { return tile_->getId(); }
 
+const Tile* TileHolder::getTile() const { return tile_; }
+
 // 道->r, 都市->c, 草原->fとして文字でタイルを表示.
 void TileHolder::print() {
   std::string char_tile = "";
@@ -52,8 +54,17 @@ LargeTileHolder::~LargeTileHolder() {
   }
 }
 
-void LargeTileHolder::setTileHolder(int x, int y, TileHolder* th) {
-  batch_field_[y*W+x] = th;
+int LargeTileHolder::convertToLocalPosID(int x, int y) {
+  // (x     , y     ) -> (lx  , ly  )
+  // (W*n+dx, H*m+dy) -> ((3+dx)%7, (3+dy)%7)  に変換
+  int lx, ly;
+  lx = (3 + x) % W;
+  ly = (3 + y) % H;
+  return ly * W + lx;
+}
+
+void LargeTileHolder::setTileHolder(int pos_id, TileHolder* th) {
+  batch_field_[pos_id] = th;
 }
 
 void LargeTileHolder::setTileHolder(const Pos& p, TileHolder* th) {

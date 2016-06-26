@@ -16,30 +16,35 @@ Board::Board() :
   num_remain_tiles_(0)
 {
   for (int i = 0; i < N_TILES; ++i) { pile_[i] = nullptr; }
+  for (int i = 0; i < FIELD_SIZE; ++i) { field_[i] = nullptr; }
 
 }
 
 Board::~Board() {
-  for (TileHolder* th : pile_) {
-    if (th != nullptr) { delete th; }
-  };
+  for (LargeTileHolder* lth : field_) { if (lth != nullptr) { delete lth; } };
 }
 
-int Board::getCurrentTileId(int turn) { return pile_[turn]->getTileId(); }
+const Tile* Board::getCurrentTile(int turn) const { return pile_[turn]; }
 
 void Board::setPile(const std::vector<Tile*> & tiles) {
   for (const Tile* tile : tiles) {
     for (int i = 0; i < tile->getNumTiles(); ++i) {
-      pile_[num_remain_tiles_] = new TileHolder(tile);
+      pile_[num_remain_tiles_] = tile;
       ++num_remain_tiles_;
     }
   }
 }
 
-int Board::getPosId(int x, int y) { return y * N_TILES + x; }
+int Board::getFieldPosId(int x, int y) {
+  // TODO: Field中のLargeTileHolderの位置に変える. (10, 10)が初期位置
+  return 0;
+}
 
-// field_の(x, y)にタイルをdirの向きに配置
+// (0, 0)を初期位置とした時の(x, y)にタイルをdirの向きに配置
 void Board::placeTile(const Tile* tile, int dir, int x, int y) {
-  int pos_id = getPosId(x, y);
-  field_[pos_id] = new TileHolder(tile, dir);
+  int pos_id = getFieldPosId(x, y);
+  if (field_[pos_id] == nullptr) { field_[pos_id] = new LargeTileHolder(); }
+  LargeTileHolder* lth = field_[pos_id];
+  int lth_pos_id = lth->convertToLocalPosID(x, y);
+  lth->setTileHolder(lth_pos_id, new TileHolder(tile, dir));
 }

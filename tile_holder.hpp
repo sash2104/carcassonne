@@ -21,6 +21,7 @@ class TileHolder {
     void print(); // タイル表示簡易版
     int rotate(int bit_tile, int n); // タイルの回転
     int getTileId();
+    const Tile* getTile() const;
   private:
     const Tile* tile_;
     int dir_;
@@ -29,11 +30,12 @@ class TileHolder {
 
 class LargeTileHolder {
   public:
-    const int W = 7, H = 7;
+    static const int W = 7, H = 7;
     static const int BATCH_SIZE = 49;
     LargeTileHolder();
     ~LargeTileHolder();
-    void setTileHolder(int x, int y, TileHolder* th);
+    static int convertToLocalPosID(int x, int y); // LargeTileHolder内の位置に変換
+    void setTileHolder(int pos_id, TileHolder* th);
     void setTileHolder(const Pos& p, TileHolder* th);
   private:
     std::array<TileHolder*, BATCH_SIZE> batch_field_;

@@ -9,8 +9,7 @@ Game::Game()
   loadTileFile("tiles.txt");
   board_.setPile(tiles_);
   for (int pid = 0; pid < n_players_; ++pid) {
-    Player *player = new Player(pid);
-    players_.push_back(player);
+    players_.push_back(new Player(pid));
   }
 }
 
@@ -20,7 +19,15 @@ Game::~Game() {
 }
 
 void Game::process_turn() {
-  std::cerr << turn_ << " " << board_.getCurrentTileId(turn_) << std::endl;
+  std::cerr << turn_ << std::endl;
+  // TODO: turn = 0の時だけ別処理に?
+  // TODO: getActivePlayerIDという関数にする
+  int active_player_id = turn_ % n_players_;
+  Player * active_player = players_[active_player_id];
+  Pos tile_pos = active_player->determineTilePos(board_);
+  const Tile* tile = board_.getCurrentTile(turn_);
+  // TODO: dirを0以外にも. 入力をx, yでなくposに
+  board_.placeTile(tile, 0, tile_pos.x(), tile_pos.y());
   ++turn_;
 }
 
