@@ -68,5 +68,5 @@ void LargeTileHolder::setTileHolder(int pos_id, TileHolder* th) {
 }
 
 void LargeTileHolder::setTileHolder(const Pos& p, TileHolder* th) {
-  batch_field_[p.y()*W+p.x()] = th;
+  batch_field_[p.y*W+p.x] = th;
 }

@@ -1,13 +1,20 @@
 #ifndef __COMMON_HPP__
 #define __COMMON_HPP__
 
-class Pos {
-  public:
-    Pos(int x, int y) : x_(x), y_(y) {}
-    int x() const { return x_;}
-    int y() const { return y_;}
-  private:
-    int x_, y_;
+#include <iostream>
+#include <string>
+#include <cmath>
+
+struct Pos {
+  int x, y;
+
+  Pos(int x, int y) : x(x), y(y) {}
+
+  friend std::ostream& operator<< (std::ostream &out, const Pos& p)
+  {
+    out << "(" << p.x << "," << p.y << ")";
+    return out;
+  }
 };
 
 #endif

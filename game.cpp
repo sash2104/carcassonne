@@ -27,7 +27,8 @@ void Game::process_turn() {
   Pos tile_pos = active_player->determineTilePos(board_);
   const Tile* tile = board_.getCurrentTile(turn_);
   // TODO: dirを0以外にも. 入力をx, yでなくposに
-  board_.placeTile(tile, 0, tile_pos.x(), tile_pos.y());
+  board_.placeTile(tile, 0, tile_pos.x, tile_pos.y);
+  board_.printField();
   ++turn_;
 }
 

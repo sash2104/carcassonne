@@ -1,2 +1,7 @@
 carcassonne
 *.o
+
+# gtags generated files
+GPATH
+GRTAGS
+GTAGS

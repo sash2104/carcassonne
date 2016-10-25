@@ -18,6 +18,7 @@ class Board {
     int getFieldPosId(int x, int y);
     void setPile(const std::vector<Tile*> &tiles);
     void placeTile(const Tile* tile, int dir, int x, int y); // field_の(x, y)にタイルをdirの向きに配置
+    void printField(); // LargeTileHolderが埋まった位置のpos_idのリストを出力
   private:
     std::array<const Tile*, N_TILES> pile_; // 未配置のタイルを管理
     std::array<LargeTileHolder*, FIELD_SIZE> field_; // 配置済のタイルを管理

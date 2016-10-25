@@ -37,7 +37,10 @@ void Board::setPile(const std::vector<Tile*> & tiles) {
 
 int Board::getFieldPosId(int x, int y) {
   // TODO: Field中のLargeTileHolderの位置に変える. (10, 10)が初期位置
-  return 0;
+  int fx, fy;
+  fx = (x+3) / LargeTileHolder::W + 10;
+  fy = (y+3) / LargeTileHolder::H + 10;
+  return fy * 21 + fx;
 }
 
 // (0, 0)を初期位置とした時の(x, y)にタイルをdirの向きに配置
@@ -47,4 +50,13 @@ void Board::placeTile(const Tile* tile, int dir, int x, int y) {
   LargeTileHolder* lth = field_[pos_id];
   int lth_pos_id = lth->convertToLocalPosID(x, y);
   lth->setTileHolder(lth_pos_id, new TileHolder(tile, dir));
+}
+
+void Board::printField() {
+  std::cout << "Field : ";
+  for (int pos_id = 0; pos_id < FIELD_SIZE; ++pos_id) {
+    if (field_[pos_id] == nullptr) { continue; }
+    std::cout << "(" << pos_id % 21 << "," << pos_id / 21 << ")";
+  }
+  std::cout << std::endl;
 }
