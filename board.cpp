@@ -17,7 +17,6 @@ Board::Board() :
 {
   for (int i = 0; i < N_TILES; ++i) { pile_[i] = nullptr; }
   for (int i = 0; i < FIELD_SIZE; ++i) { field_[i] = nullptr; }
-
 }
 
 Board::~Board() {
