@@ -1,7 +1,11 @@
 #ifndef __TILE_HOLDER_HPP__
 #define __TILE_HOLDER_HPP__
 
+#include <array>
 #include <string>
+
+#include "common.hpp"
+#include "tile.hpp"
 
 static const int ROAD_MASK = 0x00f;
 static const int CITY_MASK = 0x0f0;
@@ -12,15 +16,29 @@ static const int ROTATE_MASKS_2[4] = {0xfff, 0xeee, 0xccc, 0x888};
 
 class TileHolder {
   public:
-    TileHolder(int id);
-    TileHolder(int id, int dir);
-    void determine_direction(int dir); // タイルの向きを決定する
+    TileHolder(const Tile* tile, int dir);
+    TileHolder(const Tile* tile);
     void print(); // タイル表示簡易版
     int rotate(int bit_tile, int n); // タイルの回転
+    int getTileId();
+    const Tile* getTile() const;
   private:
-    int id_;
+    const Tile* tile_;
     int dir_;
-    int rotate_id_;
+    int bit_tile_id_; // タイルの向きと辺の組み合わせ毎に固有のid
+};
+
+class LargeTileHolder {
+  public:
+    static const int W = 7, H = 7;
+    static const int BATCH_SIZE = 49;
+    LargeTileHolder();
+    ~LargeTileHolder();
+    static int convertToLocalPosID(int x, int y); // LargeTileHolder内の位置に変換
+    void setTileHolder(int pos_id, TileHolder* th);
+    void setTileHolder(const Pos& p, TileHolder* th);
+  private:
+    std::array<TileHolder*, BATCH_SIZE> batch_field_;
 };
 
 #endif

@@ -3,28 +3,25 @@
 #include <string>
 #include "tile_holder.hpp"
 
-TileHolder::TileHolder(int id) :
-  id_(id) {}
+TileHolder::TileHolder(const Tile* tile, int dir) :
+  tile_(tile), dir_(dir) {}
 
-TileHolder::TileHolder(int id, int dir) :
-  id_(id) {
-    determine_direction(dir);
-  }
+// タイルのデフォルトは無回転.
+TileHolder::TileHolder(const Tile* tile) :
+  tile_(tile), dir_(0) {}
 
-// タイルの向きを決定
-void TileHolder::determine_direction(int dir) {
-  dir_ = dir;
-  rotate_id_ = rotate(id_, dir_);
-}
+int TileHolder::getTileId() { return tile_->getId(); }
+
+const Tile* TileHolder::getTile() const { return tile_; }
 
 // 道->r, 都市->c, 草原->fとして文字でタイルを表示.
 void TileHolder::print() {
   std::string char_tile = "";
   for (int direction = 0; direction < 4; ++direction) {
     int direction_mask = 0x001 << direction;
-    int road_id = rotate_id_;
-    int city_id = rotate_id_ >> 4;
-    int farm_id = rotate_id_ >> 8;
+    int road_id = bit_tile_id_;
+    int city_id = bit_tile_id_ >> 4;
+    int farm_id = bit_tile_id_ >> 8;
     for (int edge_type = 0; edge_type < 3; ++edge_type) {
       if ((road_id >> edge_type) & direction_mask) { char_tile += "r"; break; }
       if ((city_id >> edge_type) & direction_mask) { char_tile += "c"; break; }
@@ -45,4 +42,31 @@ int TileHolder::rotate(int bit_tile, int n) {
   // road, city, farmの各4フラグの, 下位 n bitの回転後
   rotate_bit_2 = (bit_tile & ROTATE_MASKS_2[n]) >> n;
   return rotate_bit_1 | rotate_bit_2;
+}
+
+LargeTileHolder::LargeTileHolder() {
+  for (int i = 0; i < BATCH_SIZE; ++i) { batch_field_[i] = nullptr; }
+}
+
+LargeTileHolder::~LargeTileHolder() {
+  for (int i = 0; i < BATCH_SIZE; ++i) {
+    if (batch_field_[i] != nullptr) { delete batch_field_[i]; }
+  }
+}
+
+int LargeTileHolder::convertToLocalPosID(int x, int y) {
+  // (x     , y     ) -> (lx  , ly  )
+  // (W*n+dx, H*m+dy) -> ((3+dx)%7, (3+dy)%7)  に変換
+  int lx, ly;
+  lx = (3 + x) % W;
+  ly = (3 + y) % H;
+  return ly * W + lx;
+}
+
+void LargeTileHolder::setTileHolder(int pos_id, TileHolder* th) {
+  batch_field_[pos_id] = th;
+}
+
+void LargeTileHolder::setTileHolder(const Pos& p, TileHolder* th) {
+  batch_field_[p.y*W+p.x] = th;
 }
