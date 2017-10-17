@@ -2,8 +2,6 @@
 #define __COMMON_HPP__
 
 #include <iostream>
-#include <string>
-#include <cmath>
 
 struct Pos {
   int x, y;
