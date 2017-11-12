@@ -114,7 +114,7 @@ SKIP_PLACEMENTはタイルを配置できる場所がなくスキップした場
 
 #### PLAYER_PLACEMENT
 
-PLAYER_PLACEMENTはプレイヤーによる通常にタイル配置を表す。
+PLAYER_PLACEMENTはプレイヤーによる通常のタイル配置を表す。
 
 - 定義
   - PLAYER_PLACEMENTは以下の表のようなobjectである
