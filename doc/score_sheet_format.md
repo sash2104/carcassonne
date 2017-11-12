@@ -40,8 +40,8 @@ INFOはその棋譜の元となった試合の情報を表す。
 | フィールド名 | 必須か | 値の型 | 説明 |
 |---|---|---|---|
 | "title" | 必須 | string | 試合名を表すstringが値にくる |
-| "date-start" | オプショナル | string | 試合の開始時刻を表す[ISO 8601](https://ja.wikipedia.org/wiki/ISO_8601)形式のstringが値にくる。 | 
-| "date-end" | オプショナル | string | 試合の終了時刻を表す[ISO 8601](https://ja.wikipedia.org/wiki/ISO_8601)形式のstringが値にくる。 | 
+| "startDate" | オプショナル | string | 試合の開始時刻を表す[ISO 8601](https://ja.wikipedia.org/wiki/ISO_8601)形式のstringが値にくる。 |
+| "endDate" | オプショナル | string | 試合の終了時刻を表す[ISO 8601](https://ja.wikipedia.org/wiki/ISO_8601)形式のstringが値にくる。 |
 | "players" | 必須 | array | 試合に参加したプレイヤーを表す[PLAYER](#player)を含むarrayが値にくる。array内での[PLAYER](#player)の位置は自由である。 |
 
 ### PLAYER
