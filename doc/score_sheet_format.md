@@ -40,9 +40,12 @@ INFOはその棋譜の元となった試合の情報を表す。
 | フィールド名 | 必須か | 値の型 | 説明 |
 |---|---|---|---|
 | "title" | 必須 | string | 試合名を表すstringが値にくる |
+| "players" | 必須 | array | 試合に参加したプレイヤーを表す[PLAYER](#player)を含むarrayが値にくる。要素の順番は意味を持たない。 |
 | "startDate" | オプショナル | string | 試合の開始時刻を表す[ISO 8601](https://ja.wikipedia.org/wiki/ISO_8601)形式のstringが値にくる。 |
 | "endDate" | オプショナル | string | 試合の終了時刻を表す[ISO 8601](https://ja.wikipedia.org/wiki/ISO_8601)形式のstringが値にくる。 |
-| "players" | 必須 | array | 試合に参加したプレイヤーを表す[PLAYER](#player)を含むarrayが値にくる。array内での[PLAYER](#player)の位置は自由である。 |
+| "finalPoint" | オプショナル | object | プレイヤー名をfield、そのプレイヤーの最終的な得点を値とするobjectが値にくる。プレイヤー名は"players"フィールドに出てくるプレイヤー名でなければならない。 |
+| "winner" | オプショナル | array | 勝者のプレイヤー名を含むarrayが値にくる。要素の順番は意味を持たない。同点で勝敗が決まらなかった場合を考慮してarrayとしている(その場合は要素を持たないarrayがくる)。 |
+| "allottedTime" | オプショナル | int | プレイヤーに与えられた持ち時間(単位は分)が値にくる。 |
 
 ### PLAYER
 
@@ -111,6 +114,7 @@ SKIPPED_PLACEMENTはタイルを配置できる場所がなくスキップした
 | "type" | 必須 | string | "skipped"というstringが値にくる。 |
 | "tile" | 必須 | string | タイルの種類を表すstringが値にくる。 | 
 | "player" | 必須 | string | どのプレイヤーの手番でスキップが発生したかを表すためのプレイヤー名を表すstringがくる。このプレイヤー名は[INFO](#info)のプレイヤー情報で出てきたプレイヤー名でなければならない。 |
+| "elapsedTime" | オプショナル | int | この手番に費やした時間(単位は秒)が値にくる。デフォルト値は0。 |
 
 #### REGULAR_PLACEMENT
 
@@ -125,6 +129,7 @@ REGULAR_PLACEMENTはプレイヤーによる通常のタイル配置を表す。
 | "tile" | 必須 | string | タイルの種類を表すstringが値にくる。 | 
 | "tilePlacement" | 必須 | object | タイルの配置方法を表す[TILE_PLACEMENT](#tile_placement)という形式の値がくる。 | 
 | "meeplePlacement" | オプショナル | object | ミープルの配置方法を表す[MEEPLE_PLACEMENT](#meeple_placement)という形式の値がくる。ミープルを配置しなかった手番では不要。 |
+| "elapsedTime" | オプショナル | int | この手番に費やした時間(単位は秒)が値にくる。デフォルト値は0。 |
 
 ### TILE_PLACEMENT
 
