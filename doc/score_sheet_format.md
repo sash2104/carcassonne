@@ -15,7 +15,7 @@
 
 ## 棋譜の表現方法
 
-カルカソンヌの棋譜はこれから定義するSCORE_SHEETというobjectで表現される。([棋譜の例](./championship_japan_2015_final.json))
+カルカソンヌの棋譜はこれから定義する[SCORE_SHEET](#score_sheet)というobjectで表現される。([棋譜の例](./championship_japan_2015_final.json))
 
 
 ### SCORE_SHEET
@@ -133,7 +133,7 @@ REGULAR_PLACEMENTはプレイヤーによる通常のタイル配置を表す。
 
 ### TILE_PLACEMENT
 
-タイルの配置方法に関する情報を表す。
+TILE_PLACEMENTはタイルの配置方法に関する情報を表す。
 
 - 定義
   - TILE_PLACEMENTは以下の表のようなobjectである
@@ -150,7 +150,10 @@ REGULAR_PLACEMENTはプレイヤーによる通常のタイル配置を表す。
 
 ### MEEPLE_PLACEMENT
 
-ミープルの配置方法に関する情報を表す。
+MEEPLE_PLACEMENTはミープルの配置方法に関する情報を表す。
+
+- 定義
+  - MEEPLE_PLACEMENTは以下の表のようなobjectである
 
 | フィールド名 | 必須か | 値の型 | 説明 |
 |---|---|---|---|
