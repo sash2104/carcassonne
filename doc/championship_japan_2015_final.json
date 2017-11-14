@@ -9,19 +9,19 @@
     "placements": [
         {
             "turn": 0,
-            "action": "firstPlace",
+            "type": "initial",
             "tile": "D"
         },
         {
             "turn": 1,
-            "action": "playerPlace",
+            "type": "regular",
             "tile": "U",
             "player": "J.N",
             "tilePlacement": {"x": -1, "y": 0, "rotation": 0}
         },
         {
             "turn": 2,
-            "action": "playerPlace",
+            "type": "regular",
             "tile": "R",
             "player": "R.N",
             "tilePlacement": {"x": 1, "y": 0, "rotation": 2},
@@ -29,7 +29,7 @@
         },
         {
             "turn": 3,
-            "action": "playerPlace",
+            "type": "regular",
             "tile": "V",
             "player": "J.N",
             "tilePlacement": {"x": 0, "y": -1, "rotation": 1},
@@ -37,7 +37,7 @@
         },
         {
             "turn": 4,
-            "action": "playerPlace",
+            "type": "regular",
             "tile": "V",
             "player": "R.N",
             "tilePlacement": {"x": -1, "y": 1, "rotation": 3},
@@ -45,35 +45,35 @@
         },
         {
             "turn": 5,
-            "action": "playerPlace",
+            "type": "regular",
             "tile": "V",
             "player": "J.N",
             "tilePlacement": {"x": 0, "y": -2, "rotation": 0}
         },
         {
             "turn": 6,
-            "action": "playerPlace",
+            "type": "regular",
             "tile": "M",
             "player": "R.N",
             "tilePlacement": {"x": 1, "y": -1, "rotation": 1}
         },
         {
             "turn": 7,
-            "action": "playerPlace",
+            "type": "regular",
             "tile": "U",
             "player": "J.N",
             "tilePlacement": {"x": 1, "y": 1, "rotation": 1}
         },
         {
             "turn": 8,
-            "action": "playerPlace",
+            "type": "regular",
             "tile": "J",
             "player": "R.N",
             "tilePlacement": {"x": 2, "y": 0, "rotation": 3}
         },
         {
             "turn": 9,
-            "action": "playerPlace",
+            "type": "regular",
             "tile": "H",
             "player": "J.N",
             "tilePlacement": {"x": 1, "y": 2, "rotation": 0},
@@ -81,14 +81,14 @@
         },
         {
             "turn": 10,
-            "action": "playerPlace",
+            "type": "regular",
             "tile": "V",
             "player": "R.N",
             "tilePlacement": {"x": 1, "y": 3, "rotation": 1}
         },
         {
             "turn": 11,
-            "action": "playerPlace",
+            "type": "regular",
             "tile": "M",
             "player": "J.N",
             "tilePlacement": {"x": 0, "y": 2, "rotation": 1},
@@ -96,21 +96,21 @@
         },
         {
             "turn": 12,
-            "action": "playerPlace",
+            "type": "regular",
             "tile": "U",
             "player": "R.N",
             "tilePlacement": {"x": 2, "y": 3, "rotation": 0}
         },
         {
             "turn": 13,
-            "action": "playerPlace",
+            "type": "regular",
             "tile": "L",
             "player": "J.N",
             "tilePlacement": {"x": 2, "y": 2, "rotation": 2}
         },
         {
             "turn": 14,
-            "action": "playerPlace",
+            "type": "regular",
             "tile": "W",
             "player": "R.N",
             "tilePlacement": {"x": 2, "y": 4, "rotation": 3},
@@ -118,21 +118,21 @@
         },
         {
             "turn": 15,
-            "action": "playerPlace",
+            "type": "regular",
             "tile": "W",
             "player": "J.N",
             "tilePlacement": {"x": 3, "y": 0, "rotation": 2}
         },
         {
             "turn": 16,
-            "action": "playerPlace",
+            "type": "regular",
             "tile": "V",
             "player": "R.N",
             "tilePlacement": {"x": -1, "y": 2, "rotation": 1}
         },
         {
             "turn": 17,
-            "action": "playerPlace",
+            "type": "regular",
             "tile": "J",
             "player": "J.N",
             "tilePlacement": {"x": 3, "y": -1, "rotation": 1},
@@ -140,7 +140,7 @@
         },
         {
             "turn": 18,
-            "action": "playerPlace",
+            "type": "regular",
             "tile": "J",
             "player": "R.N",
             "tilePlacement": {"x": 4, "y": 0, "rotation": 2},
@@ -148,14 +148,14 @@
         },
         {
             "turn": 19,
-            "action": "playerPlace",
+            "type": "regular",
             "tile": "U",
             "player": "J.N",
             "tilePlacement": {"x": 3, "y": -2, "rotation": 0}
         },
         {
             "turn": 20,
-            "action": "playerPlace",
+            "type": "regular",
             "tile": "F",
             "player": "R.N",
             "tilePlacement": {"x": 4, "y": -2, "rotation": 1},
@@ -163,7 +163,7 @@
         },
         {
             "turn": 21,
-            "action": "playerPlace",
+            "type": "regular",
             "tile": "T",
             "player": "J.N",
             "tilePlacement": {"x": 4, "y": 1, "rotation": 0},
@@ -171,21 +171,21 @@
         },
         {
             "turn": 22,
-            "action": "playerPlace",
+            "type": "regular",
             "tile": "B",
             "player": "R.N",
             "tilePlacement": {"x": 1, "y": -2, "rotation": 0}
         },
         {
             "turn": 23,
-            "action": "playerPlace",
+            "type": "regular",
             "tile": "U",
             "player": "J.N",
             "tilePlacement": {"x": 5, "y": -2, "rotation": 0}
         },
         {
             "turn": 24,
-            "action": "playerPlace",
+            "type": "regular",
             "tile": "A",
             "player": "R.N",
             "tilePlacement": {"x": 2, "y": -2, "rotation": 2},
@@ -193,21 +193,21 @@
         },
         {
             "turn": 25,
-            "action": "playerPlace",
+            "type": "regular",
             "tile": "O",
             "player": "J.N",
             "tilePlacement": {"x": 0, "y": 3, "rotation": 3}
         },
         {
             "turn": 26,
-            "action": "playerPlace",
+            "type": "regular",
             "tile": "V",
             "player": "R.N",
             "tilePlacement": {"x": 5, "y": -1, "rotation": 3}
         },
         {
             "turn": 27,
-            "action": "playerPlace",
+            "type": "regular",
             "tile": "S",
             "player": "J.N",
             "tilePlacement": {"x": 5, "y": -3, "rotation": 2},
@@ -215,7 +215,7 @@
         },
         {
             "turn": 28,
-            "action": "playerPlace",
+            "type": "regular",
             "tile": "D",
             "player": "R.N",
             "tilePlacement": {"x": -2, "y": 2, "rotation": 3},
@@ -223,21 +223,21 @@
         },
         {
             "turn": 29,
-            "action": "playerPlace",
+            "type": "regular",
             "tile": "U",
             "player": "J.N",
             "tilePlacement": {"x": -3, "y": 2, "rotation": 1}
         },
         {
             "turn": 30,
-            "action": "playerPlace",
+            "type": "regular",
             "tile": "D",
             "player": "R.N",
             "tilePlacement": {"x": -2, "y": 3, "rotation": 1}
         },
         {
             "turn": 31,
-            "action": "playerPlace",
+            "type": "regular",
             "tile": "W",
             "player": "J.N",
             "tilePlacement": {"x": 6, "y": -1, "rotation": 2},
@@ -245,28 +245,28 @@
         },
         {
             "turn": 32,
-            "action": "playerPlace",
+            "type": "regular",
             "tile": "O",
             "player": "R.N",
             "tilePlacement": {"x": 0, "y": 4, "rotation": 1}
         },
         {
             "turn": 33,
-            "action": "playerPlace",
+            "type": "regular",
             "tile": "H",
             "player": "J.N",
             "tilePlacement": {"x": -2, "y": 4, "rotation": 0}
         },
         {
             "turn": 34,
-            "action": "playerPlace",
+            "type": "regular",
             "tile": "V",
             "player": "R.N",
             "tilePlacement": {"x": 2, "y": -3, "rotation": 3}
         },
         {
             "turn": 35,
-            "action": "playerPlace",
+            "type": "regular",
             "tile": "I",
             "player": "J.N",
             "tilePlacement": {"x": -3, "y": 4, "rotation": 0},
@@ -274,42 +274,42 @@
         },
         {
             "turn": 36,
-            "action": "playerPlace",
+            "type": "regular",
             "tile": "F",
             "player": "R.N",
             "tilePlacement": {"x": 4, "y": 2, "rotation": 1}
         },
         {
             "turn": 37,
-            "action": "playerPlace",
+            "type": "regular",
             "tile": "U",
             "player": "J.N",
             "tilePlacement": {"x": 2, "y": -4, "rotation": 0}
         },
         {
             "turn": 38,
-            "action": "playerPlace",
+            "type": "regular",
             "tile": "Q",
             "player": "R.N",
             "tilePlacement": {"x": 4, "y": -1, "rotation": 3}
         },
         {
             "turn": 39,
-            "action": "playerPlace",
+            "type": "regular",
             "tile": "W",
             "player": "J.N",
             "tilePlacement": {"x": 3, "y": -4, "rotation": 3}
         },
         {
             "turn": 40,
-            "action": "playerPlace",
+            "type": "regular",
             "tile": "K",
             "player": "R.N",
             "tilePlacement": {"x": 2, "y": -1, "rotation": 2}
         },
         {
             "turn": 41,
-            "action": "playerPlace",
+            "type": "regular",
             "tile": "E",
             "player": "J.N",
             "tilePlacement": {"x": 5, "y": 2, "rotation": 1},
@@ -317,7 +317,7 @@
         },
         {
             "turn": 42,
-            "action": "playerPlace",
+            "type": "regular",
             "tile": "L",
             "player": "R.N",
             "tilePlacement": {"x": 3, "y": -3, "rotation": 0},
@@ -325,14 +325,14 @@
         },
         {
             "turn": 43,
-            "action": "playerPlace",
+            "type": "regular",
             "tile": "E",
             "player": "J.N",
             "tilePlacement": {"x": 6, "y": 2, "rotation": 3}
         },
         {
             "turn": 44,
-            "action": "playerPlace",
+            "type": "regular",
             "tile": "V",
             "player": "R.N",
             "tilePlacement": {"x": 2, "y": -5, "rotation": 2},
@@ -340,7 +340,7 @@
         },
         {
             "turn": 45,
-            "action": "playerPlace",
+            "type": "regular",
             "tile": "I",
             "player": "J.N",
             "tilePlacement": {"x": 1, "y": -4, "rotation": 2},
@@ -348,14 +348,14 @@
         },
         {
             "turn": 46,
-            "action": "playerPlace",
+            "type": "regular",
             "tile": "K",
             "player": "R.N",
             "tilePlacement": {"x": 0, "y": -3, "rotation": 0}
         },
         {
             "turn": 47,
-            "action": "playerPlace",
+            "type": "regular",
             "tile": "U",
             "player": "J.N",
             "tilePlacement": {"x": 4, "y": -4, "rotation": 1},
@@ -363,21 +363,21 @@
         },
         {
             "turn": 48,
-            "action": "playerPlace",
+            "type": "regular",
             "tile": "V",
             "player": "R.N",
             "tilePlacement": {"x": 3, "y": -5, "rotation": 1}
         },
         {
             "turn": 49,
-            "action": "playerPlace",
+            "type": "regular",
             "tile": "E",
             "player": "J.N",
             "tilePlacement": {"x": 0, "y": -4, "rotation": 1}
         },
         {
             "turn": 50,
-            "action": "playerPlace",
+            "type": "regular",
             "tile": "E",
             "player": "R.N",
             "tilePlacement": {"x": -3, "y": 5, "rotation": 0},
@@ -385,14 +385,14 @@
         },
         {
             "turn": 51,
-            "action": "playerPlace",
+            "type": "regular",
             "tile": "P",
             "player": "J.N",
             "tilePlacement": {"x": -1, "y": 4, "rotation": 3}
         },
         {
             "turn": 52,
-            "action": "playerPlace",
+            "type": "regular",
             "tile": "B",
             "player": "R.N",
             "tilePlacement": {"x": -2, "y": 1, "rotation": 0},
@@ -400,14 +400,14 @@
         },
         {
             "turn": 53,
-            "action": "playerPlace",
+            "type": "regular",
             "tile": "G",
             "player": "J.N",
             "tilePlacement": {"x": 5, "y": 1, "rotation": 1}
         },
         {
             "turn": 54,
-            "action": "playerPlace",
+            "type": "regular",
             "tile": "N",
             "player": "R.N",
             "tilePlacement": {"x": 1, "y": -3, "rotation": 3},
@@ -415,14 +415,14 @@
         },
         {
             "turn": 55,
-            "action": "playerPlace",
+            "type": "regular",
             "tile": "N",
             "player": "J.N",
             "tilePlacement": {"x": 6, "y": -3, "rotation": 3}
         },
         {
             "turn": 56,
-            "action": "playerPlace",
+            "type": "regular",
             "tile": "P",
             "player": "R.N",
             "tilePlacement": {"x": 3, "y": 1, "rotation": 1},
@@ -430,7 +430,7 @@
         },
         {
             "turn": 57,
-            "action": "playerPlace",
+            "type": "regular",
             "tile": "E",
             "player": "J.N",
             "tilePlacement": {"x": -2, "y": 5, "rotation": 0},
@@ -438,14 +438,14 @@
         },
         {
             "turn": 58,
-            "action": "playerPlace",
+            "type": "regular",
             "tile": "C",
             "player": "R.N",
             "tilePlacement": {"x": 4, "y": 3, "rotation": 0}
         },
         {
             "turn": 59,
-            "action": "playerPlace",
+            "type": "regular",
             "tile": "L",
             "player": "J.N",
             "tilePlacement": {"x": -2, "y": 6, "rotation": 1},
@@ -453,14 +453,14 @@
         },
         {
             "turn": 60,
-            "action": "playerPlace",
+            "type": "regular",
             "tile": "R",
             "player": "R.N",
             "tilePlacement": {"x": 5, "y": 3, "rotation": 0}
         },
         {
             "turn": 61,
-            "action": "playerPlace",
+            "type": "regular",
             "tile": "S",
             "player": "J.N",
             "tilePlacement": {"x": 5, "y": -4, "rotation": 1},
@@ -468,14 +468,14 @@
         },
         {
             "turn": 62,
-            "action": "playerPlace",
+            "type": "regular",
             "tile": "H",
             "player": "R.N",
             "tilePlacement": {"x": 6, "y": 3, "rotation": 0}
         },
         {
             "turn": 63,
-            "action": "playerPlace",
+            "type": "regular",
             "tile": "X",
             "player": "J.N",
             "tilePlacement": {"x": -2, "y": 7, "rotation": 0},
@@ -483,7 +483,7 @@
         },
         {
             "turn": 64,
-            "action": "playerPlace",
+            "type": "regular",
             "tile": "K",
             "player": "R.N",
             "tilePlacement": {"x": -3, "y": 6, "rotation": 1},
@@ -491,14 +491,14 @@
         },
         {
             "turn": 65,
-            "action": "playerPlace",
+            "type": "regular",
             "tile": "P",
             "player": "J.N",
             "tilePlacement": {"x": -1, "y": 3, "rotation": 1}
         },
         {
             "turn": 66,
-            "action": "playerPlace",
+            "type": "regular",
             "tile": "A",
             "player": "R.N",
             "tilePlacement": {"x": -1, "y": 6, "rotation": 1},
@@ -506,7 +506,7 @@
         },
         {
             "turn": 67,
-            "action": "playerPlace",
+            "type": "regular",
             "tile": "D",
             "player": "J.N",
             "tilePlacement": {"x": -3, "y": 3, "rotation": 3},
@@ -514,14 +514,14 @@
         },
         {
             "turn": 68,
-            "action": "playerPlace",
+            "type": "regular",
             "tile": "B",
             "player": "R.N",
             "tilePlacement": {"x": -4, "y": 5, "rotation": 0}
         },
         {
             "turn": 69,
-            "action": "playerPlace",
+            "type": "regular",
             "tile": "N",
             "player": "J.N",
             "tilePlacement": {"x": 6, "y": 4, "rotation": 0},
@@ -529,7 +529,7 @@
         },
         {
             "turn": 70,
-            "action": "playerPlace",
+            "type": "regular",
             "tile": "B",
             "player": "R.N",
             "tilePlacement": {"x": -4, "y": 6, "rotation": 0},
@@ -537,7 +537,7 @@
         },
         {
             "turn": 71,
-            "action": "playerPlace",
+            "type": "regular",
             "tile": "R",
             "player": "J.N",
             "tilePlacement": {"x": 5, "y": 4, "rotation": 2}

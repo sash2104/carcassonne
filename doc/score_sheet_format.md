@@ -67,11 +67,11 @@ PLACEMENTSはタイルの配置やミープルの配置といった手順に関�
 - 定義
   - PLACEMENTSはarrayである
   - PLACEMENTSの要素は[PLACEMENT](#placement)である
-    - 補足：後で述べるが[PLACEMENT](#placement)には[FIRST_PLACEMENT](#first_placement)、[SKIP_PLACEMENT](#skip_placement)、[PLAYER_PLACEMENT](#player_placement)の3種類ある
+    - 補足：後で述べるが[PLACEMENT](#placement)には[INITIAL_PLACEMENT](#initial_placement)、[SKIPPED_PLACEMENT](#skipped_placement)、[REGULAR_PLACEMENT](#regular_placement)の3種類ある
   - PLACEMENTSの要素数に決まりはない
   - PLACEMENTS内の要素の順番には意味があり、最初の要素ほど最初の手順を表す
-  - PLACEMENTSの最初の要素は[FIRST_PLACEMENT](#first_placement)でなければならない
-  - FIRST_PLACEMENTはPLACEMENTSの最初以外の要素であってはいけない
+  - PLACEMENTSの最初の要素は[INITIAL_PLACEMENT](#initial_placement)でなければならない
+  - [INITIAL_PLACEMENT](#initial_placement)はPLACEMENTSの最初以外の要素であってはいけない
 
 ### PLACEMENT
 
@@ -80,48 +80,48 @@ PLACEMENTはひとつの手番におけるタイルの配置に関する情報�
 
 PLACEMENTは配置のタイプによって3つの種類がある。(それぞれで微妙に定義が違う。)
 
-- [FIRST_PLACEMENT](#first_placement)
-- [SKIP_PLACEMENT](#skip_placement)
-- [PLAYER_PLACEMENT](#player_placement)
+- [INITIAL_PLACEMENT](#initial_placement)
+- [SKIPPED_PLACEMENT](#skipped_placement)
+- [REGULAR_PLACEMENT](#regular_placement)
 
 
-#### FIRST_PLACEMENT
+#### INITIAL_PLACEMENT
 
-FIRST_PLACEMENTはタイルの配置の中でもゲーム開始時に予め配置されているタイルを表現するための配置情報を表す。  
+INITIAL_PLACEMENTはタイルの配置の中でもゲーム開始時に予め配置されているタイルを表現するための配置情報を表す。  
 カルカソンヌの通常のルールでは最初に配置されるタイルの種類は固定なので、このような情報がなくても問題ないが、予め配置されているタイルの種類やその配置方法を明示的にするために設けた。  
 
 - 定義
-  - FIRST_PLACEMENTは以下の表のようなobjectである
+  - INITIAL_PLACEMENTは以下の表のようなobjectである
 
 | フィールド名 | 必須か | 値の型 | 説明 |
 |---|---|---|---|
-| "action" | 必須 | string | "firstPlace"というstringが値にくる。 |
+| "type" | 必須 | string | "initial"というstringが値にくる。 |
 | "tile" | 必須 | string | タイルの種類を表すstringが値にくる。 | 
 | "tilePlacement" | オプショナル | object | タイルの配置方法を表す[TILE_PLACEMENT](#tile_placement)という形式の値がくる。省略された場合は全てのフィールドがデフォルト値の[TILE_PLACEMENT](#tile_placement)が指定されたものと解釈される。 | 
 
-#### SKIP_PLACEMENT
+#### SKIPPED_PLACEMENT
 
-SKIP_PLACEMENTはタイルを配置できる場所がなくスキップした場合の配置情報を表す。
+SKIPPED_PLACEMENTはタイルを配置できる場所がなくスキップした場合の配置情報を表す。
 
 - 定義
-  - SKIP_PLACEMENTは以下の表のようなobjectである
+  - SKIPPED_PLACEMENTは以下の表のようなobjectである
 
 | フィールド名 | 必須か | 値の型 | 説明 |
 |---|---|---|---|
-| "action" | 必須 | string | "skip"というstringが値にくる。 |
+| "type" | 必須 | string | "skipped"というstringが値にくる。 |
 | "tile" | 必須 | string | タイルの種類を表すstringが値にくる。 | 
 | "player" | 必須 | string | どのプレイヤーの手番でスキップが発生したかを表すためのプレイヤー名を表すstringがくる。このプレイヤー名は[INFO](#info)のプレイヤー情報で出てきたプレイヤー名でなければならない。 |
 
-#### PLAYER_PLACEMENT
+#### REGULAR_PLACEMENT
 
-PLAYER_PLACEMENTはプレイヤーによる通常のタイル配置を表す。
+REGULAR_PLACEMENTはプレイヤーによる通常のタイル配置を表す。
 
 - 定義
-  - PLAYER_PLACEMENTは以下の表のようなobjectである
+  - REGULAR_PLACEMENTは以下の表のようなobjectである
 
 | フィールド名 | 必須か | 値の型 | 説明 |
 |---|---|---|---|
-| "action" | 必須 | string | "playerPlace"というstringが値にくる。 |
+| "type" | 必須 | string | "regular"というstringが値にくる。 |
 | "tile" | 必須 | string | タイルの種類を表すstringが値にくる。 | 
 | "tilePlacement" | 必須 | object | タイルの配置方法を表す[TILE_PLACEMENT](#tile_placement)という形式の値がくる。 | 
 | "meeplePlacement" | オプショナル | object | ミープルの配置方法を表す[MEEPLE_PLACEMENT](#meeple_placement)という形式の値がくる。ミープルを配置しなかった手番では不要。 |
@@ -139,7 +139,7 @@ PLAYER_PLACEMENTはプレイヤーによる通常のタイル配置を表す。
 | "y" | オプショナル | int | タイルを配置するy座標を表すintが値にくる。省略された場合は0が指定されたと解釈される。 |
 | "rotation" | オプショナル | int | タイルを配置する際にタイルを時計回りに何回転させたかを表すintが値にくる。0から3の数字でなければならない。省略された場合は0が指定されたと解釈される。 |
 
-- [FIRST_PLACEMENT](#first_placement)中のTILE_PLACEMENTに適用される制限
+- [INITIAL_PLACEMENT](#initial_placement)中のTILE_PLACEMENTに適用される制限
   - "x"フィールドにどのような値が指定されていても強制的に0が指定されているものと解釈される
   - "y"フィールドにどのような値が指定されていても強制的に0が指定されているものと解釈される
 
