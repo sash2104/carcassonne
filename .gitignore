@@ -1,4 +1,5 @@
 carcassonne
+test
 *.o
 
 # gtags generated files
