@@ -49,6 +49,11 @@ void Region::merged() {
   merged_ = true;
 }
 
+bool Region::meepleIsPlaced() const {
+  // TODO
+  return false;
+}
+
 CityRegion::CityRegion(int id, Board* board) : Region(id, board) {
 }
 

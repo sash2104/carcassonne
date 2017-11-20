@@ -6,6 +6,7 @@
 #include "board.hpp"
 #include "segment.hpp"
 
+class Board;
 class Segment;
 
 enum class RegionType {
@@ -23,6 +24,7 @@ class Region {
     bool mergeRegion(Region* region);
     bool isMerged() const;
     void merged();
+    bool meepleIsPlaced() const;
     virtual bool isCompleted() = 0;
     virtual int calculatePoint() = 0;
     virtual RegionType getType() const = 0;

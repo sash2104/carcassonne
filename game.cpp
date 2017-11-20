@@ -4,7 +4,7 @@
 
 // TODO : n_players_ とタイルの種類はconfigファイルから読み込む
 Game::Game()
-  : turn_(0), n_players_(2), board_(Board())
+  : turn_(0), n_players_(2), board_(72)
 {
   loadTileFile("tiles.txt");
   board_.setPile(tiles_);

@@ -21,6 +21,7 @@ class Segment {
     void setRegion(Region* region);
     bool hasPennant() const;
     bool isAdjacentTo(int direction) const;
+    void placeMeeple(int meepleColor);
   private:
     int index_;
     SegmentType type_;

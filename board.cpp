@@ -1,9 +1,13 @@
+#include <cassert>
 #include <iostream>
 #include <sstream>
 #include <vector>
 
 #include "board.hpp"
+#include "region.hpp"
+#include "segment.hpp"
 #include "tile.hpp"
+#include "tile_holder.hpp"
 
 
 // std::vector<std::string> split(const std::string &str, char delim){
@@ -12,9 +16,7 @@
 //   return res;
 // }
 //
-Board::Board() :
-  num_remain_tiles_(0)
-{
+Board::Board(int tile_n) : tile_map_(tile_n) {
   for (int i = 0; i < N_TILES; ++i) { pile_[i] = nullptr; }
   for (int i = 0; i < FIELD_SIZE; ++i) { field_[i] = nullptr; }
 }
@@ -58,4 +60,70 @@ void Board::printField() {
     std::cout << "(" << pos_id % 21 << "," << pos_id / 21 << ")";
   }
   std::cout << std::endl;
+}
+
+const TilePositionMap* Board::getTilePositionMap() const {
+  return &tile_map_;
+}
+
+const std::vector<CityRegion*>* Board::getCityRegions() const {
+  return &city_regions_;
+}
+
+const std::vector<CloisterRegion*>* Board::getCloisterRegions() const {
+  return &cloister_regions_;
+}
+
+const std::vector<FieldRegion*>* Board::getFieldRegions() const {
+  return &field_regions_;
+}
+
+const std::vector<RoadRegion*>* Board::getRoadRegions() const {
+  return &road_regions_;
+}
+
+bool Board::canPlaceTile(Tile* tile, int x, int y, int rotation) {
+  if (!tile_map_.isPlacablePosition(x, y)) {
+    return false;
+  }
+  return isAdjacencyValid(tile, x, y, rotation);
+}
+
+bool Board::hasPossiblePlacement(Tile* tile) {
+  // TODO
+  return false;
+}
+
+bool Board::isAdjacencyValid(Tile* tile, int x, int y, int rotation) {
+  // TODO
+  return false;
+}
+
+void Board::setInitialTile(Tile* tile) {
+  setInitialTile(tile, 0);
+}
+
+void Board::setInitialTile(Tile* tile, int rotation) {
+  assert(rotation >= 0 && rotation < 4);
+  // TODO
+}
+
+bool Board::placeTile(Tile* tile, int x, int y, int rotation, std::vector<Segment*>* meeplePlaceCandidates) {
+  if (!canPlaceTile(tile, x, y, rotation)) {
+    return false;
+  }
+  // TODO
+  return true;
+}
+
+bool Board::placeMeeple(Segment* segment, int meepleColor) {
+  Region* region = segment->getRegion();
+  if (region->meepleIsPlaced()) {
+    return false;
+  }
+  segment->placeMeeple(meepleColor);
+  if (region->isCompleted()) {
+    // TODO: 色々処理
+  }
+  return true;
 }

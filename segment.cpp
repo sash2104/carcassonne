@@ -39,3 +39,7 @@ bool Segment::isAdjacentTo(int direction) const {
   // TODO
   return true;
 }
+
+void Segment::placeMeeple(int meepleColor) {
+  // TODO
+}
