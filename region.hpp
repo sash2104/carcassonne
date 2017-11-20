@@ -49,6 +49,8 @@ class CloisterRegion : public Region {
     bool isCompleted();
     int calculatePoint();
     RegionType getType() const;
+  private:
+    bool completed_;
 };
 
 class FieldRegion : public Region {

@@ -5,6 +5,7 @@
 #include "tile.hpp"
 
 class Region;
+class Tile;
 
 enum class SegmentType {
   CITY, CLOISTER, ROAD, FIELD

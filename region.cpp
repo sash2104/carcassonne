@@ -1,3 +1,4 @@
+#include <cassert>
 #include <vector>
 
 #include "board.hpp"
@@ -72,16 +73,26 @@ inline RegionType CityRegion::getType() const {
 }
 
 
-CloisterRegion::CloisterRegion(int id, Board* board) : Region(id, board) {
+CloisterRegion::CloisterRegion(int id, Board* board) : Region(id, board), completed_(false) {
 }
 
 bool CloisterRegion::isCompleted() {
-  // TODO
-  return false;
+  if (completed_) {
+    return true;
+  }
+  return calculatePoint() == 9;
 }
 
 int CloisterRegion::calculatePoint() {
-  // TODO
+  if (completed_) {
+    return 9;
+  }
+  /*
+  const TilePositionMap* m = getBoard()->getTilePositionMap();
+  const std::vector<Segment*>* segments = getSegments();
+  assert(segments->size() == 1);
+  const Segment* segment = segments->at(0);
+*/
   return 0;
 }
 

@@ -1,6 +1,8 @@
 #include <cassert>
 #include <iostream>
+#include <vector>
 
+#include "segment.hpp"
 #include "tile.hpp"
 
 // 2進数で表示
@@ -14,66 +16,87 @@ void print_bit_tile(int bit_tile) {
   std::cerr << std::endl;
 }
 
-Tile::Tile(int id, int num_tiles, bool has_cloister, bool has_pennant)
-  : id_(id), num_tiles_(num_tiles),
-    has_cloister_(has_cloister), has_pennant_(has_pennant) {
-    }
+Tile::Tile(int id, char* name, BorderType* border_types, int* cities, int* roads, int* fields)
+  : id_(id), name_(name) {
+  for (int i = 0; i < 4; i++) {
+    border_types_[i] = border_types[i];
+    cities_[i] = cities[i];
+    roads_[i] = roads[i];
+    fields_[2*i] = fields[2*i];
+    fields_[2*i+1] = fields[2*i+1];
+  }
+}
+
+Tile::Tile(int id) : id_(id) {
+}
+
+Tile::~Tile() {
+}
 
 int Tile::getId() const { return id_; }
 
-int Tile::getNumTiles() const { return num_tiles_; }
+const char* Tile::getName() const { return name_; }
 
-void Tile::setEdgeInfo(std::string edge_type) {
-  assert(edge_type.size() == 4);
-  int edge_id = 0x000;
-  for (int i = 0; i < 4; ++i) {
-    int edge_offset = i;
-    switch(edge_type[i]) {
-      case 'r': // road
-        break;
-      case 'c': // city
-        edge_offset += 4;
-        break;
-      case 'f': // farm
-        edge_offset += 8;
-        break;
-      default:
-        std::cerr << "Error: invalid edge type." << std::endl;
-        assert(false);
-    }
-    edge_id |= (1 << edge_offset);
-  }
-  // std::cout << id_ << " " << edge_type << std::endl;
-  edge_id_ = edge_id;
-  // print_bit_tile(edge_id_);
+int Tile::getX() const { return x_; }
+
+int Tile::getY() const { return y_; }
+
+int Tile::getRotation() const { return rotation_; }
+
+void Tile::setX(int x) { x_ = x; }
+
+void Tile::setY(int y) { y_ = y; }
+
+void Tile::setRotation(int rotation) { rotation_ = rotation; }
+
+BorderType Tile::getBorderType(int direction) {
+  assert(direction >= 0 && direction < 4);
+  return border_types_[direction];
 }
 
-// つながっている道は同じid, 分かれている道は異なるidとなるように各道にidを付与
-void Tile::setRoadInfo(std::string road_connection) {
-  assert(road_connection.size() == 4);
-  for (int i = 0; i < 4; ++i) {
-    roads_[i] = road_connection[i] - '0';
-    // std::cout << roads_[i];
-  }
-  // std::cout << std::endl;
+const int* Tile::getCities() const {
+  return cities_;
 }
 
-// つながっている都市は同じid, 分かれている都市は異なるidとなるように各都市にidを付与
-void Tile::setCityInfo(std::string city_connection) {
-  assert(city_connection.size() == 4);
-  for (int i = 0; i < 4; ++i) {
-    cities_[i] = city_connection[i] - '0';
-    // std::cout << cities_[i];
-  }
-  // std::cout << std::endl;
+const int* Tile::getRoads() const {
+  return roads_;
 }
 
-// つながっている草原は同じid, 分かれている草原は異なるidとなるように各草原にidを付与
-void Tile::setFarmInfo(std::string farm_connection) {
-  assert(farm_connection.size() == 9);
-  for (int i = 0; i < 9; ++i) {
-    farms_[i] = farm_connection[i] - '0';
-    // std::cout << farms_[i];
-  }
-  // std::cout << std::endl;
+const int* Tile::getFields() const {
+  return fields_;
+}
+
+const Segment* Tile::getCitySegmentOfDirection(int direction) const {
+  // TODO
+  return nullptr;
+}
+
+const Segment* Tile::getFieldSegmentOfDirection(int direction) const {
+  // TODO
+  return nullptr;
+}
+
+const Segment* Tile::getRoadSegmentOfDirection(int direction) const {
+  // TODO
+  return nullptr;
+}
+
+const std::vector<Segment*>* Tile::getCitySegments() const {
+  // TODO
+  return nullptr;
+}
+
+const std::vector<Segment*>* Tile::getFieldSegments() const {
+  // TODO
+  return nullptr;
+}
+
+const std::vector<Segment*>* Tile::getRoadSegments() const {
+  // TODO
+  return nullptr;
+}
+
+Segment* Tile::getCloisterSegment() {
+  // TODO
+  return nullptr;
 }

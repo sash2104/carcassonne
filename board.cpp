@@ -29,7 +29,8 @@ const Tile* Board::getCurrentTile(int turn) const { return pile_[turn]; }
 
 void Board::setPile(const std::vector<Tile*> & tiles) {
   for (const Tile* tile : tiles) {
-    for (int i = 0; i < tile->getNumTiles(); ++i) {
+    //for (int i = 0; i < tile->getNumTiles(); ++i) {
+    for (int i = 0; i < 4; ++i) {
       pile_[num_remain_tiles_] = tile;
       ++num_remain_tiles_;
     }

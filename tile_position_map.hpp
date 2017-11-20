@@ -5,6 +5,8 @@
 
 #include "tile.hpp"
 
+class Tile;
+
 class BoardPosition {
   public:
     BoardPosition(int x, int y);

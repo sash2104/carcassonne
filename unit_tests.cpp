@@ -7,8 +7,8 @@
 
 void tile_position_map_tests() {
   TilePositionMap m(10);
-  Tile tile1(0, 3, false, false);
-  Tile tile2(1, 3, false, false);
+  Tile tile1(0);
+  Tile tile2(1);
   const std::set<BoardPosition>* s;
 
   test_assert("tile_position_map_tests#0", !m.isTilePlaced(0, 0));

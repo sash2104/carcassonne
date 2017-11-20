@@ -7,6 +7,8 @@
 #include "common.hpp"
 #include "tile.hpp"
 
+class Tile;
+
 static const int ROAD_MASK = 0x00f;
 static const int CITY_MASK = 0x0f0;
 static const int FARM_MASK = 0xf00;

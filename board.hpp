@@ -11,9 +11,11 @@
 #include "tile_position_map.hpp"
 
 class Region;
+class Segment;
 class CityRegion;
 class CloisterRegion;
 class FieldRegion;
+class LargeTileHolder;
 class RoadRegion;
 
 class Board {
