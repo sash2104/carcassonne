@@ -7,17 +7,15 @@
 
 class Segment;
 
-enum class ESegment{
-  ROAD, CITY, CLOISTER, FARM
-};
-
 enum class BorderType {
   ROAD, CITY, CLOISTER, FIELD
 };
 
 class Tile {
   public:
-    Tile(int id, char* name, BorderType* borderTypes, int* cities, int* roads, int* fields);
+    Tile(int id, char* name, BorderType* borderTypes, int* cities, int* roads, int* fields,
+       std::vector<Segment*>* city_segments, std::vector<Segment*>* field_segments,
+       std::vector<Segment*>* road_segments, Segment* cloister_segment);
     Tile(int id); // for testing
     ~Tile();
     int getId() const;
@@ -49,6 +47,10 @@ class Tile {
     int cities_[4];
     int roads_[4];
     int fields_[8];
+    std::vector<Segment*>* city_segments_;
+    std::vector<Segment*>* field_segments_;
+    std::vector<Segment*>* road_segments_;
+    Segment* cloister_segment_; // nullptrも許す
 };
 
 #endif

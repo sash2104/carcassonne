@@ -5,19 +5,11 @@
 #include "segment.hpp"
 #include "tile.hpp"
 
-// 2進数で表示
-void print_bit_tile(int bit_tile) {
-  int bit_offset = 2048;
-  while (bit_offset > 0) {
-    if (bit_tile & bit_offset) { std::cerr << 1; }
-    else { std::cerr << 0; }
-    bit_offset /= 2;
-  }
-  std::cerr << std::endl;
-}
-
-Tile::Tile(int id, char* name, BorderType* border_types, int* cities, int* roads, int* fields)
-  : id_(id), name_(name) {
+Tile::Tile(int id, char* name, BorderType* border_types, int* cities, int* roads, int* fields,
+  std::vector<Segment*>* city_segments, std::vector<Segment*>* field_segments,
+  std::vector<Segment*>* road_segments, Segment* cloister_segment)
+  : id_(id), name_(name), city_segments_(city_segments),
+    field_segments_(field_segments), cloister_segment_(cloister_segment) {
   for (int i = 0; i < 4; i++) {
     border_types_[i] = border_types[i];
     cities_[i] = cities[i];
@@ -31,6 +23,24 @@ Tile::Tile(int id) : id_(id) {
 }
 
 Tile::~Tile() {
+  for (auto iter = city_segments_->begin(); iter != city_segments_->end(); iter++) {
+    Segment* s = *iter;
+    delete s;
+  }
+  delete city_segments_;
+  for (auto iter = road_segments_->begin(); iter != road_segments_->end(); iter++) {
+    Segment* s = *iter;
+    delete s;
+  }
+  delete road_segments_;
+  for (auto iter = field_segments_->begin(); iter != field_segments_->end(); iter++) {
+    Segment* s = *iter;
+    delete s;
+  }
+  delete field_segments_;
+  if (cloister_segment_ != nullptr) {
+    delete cloister_segment_;
+  }
 }
 
 int Tile::getId() const { return id_; }
@@ -47,7 +57,10 @@ void Tile::setX(int x) { x_ = x; }
 
 void Tile::setY(int y) { y_ = y; }
 
-void Tile::setRotation(int rotation) { rotation_ = rotation; }
+void Tile::setRotation(int rotation) {
+  assert(rotation >= 0 && rotation < 4);
+  rotation_ = rotation;
+}
 
 BorderType Tile::getBorderType(int direction) {
   assert(direction >= 0 && direction < 4);
@@ -67,36 +80,35 @@ const int* Tile::getFields() const {
 }
 
 const Segment* Tile::getCitySegmentOfDirection(int direction) const {
-  // TODO
-  return nullptr;
+  assert(direction >= 0 && direction < 4);
+  int index = cities_[direction];
+  return (index == -1) ? nullptr : city_segments_->at(index);
 }
 
 const Segment* Tile::getFieldSegmentOfDirection(int direction) const {
-  // TODO
-  return nullptr;
+  assert(direction >= 0 && direction < 8);
+  int index = fields_[direction];
+  return (index == -1) ? nullptr : field_segments_->at(index);
 }
 
 const Segment* Tile::getRoadSegmentOfDirection(int direction) const {
-  // TODO
-  return nullptr;
+  assert(direction >= 0 && direction < 4);
+  int index = roads_[direction];
+  return (index == -1) ? nullptr : road_segments_->at(index);
 }
 
 const std::vector<Segment*>* Tile::getCitySegments() const {
-  // TODO
-  return nullptr;
+  return city_segments_;
 }
 
 const std::vector<Segment*>* Tile::getFieldSegments() const {
-  // TODO
-  return nullptr;
+  return field_segments_;
 }
 
 const std::vector<Segment*>* Tile::getRoadSegments() const {
-  // TODO
-  return nullptr;
+  return road_segments_;
 }
 
 Segment* Tile::getCloisterSegment() {
-  // TODO
-  return nullptr;
+  return cloister_segment_;
 }
