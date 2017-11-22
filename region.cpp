@@ -87,13 +87,25 @@ int CloisterRegion::calculatePoint() {
   if (completed_) {
     return 9;
   }
-  /*
   const TilePositionMap* m = getBoard()->getTilePositionMap();
   const std::vector<Segment*>* segments = getSegments();
   assert(segments->size() == 1);
   const Segment* segment = segments->at(0);
-*/
-  return 0;
+  const Tile* tile = segment->getTile();
+  int x = tile->getX();
+  int y = tile->getY();
+  int point = 0;
+  for (int dx = -1; dx <= 1; dx++) {
+    for (int dy = -1; dy <= 1; dy++) {
+      if (m->isTilePlaced(x + dx, y + dy)) {
+	point++;
+      }
+    }
+  }
+  if (point == 9) {
+    completed_ = true;
+  }
+  return point;
 }
 
 inline RegionType CloisterRegion::getType() const {
