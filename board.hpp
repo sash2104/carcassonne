@@ -4,6 +4,7 @@
 #include <array>
 #include <string>
 
+#include "meeple_color.hpp"
 #include "region.hpp"
 #include "segment.hpp"
 #include "tile.hpp"
@@ -43,7 +44,7 @@ class Board {
   void setInitialTile(Tile* tile);
   void setInitialTile(Tile* tile, int rotation);
   bool placeTile(Tile* tile, int x, int y, int rotation, std::vector<Segment*>* meeplePlaceCandidates);
-  bool placeMeeple(Segment* segment, int meepleColor);
+  bool placeMeeple(Segment* segment, MeepleColor meeple);
   private:
     std::array<const Tile*, N_TILES> pile_; // 未配置のタイルを管理
     std::array<LargeTileHolder*, FIELD_SIZE> field_; // 配置済のタイルを管理

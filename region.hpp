@@ -24,6 +24,8 @@ class Region {
     bool mergeRegion(Region* region);
     bool isMerged() const;
     void merged();
+    void meepleIsPlacedOnSegment(Segment* segment);
+    const std::vector<Segment*>* getMeeplePlacedSegments() const;
     bool meepleIsPlaced() const;
     virtual bool isCompleted() = 0;
     virtual int calculatePoint() = 0;
@@ -32,6 +34,7 @@ class Region {
     int id_;
     Board* board_;
     std::vector<Segment*> segments_;
+    std::vector<Segment*> meeple_placed_segments_;
     bool merged_;
 };
 

@@ -4,7 +4,7 @@
 #include "tile.hpp"
 
 Segment::Segment(int index, SegmentType type, bool has_pennant) :
-  index_(index), type_(type), has_pennant_(has_pennant) {
+  index_(index), type_(type), has_pennant_(has_pennant), placed_meeple_(MeepleColor::NOT_PLACED) {
 }
 
 int Segment::getIndex() const {
@@ -40,6 +40,10 @@ bool Segment::isAdjacentTo(int direction) const {
   return true;
 }
 
-void Segment::placeMeeple(int meepleColor) {
-  // TODO
+void Segment::placeMeeple(MeepleColor meeple) {
+  placed_meeple_ = meeple;
+}
+
+bool Segment::meepleIsPlaced() const {
+  return placed_meeple_ != MeepleColor::NOT_PLACED;
 }

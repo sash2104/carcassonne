@@ -4,6 +4,7 @@
 #include <vector>
 
 #include "board.hpp"
+#include "meeple_color.hpp"
 #include "region.hpp"
 #include "segment.hpp"
 #include "tile.hpp"
@@ -117,12 +118,12 @@ bool Board::placeTile(Tile* tile, int x, int y, int rotation, std::vector<Segmen
   return true;
 }
 
-bool Board::placeMeeple(Segment* segment, int meepleColor) {
+bool Board::placeMeeple(Segment* segment, MeepleColor meeple) {
   Region* region = segment->getRegion();
   if (region->meepleIsPlaced()) {
     return false;
   }
-  segment->placeMeeple(meepleColor);
+  segment->placeMeeple(meeple);
   if (region->isCompleted()) {
     // TODO: 色々処理
   }

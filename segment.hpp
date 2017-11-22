@@ -1,6 +1,7 @@
 #ifndef __SEGMENT_HPP__
 #define __SEGMENT_HPP__
 
+#include "meeple_color.hpp"
 #include "region.hpp"
 #include "tile.hpp"
 
@@ -22,13 +23,15 @@ class Segment {
     void setRegion(Region* region);
     bool hasPennant() const;
     bool isAdjacentTo(int direction) const;
-    void placeMeeple(int meepleColor);
+    void placeMeeple(MeepleColor meeple);
+    bool meepleIsPlaced() const;
   private:
     int index_;
     SegmentType type_;
     Tile* tile_;
     Region* region_;
     bool has_pennant_;
+    MeepleColor placed_meeple_;
 };
 
 #endif

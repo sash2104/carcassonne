@@ -33,8 +33,10 @@ bool Region::mergeRegion(Region* region) {
     auto segments = region->getSegments();
     for (auto it = segments->cbegin(); it != segments->cend(); it++) {
       Segment* s = *it;
-      s->setRegion(this);
       addSegment(s);
+      if (s->meepleIsPlaced()) {
+	meeple_placed_segments_.push_back(s);
+      }
     }
     region->merged();
     return true;
@@ -50,9 +52,18 @@ void Region::merged() {
   merged_ = true;
 }
 
+void Region::meepleIsPlacedOnSegment(Segment* segment) {
+  assert(segment->getRegion() == this);
+  assert(segment->meepleIsPlaced());
+  meeple_placed_segments_.push_back(segment);
+}
+
+const std::vector<Segment*>* Region::getMeeplePlacedSegments() const {
+  return &meeple_placed_segments_;
+}
+
 bool Region::meepleIsPlaced() const {
-  // TODO
-  return false;
+  return meeple_placed_segments_.size() != 0;
 }
 
 CityRegion::CityRegion(int id, Board* board) : Region(id, board) {
