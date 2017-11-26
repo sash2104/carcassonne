@@ -4,6 +4,7 @@
 
 #include "segment.hpp"
 #include "tile.hpp"
+#include "utils.hpp"
 
 Tile::Tile(int id, char* name, BorderType* border_types, int* cities, int* roads, int* fields,
   std::vector<Segment*>* city_segments, std::vector<Segment*>* field_segments,
@@ -63,8 +64,13 @@ void Tile::setRotation(int rotation) {
 }
 
 BorderType Tile::getBorderType(int direction) {
+  return getBorderType(direction, getRotation());
+}
+
+BorderType Tile::getBorderType(int direction, int rotation) {
   assert(direction >= 0 && direction < 4);
-  return border_types_[direction];
+  assert(rotation >= 0 && rotation < 4);
+  return border_types_[modBy4(direction - rotation)];
 }
 
 const int* Tile::getCities() const {
@@ -79,21 +85,21 @@ const int* Tile::getFields() const {
   return fields_;
 }
 
-const Segment* Tile::getCitySegmentOfDirection(int direction) const {
+Segment* Tile::getCitySegmentOfDirection(int direction) const {
   assert(direction >= 0 && direction < 4);
-  int index = cities_[direction];
+  int index = cities_[modBy4(direction - rotation_)];
   return (index == -1) ? nullptr : city_segments_->at(index);
 }
 
-const Segment* Tile::getFieldSegmentOfDirection(int direction) const {
+Segment* Tile::getFieldSegmentOfDirection(int direction) const {
   assert(direction >= 0 && direction < 8);
-  int index = fields_[direction];
+  int index = fields_[modBy8(direction - rotation_ * 2)];
   return (index == -1) ? nullptr : field_segments_->at(index);
 }
 
-const Segment* Tile::getRoadSegmentOfDirection(int direction) const {
+Segment* Tile::getRoadSegmentOfDirection(int direction) const {
   assert(direction >= 0 && direction < 4);
-  int index = roads_[direction];
+  int index = roads_[modBy4(direction - rotation_)];
   return (index == -1) ? nullptr : road_segments_->at(index);
 }
 
@@ -111,4 +117,26 @@ const std::vector<Segment*>* Tile::getRoadSegments() const {
 
 Segment* Tile::getCloisterSegment() {
   return cloister_segment_;
+}
+
+bool Tile::canTopAdjacentWith(Tile* tile, int rotation) {
+  return canAdjacentWith(0, tile, rotation);
+}
+
+bool Tile::canRightAdjacentWith(Tile* tile, int rotation) {
+  return canAdjacentWith(1, tile, rotation);
+}
+
+bool Tile::canBottomAdjacentWith(Tile* tile, int rotation) {
+  return canAdjacentWith(2, tile, rotation);
+}
+
+bool Tile::canLeftAdjacentWith(Tile* tile, int rotation) {
+  return canAdjacentWith(3, tile, rotation);
+}
+
+bool Tile::canAdjacentWith(int direction, Tile* tile, int rotation) {
+  BorderType my_border_type = getBorderType(direction);
+  BorderType your_border_type = tile->getBorderType(modBy4(direction + 2), rotation);
+  return my_border_type == your_border_type;
 }

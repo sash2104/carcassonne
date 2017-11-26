@@ -6,7 +6,7 @@
 Game::Game()
   : turn_(0), n_players_(2), board_(72)
 {
-  board_.setPile(tiles_);
+  //board_.setPile(tiles_);
   for (int pid = 0; pid < n_players_; ++pid) {
     players_.push_back(new Player(pid));
   }
@@ -24,10 +24,10 @@ void Game::process_turn() {
   int active_player_id = turn_ % n_players_;
   Player * active_player = players_[active_player_id];
   Pos tile_pos = active_player->determineTilePos(board_);
-  const Tile* tile = board_.getCurrentTile(turn_);
+  //const Tile* tile = board_.getCurrentTile(turn_);
   // TODO: dirを0以外にも. 入力をx, yでなくposに
-  board_.placeTile(tile, 0, tile_pos.x, tile_pos.y);
-  board_.printField();
+  //board_.placeTile(tile, 0, tile_pos.x, tile_pos.y);
+  //board_.printField();
   ++turn_;
 }
 

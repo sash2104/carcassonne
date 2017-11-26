@@ -27,16 +27,27 @@ class Tile {
     void setY(int y);
     void setRotation(int rotation);
     BorderType getBorderType(int direction);
+    BorderType getBorderType(int direction, int rotation);
     const int* getCities() const;
     const int* getRoads() const;
     const int* getFields() const;
-    const Segment* getCitySegmentOfDirection(int direction) const;
-    const Segment* getFieldSegmentOfDirection(int direction) const;
-    const Segment* getRoadSegmentOfDirection(int direction) const;
+    Segment* getCitySegmentOfDirection(int direction) const;
+    Segment* getFieldSegmentOfDirection(int direction) const;
+    Segment* getRoadSegmentOfDirection(int direction) const;
     const std::vector<Segment*>* getCitySegments() const;
     const std::vector<Segment*>* getFieldSegments() const;
     const std::vector<Segment*>* getRoadSegments() const;
     Segment* getCloisterSegment();
+    // rotation回転した状態のtileをこのタイルの上に置けるかどうか
+    bool canTopAdjacentWith(Tile* tile, int rotation);
+    // rotation回転した状態のtileをこのタイルの右に置けるかどうか
+    bool canRightAdjacentWith(Tile* tile, int rotation);
+    // rotation回転した状態のtileをこのタイルの下に置けるかどうか
+    bool canBottomAdjacentWith(Tile* tile, int rotation);
+    // rotation回転した状態のtileをこのタイルの左に置けるかどうか
+    bool canLeftAdjacentWith(Tile* tile, int rotation);
+    // rotation回転した状態のtileをこのタイルのdirectionの位置に置けるかどうか
+    bool canAdjacentWith(int direction, Tile* tile, int rotation);
   private:
     int id_; // タイルごとに固有のid
     char* name_;

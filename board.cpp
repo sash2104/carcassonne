@@ -9,59 +9,12 @@
 #include "segment.hpp"
 #include "tile.hpp"
 #include "tile_holder.hpp"
+#include "utils.hpp"
 
-
-// std::vector<std::string> split(const std::string &str, char delim){
-//   std::istringstream iss(str); std::string tmp; std::vector<std::string> res;
-//   while(getline(iss, tmp, delim)) res.push_back(tmp);
-//   return res;
-// }
-//
-Board::Board(int tile_n) : tile_map_(tile_n) {
-  for (int i = 0; i < N_TILES; ++i) { pile_[i] = nullptr; }
-  for (int i = 0; i < FIELD_SIZE; ++i) { field_[i] = nullptr; }
+Board::Board(int tile_n) : region_id_(0), tile_map_(tile_n) {
 }
 
 Board::~Board() {
-  for (LargeTileHolder* lth : field_) { if (lth != nullptr) { delete lth; } };
-}
-
-const Tile* Board::getCurrentTile(int turn) const { return pile_[turn]; }
-
-void Board::setPile(const std::vector<Tile*> & tiles) {
-  for (const Tile* tile : tiles) {
-    //for (int i = 0; i < tile->getNumTiles(); ++i) {
-    for (int i = 0; i < 4; ++i) {
-      pile_[num_remain_tiles_] = tile;
-      ++num_remain_tiles_;
-    }
-  }
-}
-
-int Board::getFieldPosId(int x, int y) {
-  // TODO: Field中のLargeTileHolderの位置に変える. (10, 10)が初期位置
-  int fx, fy;
-  fx = (x+3) / LargeTileHolder::W + 10;
-  fy = (y+3) / LargeTileHolder::H + 10;
-  return fy * 21 + fx;
-}
-
-// (0, 0)を初期位置とした時の(x, y)にタイルをdirの向きに配置
-void Board::placeTile(const Tile* tile, int dir, int x, int y) {
-  int pos_id = getFieldPosId(x, y);
-  if (field_[pos_id] == nullptr) { field_[pos_id] = new LargeTileHolder(); }
-  LargeTileHolder* lth = field_[pos_id];
-  int lth_pos_id = lth->convertToLocalPosID(x, y);
-  lth->setTileHolder(lth_pos_id, new TileHolder(tile, dir));
-}
-
-void Board::printField() {
-  std::cout << "Field : ";
-  for (int pos_id = 0; pos_id < FIELD_SIZE; ++pos_id) {
-    if (field_[pos_id] == nullptr) { continue; }
-    std::cout << "(" << pos_id % 21 << "," << pos_id / 21 << ")";
-  }
-  std::cout << std::endl;
 }
 
 const TilePositionMap* Board::getTilePositionMap() const {
@@ -88,17 +41,40 @@ bool Board::canPlaceTile(Tile* tile, int x, int y, int rotation) {
   if (!tile_map_.isPlacablePosition(x, y)) {
     return false;
   }
-  return isAdjacencyValid(tile, x, y, rotation);
+  return adjacencyIsValid(tile, x, y, rotation);
 }
 
 bool Board::hasPossiblePlacement(Tile* tile) {
-  // TODO
+  const std::set<BoardPosition>* positions = tile_map_.getPlacablePositions();
+  for (auto it = positions->cbegin(); it != positions->cend(); it++) {
+    BoardPosition pos(*it);
+    for (int rotation = 0; rotation < 4; rotation++) {
+      if (adjacencyIsValid(tile, pos.getX(), pos.getY(), rotation)) {
+        return true;
+      }
+    }
+  }
   return false;
 }
 
-bool Board::isAdjacencyValid(Tile* tile, int x, int y, int rotation) {
-  // TODO
-  return false;
+bool Board::adjacencyIsValid(Tile* tile, int x, int y, int rotation) {
+  Tile* top_tile = tile_map_.getPlacedTile(x, y + 1);
+  if (top_tile != nullptr && !top_tile->canBottomAdjacentWith(tile, rotation)) {
+    return false;
+  }
+  Tile* right_tile = tile_map_.getPlacedTile(x + 1, y);
+  if (right_tile != nullptr && !right_tile->canLeftAdjacentWith(tile, rotation)) {
+    return false;
+  }
+  Tile* bottom_tile = tile_map_.getPlacedTile(x, y - 1);
+  if (bottom_tile != nullptr && !bottom_tile->canTopAdjacentWith(tile, rotation)) {
+    return false;
+  }
+  Tile* left_tile = tile_map_.getPlacedTile(x - 1, y);
+  if (left_tile != nullptr && !left_tile->canRightAdjacentWith(tile, rotation)) {
+    return false;
+  }
+  return true;
 }
 
 void Board::setInitialTile(Tile* tile) {
@@ -107,14 +83,171 @@ void Board::setInitialTile(Tile* tile) {
 
 void Board::setInitialTile(Tile* tile, int rotation) {
   assert(rotation >= 0 && rotation < 4);
-  // TODO
+  if (placed_tiles_.size() != 0) {
+    return;
+  }
+  tile->setX(0);
+  tile->setY(0);
+  tile->setRotation(rotation);
+  tile_map_.placeTile(tile, 0, 0);
+  placed_tiles_.push_back(tile);
+  const std::vector<Segment*>* city_segments = tile->getCitySegments();
+  for (auto it = city_segments->cbegin(); it != city_segments->cend(); it++) {
+    Segment* s = *it;
+    CityRegion* region = new CityRegion(region_id_++, this);
+    region->addSegment(s);
+    city_regions_.push_back(region);
+  }
+  const std::vector<Segment*>* field_segments = tile->getFieldSegments();
+  for (auto it = field_segments->cbegin(); it != field_segments->cend(); it++) {
+    Segment* s = *it;
+    FieldRegion* region = new FieldRegion(region_id_++, this);
+    region->addSegment(s);
+    field_regions_.push_back(region);
+  }
+  const std::vector<Segment*>* road_segments = tile->getRoadSegments();
+  for (auto it = road_segments->cbegin(); it != road_segments->cend(); it++) {
+    Segment* s = *it;
+    RoadRegion* region = new RoadRegion(region_id_++, this);
+    region->addSegment(s);
+    road_regions_.push_back(region);
+  }
+  Segment* cloister_segment = tile->getCloisterSegment();
+  if (cloister_segment != nullptr) {
+    CloisterRegion* region = new CloisterRegion(region_id_++, this);
+    region->addSegment(cloister_segment);
+    cloister_regions_.push_back(region);
+  }
 }
 
-bool Board::placeTile(Tile* tile, int x, int y, int rotation, std::vector<Segment*>* meeplePlaceCandidates) {
+bool Board::placeTile(Tile* tile, int x, int y, int rotation, std::vector<Segment*>* meeple_place_candidates) {
   if (!canPlaceTile(tile, x, y, rotation)) {
     return false;
   }
-  // TODO
+  tile->setX(0);
+  tile->setY(0);
+  tile->setRotation(rotation);
+  tile_map_.placeTile(tile, 0, 0);
+  placed_tiles_.push_back(tile);
+
+  Tile* around_tiles[4] = {
+    tile_map_.getPlacedTile(x, y + 1), tile_map_.getPlacedTile(x + 1, y),
+    tile_map_.getPlacedTile(x, y - 1), tile_map_.getPlacedTile(x - 1, y)
+  };
+  std::vector<Region*> adjacent_regions;
+
+  const std::vector<Segment*>* city_segments = tile->getCitySegments();
+  for (auto it = city_segments->cbegin(); it != city_segments->cend(); it++) {
+    Segment* my_s = *it;
+    for (int d = 0; d < 4; d++) {
+      if (around_tiles[d] == nullptr) {
+        continue;
+      }
+      Tile* around_tile = around_tiles[d];
+      if (my_s->isAdjacentTo(d)) {
+        Segment* your_s = around_tile->getCitySegmentOfDirection(modBy4(d + 2));
+        adjacent_regions.push_back(your_s->getRegion());
+      }
+    }
+    if (adjacent_regions.size() == 0) {
+      CityRegion* region = new CityRegion(region_id_++, this);
+      region->addSegment(my_s);
+      city_regions_.push_back(region);
+      meeple_place_candidates->push_back(my_s);
+    } else {
+      Region* region = adjacent_regions.at(0);
+      region->addSegment(my_s);
+      auto it = adjacent_regions.cbegin();
+      it++;
+      for (; it != adjacent_regions.cend(); it++) {
+        region->mergeRegion(*it);
+      }
+      if (!region->meepleIsPlaced()) {
+        meeple_place_candidates->push_back(my_s);
+      } else if (region->isCompleted()) {
+        // TODO
+      }
+    }
+  }
+  adjacent_regions.clear();
+
+  const std::vector<Segment*>* road_segments = tile->getRoadSegments();
+  for (auto it = road_segments->cbegin(); it != road_segments->cend(); it++) {
+    Segment* my_s = *it;
+    for (int d = 0; d < 4; d++) {
+      if (around_tiles[d] == nullptr) {
+        continue;
+      }
+      Tile* around_tile = around_tiles[d];
+      if (my_s->isAdjacentTo(d)) {
+        Segment* your_s = around_tile->getRoadSegmentOfDirection(modBy4(d + 2));
+        adjacent_regions.push_back(your_s->getRegion());
+      }
+    }
+    if (adjacent_regions.size() == 0) {
+      RoadRegion* region = new RoadRegion(region_id_++, this);
+      region->addSegment(my_s);
+      road_regions_.push_back(region);
+      meeple_place_candidates->push_back(my_s);
+    } else {
+      Region* region = adjacent_regions.at(0);
+      region->addSegment(my_s);
+      auto it = adjacent_regions.cbegin();
+      it++;
+      for (; it != adjacent_regions.cend(); it++) {
+        region->mergeRegion(*it);
+      }
+      if (!region->meepleIsPlaced()) {
+        meeple_place_candidates->push_back(my_s);
+      } else if (region->isCompleted()) {
+        // TODO
+      }
+    }
+  }
+  adjacent_regions.clear();
+
+  const std::vector<Segment*>* field_segments = tile->getFieldSegments();
+  for (auto it = field_segments->cbegin(); it != field_segments->cend(); it++) {
+    Segment* my_s = *it;
+    for (int d = 0; d < 8; d++) {
+      if (around_tiles[d / 2] == nullptr) {
+	d++;
+        continue;
+      }
+      Tile* around_tile = around_tiles[d / 2];
+      if (my_s->isAdjacentTo(d)) {
+        Segment* your_s = around_tile->getFieldSegmentOfDirection(modBy8(d + (d % 2 == 0 ? 5 : 3)));
+        adjacent_regions.push_back(your_s->getRegion());
+      }
+    }
+    if (adjacent_regions.size() == 0) {
+      FieldRegion* region = new FieldRegion(region_id_++, this);
+      region->addSegment(my_s);
+      field_regions_.push_back(region);
+      meeple_place_candidates->push_back(my_s);
+    } else {
+      Region* region = adjacent_regions.at(0);
+      region->addSegment(my_s);
+      auto it = adjacent_regions.cbegin();
+      it++;
+      for (; it != adjacent_regions.cend(); it++) {
+        region->mergeRegion(*it);
+      }
+      if (!region->meepleIsPlaced()) {
+        meeple_place_candidates->push_back(my_s);
+      }
+    }
+  }
+  adjacent_regions.clear();
+
+  Segment* cloister_segment = tile->getCloisterSegment();
+  if (cloister_segment != nullptr) {
+    CloisterRegion* region = new CloisterRegion(region_id_++, this);
+    region->addSegment(cloister_segment);
+    cloister_regions_.push_back(region);
+    meeple_place_candidates->push_back(cloister_segment);
+  }
+
   return true;
 }
 
