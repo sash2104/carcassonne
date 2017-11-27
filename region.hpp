@@ -44,6 +44,8 @@ class CityRegion : public Region {
     bool isCompleted();
     int calculatePoint();
     RegionType getType() const;
+  private:
+    bool completed_;
 };
 
 class CloisterRegion : public Region {
@@ -62,6 +64,9 @@ class FieldRegion : public Region {
     bool isCompleted();
     int calculatePoint();
     RegionType getType() const;
+    bool isAdjacentWith(const CityRegion* city_region);
+  private:
+    bool completed_;
 };
 
 class RoadRegion : public Region {
@@ -70,6 +75,8 @@ class RoadRegion : public Region {
     bool isCompleted();
     int calculatePoint();
     RegionType getType() const;
+  private:
+    bool completed_;
 };
 
 #endif

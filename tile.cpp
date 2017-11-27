@@ -140,3 +140,30 @@ bool Tile::canAdjacentWith(int direction, Tile* tile, int rotation) {
   BorderType your_border_type = tile->getBorderType(modBy4(direction + 2), rotation);
   return my_border_type == your_border_type;
 }
+
+bool Tile::isTwoSegmentAdjacent(int field_segment_index, int city_segment_index) {
+  assert(field_segment_index >= 0 && field_segment_index < field_segments_->size());
+  assert(city_segment_index >= 0 && city_segment_index < city_segments_->size());
+  for (int field_d = 0; field_d < 8; field_d++) {
+    if (fields_[field_d] != field_segment_index) {
+      continue;
+    }
+    for (int city_d = 0; city_d < 4; city_d++) {
+      if (cities_[city_d] != city_segment_index) {
+	continue;
+      }
+      if (isAdjacentDirection(field_d, city_d)) {
+	return true;
+      }
+    }
+  }
+  return false;
+}
+
+bool Tile::isAdjacentDirection(int field_d, int city_d) {
+  assert(field_d >= 0 && field_d < 8);
+  assert(city_d >= 0 && city_d < 4);
+  int city_d1 = city_d * 2;
+  int city_d2 = city_d * 2 + 1;
+  return modBy8(city_d1 - 1) == field_d || modBy8(city_d2 + 1) == field_d;
+}

@@ -1,9 +1,12 @@
 #include <cassert>
+#include <set>
+#include <utility>
 #include <vector>
 
 #include "board.hpp"
 #include "region.hpp"
 #include "segment.hpp"
+#include "utils.hpp"
 
 Region::Region(int id, Board* board) : id_(id), board_(board), merged_(false) {
 }
@@ -35,7 +38,7 @@ bool Region::mergeRegion(Region* region) {
       Segment* s = *it;
       addSegment(s);
       if (s->meepleIsPlaced()) {
-	meeple_placed_segments_.push_back(s);
+        meeple_placed_segments_.push_back(s);
       }
     }
     region->merged();
@@ -70,13 +73,52 @@ CityRegion::CityRegion(int id, Board* board) : Region(id, board) {
 }
 
 bool CityRegion::isCompleted() {
-  // TODO
-  return false;
+  if (completed_) {
+    return true;
+  }
+  const std::vector<Segment*>* segments = getSegments();
+  for (auto it = segments->cbegin(); it != segments->cend(); it++) {
+    Segment* s = *it;
+    for (int d = 0; d < 4; d++) {
+      if (!s->isAdjacentTo(d)) {
+        continue;
+      }
+      std::pair<int, int> p = adjacentCoordinate(s->getTile()->getX(), s->getTile()->getY(), d);
+      int adjacent_x = p.first;
+      int adjacent_y = p.second;
+      bool adjacent_segment_is_found = false;
+      for (auto it2 = segments->cbegin(); it2 != segments->cend(); it2++) {
+        Segment* s2 = *it2;
+        if (s2->getTile()->getX() == adjacent_x && s2->getTile()->getY() == adjacent_y &&
+            s2->isAdjacentTo(modBy4(d + 2))) {
+          adjacent_segment_is_found = true;
+          break;
+        }
+      }
+      if (!adjacent_segment_is_found) {
+        return false;
+      }
+    }
+  }
+  completed_ = true;
+  return true;
 }
 
 int CityRegion::calculatePoint() {
-  // TODO
-  return 0;
+  const std::vector<Segment*>* segments = getSegments();
+  int pennant_count = 0;
+  std::set<int> uniq_tiles;
+  for (auto it = segments->cbegin(); it != segments->cend(); it++) {
+    Segment* s = *it;
+    std::pair<std::set<int>::iterator, bool> res = uniq_tiles.insert(s->getTile()->getId());
+    if (res.second) {
+      if (s->hasPennant()) {
+        pennant_count++;
+      }
+    }
+  }
+  int point = pennant_count + uniq_tiles.size();
+  return isCompleted() ? point * 2 : point;
 }
 
 inline RegionType CityRegion::getType() const {
@@ -109,7 +151,7 @@ int CloisterRegion::calculatePoint() {
   for (int dx = -1; dx <= 1; dx++) {
     for (int dy = -1; dy <= 1; dy++) {
       if (m->isTilePlaced(x + dx, y + dy)) {
-	point++;
+        point++;
       }
     }
   }
@@ -128,31 +170,87 @@ FieldRegion::FieldRegion(int id, Board* board) : Region(id, board) {
 }
 
 bool FieldRegion::isCompleted() {
-  // TODO
   return false;
 }
 
 int FieldRegion::calculatePoint() {
-  // TODO
-  return 0;
+  int point = 0;
+ const  std::vector<CityRegion*>* city_regions = getBoard()->getCityRegions();
+  for (auto it = city_regions->cbegin(); it != city_regions->cend(); it++) {
+    CityRegion* region = *it;
+    if (!region->isMerged() && region->isCompleted() && isAdjacentWith(region)) {
+      point += 3;
+    }
+  }
+  return point;
 }
 
 inline RegionType FieldRegion::getType() const {
   return RegionType::FIELD;
 }
 
+bool FieldRegion::isAdjacentWith(const CityRegion* city_region) {
+  const std::vector<Segment*>* field_segments = getSegments();
+  const std::vector<Segment*>* city_segments = city_region->getSegments();
+  for (auto field_it = field_segments->cbegin(); field_it != field_segments->cend(); field_it++) {
+    Segment* field_s = *field_it;
+    Tile* field_t = field_s->getTile();
+    for (auto city_it = city_segments->cbegin(); city_it != city_segments->cend(); city_it++) {
+      Segment* city_s = *city_it;
+      Tile* city_t = city_s->getTile();
+      if (field_t->getX() == city_t->getX() && field_t->getY() == city_t->getY()) {
+        if (field_t->isTwoSegmentAdjacent(field_s->getIndex(), city_s->getIndex())) {
+          return true;
+        }
+      }
+    }
+  }
+  return false;
+}
 
 RoadRegion::RoadRegion(int id, Board* board) : Region(id, board) {
 }
 
 bool RoadRegion::isCompleted() {
-  // TODO
-  return false;
+  if (completed_) {
+    return true;
+  }
+  const std::vector<Segment*>* segments = getSegments();
+  for (auto it = segments->cbegin(); it != segments->cend(); it++) {
+    Segment* s = *it;
+    for (int d = 0; d < 4; d++) {
+      if (!s->isAdjacentTo(d)) {
+        continue;
+      }
+      std::pair<int, int> p = adjacentCoordinate(s->getTile()->getX(), s->getTile()->getY(), d);
+      int adjacent_x = p.first;
+      int adjacent_y = p.second;
+      bool adjacent_segment_is_found = false;
+      for (auto it2 = segments->cbegin(); it2 != segments->cend(); it2++) {
+        Segment* s2 = *it2;
+        if (s2->getTile()->getX() == adjacent_x && s2->getTile()->getY() == adjacent_y &&
+            s2->isAdjacentTo(modBy4(d + 2))) {
+          adjacent_segment_is_found = true;
+          break;
+        }
+      }
+      if (!adjacent_segment_is_found) {
+        return false;
+      }
+    }
+  }
+  completed_ = true;
+  return true;
 }
 
 int RoadRegion::calculatePoint() {
-  // TODO
-  return 0;
+  const std::vector<Segment*>* segments = getSegments();
+  std::set<int> uniq_tiles;
+  for (auto it = segments->cbegin(); it != segments->cend(); it++) {
+    Segment* s = *it;
+    uniq_tiles.insert(s->getTile()->getId());
+  }
+  return uniq_tiles.size();
 }
 
 inline RegionType RoadRegion::getType() const {

@@ -48,6 +48,7 @@ class Tile {
     bool canLeftAdjacentWith(Tile* tile, int rotation);
     // rotation回転した状態のtileをこのタイルのdirectionの位置に置けるかどうか
     bool canAdjacentWith(int direction, Tile* tile, int rotation);
+    bool isTwoSegmentAdjacent(int field_segment_index, int city_segment_index);
   private:
     int id_; // タイルごとに固有のid
     char* name_;
@@ -62,6 +63,7 @@ class Tile {
     std::vector<Segment*>* field_segments_;
     std::vector<Segment*>* road_segments_;
     Segment* cloister_segment_; // nullptrも許す
+    bool isAdjacentDirection(int field_d, int city_d);
 };
 
 #endif
