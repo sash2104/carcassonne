@@ -1,5 +1,4 @@
 #include <cassert>
-#include <cstdlib>
 #include <iterator>
 #include <set>
 
@@ -41,26 +40,21 @@ TilePositionMap::TilePositionMap(int tile_n) {
   // となる。
   shift_ = tile_n - 1;
   size_ = tile_n * 2 - 1;
-  tiles_ = (Tile**) std::malloc(sizeof(Tile*) * (size_ * size_));
-  if (tiles_ == NULL) {
-    // what to do?
-  }
+  tiles_ = new Tile*[size_*size_];
   for (int i = 0, n = size_ * size_; i < n; i++) {
-    *(tiles_ + i) = nullptr;
+    tiles_[i] = nullptr;
   }
 }
 
 TilePositionMap::~TilePositionMap() {
-  if (tiles_ != NULL) {
-    std::free(tiles_);
-  }
+  delete[] tiles_;
 }
 
 void TilePositionMap::placeTile(Tile* tile, int x, int y) {
   assert(tile != nullptr);
   BoardPosition pos(x, y);
   int i = convertToIndex(x, y);
-  *(tiles_ + i) = tile;
+  tiles_[i] = tile;
   placables_.erase(pos);
   checkAndAddPlacablePosition(x, y + 1);
   checkAndAddPlacablePosition(x + 1, y);
@@ -70,12 +64,12 @@ void TilePositionMap::placeTile(Tile* tile, int x, int y) {
 
 bool TilePositionMap::isTilePlaced(int x, int y) const {
   int i = convertToIndex(x, y);
-  return *(tiles_ + i) != nullptr;
+  return tiles_[i] != nullptr;
 }
 
 Tile* TilePositionMap::getPlacedTile(int x, int y) const {
   int i = convertToIndex(x, y);
-  return *(tiles_ + i);
+  return tiles_[i];
 }
 
 const std::set<BoardPosition>* TilePositionMap::getPlacablePositions() const {

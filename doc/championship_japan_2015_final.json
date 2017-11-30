@@ -1,0 +1,546 @@
+{
+    "info": {
+        "title": "Cacassonne championship in Japan 2015 final",
+        "players": [
+            {"name": "J.N", "color": "red"},
+            {"name": "R.N", "color": "green"}
+        ]
+    },
+    "placements": [
+        {
+            "turn": 0,
+            "type": "initial",
+            "tile": "D"
+        },
+        {
+            "turn": 1,
+            "type": "regular",
+            "tile": "U",
+            "player": "J.N",
+            "tilePlacement": {"x": -1, "y": 0, "rotation": 0}
+        },
+        {
+            "turn": 2,
+            "type": "regular",
+            "tile": "R",
+            "player": "R.N",
+            "tilePlacement": {"x": 1, "y": 0, "rotation": 2},
+            "meeplePlacement": {"segmentType": "city", "segmentIndex": 0}
+        },
+        {
+            "turn": 3,
+            "type": "regular",
+            "tile": "V",
+            "player": "J.N",
+            "tilePlacement": {"x": 0, "y": -1, "rotation": 1},
+            "meeplePlacement": {"segmentType": "road", "segmentIndex": 0}
+        },
+        {
+            "turn": 4,
+            "type": "regular",
+            "tile": "V",
+            "player": "R.N",
+            "tilePlacement": {"x": -1, "y": 1, "rotation": 3},
+            "meeplePlacement": {"segmentType": "road", "segmentIndex": 0}
+        },
+        {
+            "turn": 5,
+            "type": "regular",
+            "tile": "V",
+            "player": "J.N",
+            "tilePlacement": {"x": 0, "y": -2, "rotation": 0}
+        },
+        {
+            "turn": 6,
+            "type": "regular",
+            "tile": "M",
+            "player": "R.N",
+            "tilePlacement": {"x": 1, "y": -1, "rotation": 1}
+        },
+        {
+            "turn": 7,
+            "type": "regular",
+            "tile": "U",
+            "player": "J.N",
+            "tilePlacement": {"x": 1, "y": 1, "rotation": 1}
+        },
+        {
+            "turn": 8,
+            "type": "regular",
+            "tile": "J",
+            "player": "R.N",
+            "tilePlacement": {"x": 2, "y": 0, "rotation": 3}
+        },
+        {
+            "turn": 9,
+            "type": "regular",
+            "tile": "H",
+            "player": "J.N",
+            "tilePlacement": {"x": 1, "y": 2, "rotation": 0},
+            "meeplePlacement": {"segmentType": "city", "segmentIndex": 0}
+        },
+        {
+            "turn": 10,
+            "type": "regular",
+            "tile": "V",
+            "player": "R.N",
+            "tilePlacement": {"x": 1, "y": 3, "rotation": 1}
+        },
+        {
+            "turn": 11,
+            "type": "regular",
+            "tile": "M",
+            "player": "J.N",
+            "tilePlacement": {"x": 0, "y": 2, "rotation": 1},
+            "meeplePlacement": {"segmentType": "city", "segmentIndex": 0}
+        },
+        {
+            "turn": 12,
+            "type": "regular",
+            "tile": "U",
+            "player": "R.N",
+            "tilePlacement": {"x": 2, "y": 3, "rotation": 0}
+        },
+        {
+            "turn": 13,
+            "type": "regular",
+            "tile": "L",
+            "player": "J.N",
+            "tilePlacement": {"x": 2, "y": 2, "rotation": 2}
+        },
+        {
+            "turn": 14,
+            "type": "regular",
+            "tile": "W",
+            "player": "R.N",
+            "tilePlacement": {"x": 2, "y": 4, "rotation": 3},
+            "meeplePlacement": {"segmentType": "road", "segmentIndex": 2}
+        },
+        {
+            "turn": 15,
+            "type": "regular",
+            "tile": "W",
+            "player": "J.N",
+            "tilePlacement": {"x": 3, "y": 0, "rotation": 2}
+        },
+        {
+            "turn": 16,
+            "type": "regular",
+            "tile": "V",
+            "player": "R.N",
+            "tilePlacement": {"x": -1, "y": 2, "rotation": 1}
+        },
+        {
+            "turn": 17,
+            "type": "regular",
+            "tile": "J",
+            "player": "J.N",
+            "tilePlacement": {"x": 3, "y": -1, "rotation": 1},
+            "meeplePlacement": {"segmentType": "city", "segmentIndex": 0}
+        },
+        {
+            "turn": 18,
+            "type": "regular",
+            "tile": "J",
+            "player": "R.N",
+            "tilePlacement": {"x": 4, "y": 0, "rotation": 2},
+            "meeplePlacement": {"segmentType": "city", "segmentIndex": 0}
+        },
+        {
+            "turn": 19,
+            "type": "regular",
+            "tile": "U",
+            "player": "J.N",
+            "tilePlacement": {"x": 3, "y": -2, "rotation": 0}
+        },
+        {
+            "turn": 20,
+            "type": "regular",
+            "tile": "F",
+            "player": "R.N",
+            "tilePlacement": {"x": 4, "y": -2, "rotation": 1},
+            "meeplePlacement": {"segmentType": "city", "segmentIndex": 0}
+        },
+        {
+            "turn": 21,
+            "type": "regular",
+            "tile": "T",
+            "player": "J.N",
+            "tilePlacement": {"x": 4, "y": 1, "rotation": 0},
+            "meeplePlacement": {"segmentType": "road", "segmentIndex": 0}
+        },
+        {
+            "turn": 22,
+            "type": "regular",
+            "tile": "B",
+            "player": "R.N",
+            "tilePlacement": {"x": 1, "y": -2, "rotation": 0}
+        },
+        {
+            "turn": 23,
+            "type": "regular",
+            "tile": "U",
+            "player": "J.N",
+            "tilePlacement": {"x": 5, "y": -2, "rotation": 0}
+        },
+        {
+            "turn": 24,
+            "type": "regular",
+            "tile": "A",
+            "player": "R.N",
+            "tilePlacement": {"x": 2, "y": -2, "rotation": 2},
+            "meeplePlacement": {"segmentType": "cloister", "segmentIndex": 0}
+        },
+        {
+            "turn": 25,
+            "type": "regular",
+            "tile": "O",
+            "player": "J.N",
+            "tilePlacement": {"x": 0, "y": 3, "rotation": 3}
+        },
+        {
+            "turn": 26,
+            "type": "regular",
+            "tile": "V",
+            "player": "R.N",
+            "tilePlacement": {"x": 5, "y": -1, "rotation": 3}
+        },
+        {
+            "turn": 27,
+            "type": "regular",
+            "tile": "S",
+            "player": "J.N",
+            "tilePlacement": {"x": 5, "y": -3, "rotation": 2},
+            "meeplePlacement": {"segmentType": "city", "segmentIndex": 0}
+        },
+        {
+            "turn": 28,
+            "type": "regular",
+            "tile": "D",
+            "player": "R.N",
+            "tilePlacement": {"x": -2, "y": 2, "rotation": 3},
+            "meeplePlacement": {"segmentType": "city", "segmentIndex": 0}
+        },
+        {
+            "turn": 29,
+            "type": "regular",
+            "tile": "U",
+            "player": "J.N",
+            "tilePlacement": {"x": -3, "y": 2, "rotation": 1}
+        },
+        {
+            "turn": 30,
+            "type": "regular",
+            "tile": "D",
+            "player": "R.N",
+            "tilePlacement": {"x": -2, "y": 3, "rotation": 1}
+        },
+        {
+            "turn": 31,
+            "type": "regular",
+            "tile": "W",
+            "player": "J.N",
+            "tilePlacement": {"x": 6, "y": -1, "rotation": 2},
+            "meeplePlacement": {"segmentType": "road", "segmentIndex": 0}
+        },
+        {
+            "turn": 32,
+            "type": "regular",
+            "tile": "O",
+            "player": "R.N",
+            "tilePlacement": {"x": 0, "y": 4, "rotation": 1}
+        },
+        {
+            "turn": 33,
+            "type": "regular",
+            "tile": "H",
+            "player": "J.N",
+            "tilePlacement": {"x": -2, "y": 4, "rotation": 0}
+        },
+        {
+            "turn": 34,
+            "type": "regular",
+            "tile": "V",
+            "player": "R.N",
+            "tilePlacement": {"x": 2, "y": -3, "rotation": 3}
+        },
+        {
+            "turn": 35,
+            "type": "regular",
+            "tile": "I",
+            "player": "J.N",
+            "tilePlacement": {"x": -3, "y": 4, "rotation": 0},
+            "meeplePlacement": {"segmentType": "city", "segmentIndex": 0}
+        },
+        {
+            "turn": 36,
+            "type": "regular",
+            "tile": "F",
+            "player": "R.N",
+            "tilePlacement": {"x": 4, "y": 2, "rotation": 1}
+        },
+        {
+            "turn": 37,
+            "type": "regular",
+            "tile": "U",
+            "player": "J.N",
+            "tilePlacement": {"x": 2, "y": -4, "rotation": 0}
+        },
+        {
+            "turn": 38,
+            "type": "regular",
+            "tile": "Q",
+            "player": "R.N",
+            "tilePlacement": {"x": 4, "y": -1, "rotation": 3}
+        },
+        {
+            "turn": 39,
+            "type": "regular",
+            "tile": "W",
+            "player": "J.N",
+            "tilePlacement": {"x": 3, "y": -4, "rotation": 3}
+        },
+        {
+            "turn": 40,
+            "type": "regular",
+            "tile": "K",
+            "player": "R.N",
+            "tilePlacement": {"x": 2, "y": -1, "rotation": 2}
+        },
+        {
+            "turn": 41,
+            "type": "regular",
+            "tile": "E",
+            "player": "J.N",
+            "tilePlacement": {"x": 5, "y": 2, "rotation": 1},
+            "meeplePlacement": {"segmentType": "city", "segmentIndex": 0}
+        },
+        {
+            "turn": 42,
+            "type": "regular",
+            "tile": "L",
+            "player": "R.N",
+            "tilePlacement": {"x": 3, "y": -3, "rotation": 0},
+            "meeplePlacement": {"segmentType": "road", "segmentIndex": 0}
+        },
+        {
+            "turn": 43,
+            "type": "regular",
+            "tile": "E",
+            "player": "J.N",
+            "tilePlacement": {"x": 6, "y": 2, "rotation": 3}
+        },
+        {
+            "turn": 44,
+            "type": "regular",
+            "tile": "V",
+            "player": "R.N",
+            "tilePlacement": {"x": 2, "y": -5, "rotation": 2},
+            "meeplePlacement": {"segmentType": "road", "segmentIndex": 0}
+        },
+        {
+            "turn": 45,
+            "type": "regular",
+            "tile": "I",
+            "player": "J.N",
+            "tilePlacement": {"x": 1, "y": -4, "rotation": 2},
+            "meeplePlacement": {"segmentType": "city", "segmentIndex": 0}
+        },
+        {
+            "turn": 46,
+            "type": "regular",
+            "tile": "K",
+            "player": "R.N",
+            "tilePlacement": {"x": 0, "y": -3, "rotation": 0}
+        },
+        {
+            "turn": 47,
+            "type": "regular",
+            "tile": "U",
+            "player": "J.N",
+            "tilePlacement": {"x": 4, "y": -4, "rotation": 1},
+            "meeplePlacement": {"segmentType": "field", "segmentIndex": 0}
+        },
+        {
+            "turn": 48,
+            "type": "regular",
+            "tile": "V",
+            "player": "R.N",
+            "tilePlacement": {"x": 3, "y": -5, "rotation": 1}
+        },
+        {
+            "turn": 49,
+            "type": "regular",
+            "tile": "E",
+            "player": "J.N",
+            "tilePlacement": {"x": 0, "y": -4, "rotation": 1}
+        },
+        {
+            "turn": 50,
+            "type": "regular",
+            "tile": "E",
+            "player": "R.N",
+            "tilePlacement": {"x": -3, "y": 5, "rotation": 0},
+            "meeplePlacement": {"segmentType": "city", "segmentIndex": 0}
+        },
+        {
+            "turn": 51,
+            "type": "regular",
+            "tile": "P",
+            "player": "J.N",
+            "tilePlacement": {"x": -1, "y": 4, "rotation": 3}
+        },
+        {
+            "turn": 52,
+            "type": "regular",
+            "tile": "B",
+            "player": "R.N",
+            "tilePlacement": {"x": -2, "y": 1, "rotation": 0},
+            "meeplePlacement": {"segmentType": "cloister", "segmentIndex": 0}
+        },
+        {
+            "turn": 53,
+            "type": "regular",
+            "tile": "G",
+            "player": "J.N",
+            "tilePlacement": {"x": 5, "y": 1, "rotation": 1}
+        },
+        {
+            "turn": 54,
+            "type": "regular",
+            "tile": "N",
+            "player": "R.N",
+            "tilePlacement": {"x": 1, "y": -3, "rotation": 3},
+            "meeplePlacement": {"segmentType": "city", "segmentIndex": 0}
+        },
+        {
+            "turn": 55,
+            "type": "regular",
+            "tile": "N",
+            "player": "J.N",
+            "tilePlacement": {"x": 6, "y": -3, "rotation": 3}
+        },
+        {
+            "turn": 56,
+            "type": "regular",
+            "tile": "P",
+            "player": "R.N",
+            "tilePlacement": {"x": 3, "y": 1, "rotation": 1},
+            "meeplePlacement": {"segmentType": "city", "segmentIndex": 0}
+        },
+        {
+            "turn": 57,
+            "type": "regular",
+            "tile": "E",
+            "player": "J.N",
+            "tilePlacement": {"x": -2, "y": 5, "rotation": 0},
+            "meeplePlacement": {"segmentType": "field", "segmentIndex": 0}
+        },
+        {
+            "turn": 58,
+            "type": "regular",
+            "tile": "C",
+            "player": "R.N",
+            "tilePlacement": {"x": 4, "y": 3, "rotation": 0}
+        },
+        {
+            "turn": 59,
+            "type": "regular",
+            "tile": "L",
+            "player": "J.N",
+            "tilePlacement": {"x": -2, "y": 6, "rotation": 1},
+            "meeplePlacement": {"segmentType": "city", "segmentIndex": 0}
+        },
+        {
+            "turn": 60,
+            "type": "regular",
+            "tile": "R",
+            "player": "R.N",
+            "tilePlacement": {"x": 5, "y": 3, "rotation": 0}
+        },
+        {
+            "turn": 61,
+            "type": "regular",
+            "tile": "S",
+            "player": "J.N",
+            "tilePlacement": {"x": 5, "y": -4, "rotation": 1},
+            "meeplePlacement": {"segmentType": "road", "segmentIndex": 0}
+        },
+        {
+            "turn": 62,
+            "type": "regular",
+            "tile": "H",
+            "player": "R.N",
+            "tilePlacement": {"x": 6, "y": 3, "rotation": 0}
+        },
+        {
+            "turn": 63,
+            "type": "regular",
+            "tile": "X",
+            "player": "J.N",
+            "tilePlacement": {"x": -2, "y": 7, "rotation": 0},
+            "meeplePlacement": {"segmentType": "road", "segmentIndex": 2}
+        },
+        {
+            "turn": 64,
+            "type": "regular",
+            "tile": "K",
+            "player": "R.N",
+            "tilePlacement": {"x": -3, "y": 6, "rotation": 1},
+            "meeplePlacement": {"segmentType": "field", "segmentIndex": 1}
+        },
+        {
+            "turn": 65,
+            "type": "regular",
+            "tile": "P",
+            "player": "J.N",
+            "tilePlacement": {"x": -1, "y": 3, "rotation": 1}
+        },
+        {
+            "turn": 66,
+            "type": "regular",
+            "tile": "A",
+            "player": "R.N",
+            "tilePlacement": {"x": -1, "y": 6, "rotation": 1},
+            "meeplePlacement": {"segmentType": "road", "segmentIndex": 0}
+        },
+        {
+            "turn": 67,
+            "type": "regular",
+            "tile": "D",
+            "player": "J.N",
+            "tilePlacement": {"x": -3, "y": 3, "rotation": 3},
+            "meeplePlacement": {"segmentType": "road", "segmentIndex": 0}
+        },
+        {
+            "turn": 68,
+            "type": "regular",
+            "tile": "B",
+            "player": "R.N",
+            "tilePlacement": {"x": -4, "y": 5, "rotation": 0}
+        },
+        {
+            "turn": 69,
+            "type": "regular",
+            "tile": "N",
+            "player": "J.N",
+            "tilePlacement": {"x": 6, "y": 4, "rotation": 0},
+            "meeplePlacement": {"segmentType": "city", "segmentIndex": 0}
+        },
+        {
+            "turn": 70,
+            "type": "regular",
+            "tile": "B",
+            "player": "R.N",
+            "tilePlacement": {"x": -4, "y": 6, "rotation": 0},
+            "meeplePlacement": {"segmentType": "cloister", "segmentIndex": 0}
+        },
+        {
+            "turn": 71,
+            "type": "regular",
+            "tile": "R",
+            "player": "J.N",
+            "tilePlacement": {"x": 5, "y": 4, "rotation": 2}
+        }
+    ]
+}
