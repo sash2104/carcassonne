@@ -167,3 +167,13 @@ bool Tile::isAdjacentDirection(int field_d, int city_d) {
   int city_d2 = city_d * 2 + 1;
   return modBy8(city_d1 - 1) == field_d || modBy8(city_d2 + 1) == field_d;
 }
+
+void Tile::print_info() {
+  std::cout << "{name: " << name_ << ", ";
+  std::cout << "cities: [";
+  for (int i = 0; i < 4; i++) {
+    std::cout << cities_[i] << ", ";
+  }
+  std::cout << "]";
+  std::cout << "}" << std::endl;
+}

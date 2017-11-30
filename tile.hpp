@@ -49,6 +49,7 @@ class Tile {
     // rotation回転した状態のtileをこのタイルのdirectionの位置に置けるかどうか
     bool canAdjacentWith(int direction, Tile* tile, int rotation);
     bool isTwoSegmentAdjacent(int field_segment_index, int city_segment_index);
+    void print_info();
   private:
     int id_; // タイルごとに固有のid
     char* name_;
