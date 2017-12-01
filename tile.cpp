@@ -59,13 +59,20 @@ int Tile::getY() const { return y_; }
 
 int Tile::getRotation() const { return rotation_; }
 
-void Tile::setX(int x) { x_ = x; }
+Tile& Tile::setX(int x) {
+  x_ = x;
+  return *this;
+}
 
-void Tile::setY(int y) { y_ = y; }
+Tile& Tile::setY(int y) {
+  y_ = y;
+  return *this;
+}
 
-void Tile::setRotation(int rotation) {
+Tile& Tile::setRotation(int rotation) {
   assert(rotation >= 0 && rotation < 4);
   rotation_ = rotation;
+  return *this;
 }
 
 BorderType Tile::getBorderType(int direction) {

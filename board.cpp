@@ -17,7 +17,7 @@ Board::Board(int tile_n) : region_id_(0), tile_map_(tile_n) {
 Board::~Board() {
 }
 
-const TilePositionMap* Board::getTilePositionMap() const {
+TilePositionMap* Board::getTilePositionMap() {
   return &tile_map_;
 }
 

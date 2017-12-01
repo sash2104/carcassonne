@@ -23,7 +23,7 @@ class Board {
   public:
     Board(int tile_n);
     ~Board();
-    const TilePositionMap* getTilePositionMap() const;
+    TilePositionMap* getTilePositionMap();
     const std::vector<CityRegion*>* getCityRegions() const;
     const std::vector<CloisterRegion*>* getCloisterRegions() const;
     const std::vector<FieldRegion*>* getFieldRegions() const;

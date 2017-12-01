@@ -23,9 +23,9 @@ class Tile {
     int getX() const;
     int getY() const;
     int getRotation() const;
-    void setX(int x);
-    void setY(int y);
-    void setRotation(int rotation);
+    Tile& setX(int x);
+    Tile& setY(int y);
+    Tile& setRotation(int rotation);
     BorderType getBorderType(int direction);
     BorderType getBorderType(int direction, int rotation);
     const int* getCities() const;
