@@ -21,6 +21,11 @@ Tile::Tile(int id, char* name, BorderType* border_types, int* cities, int* roads
 }
 
 Tile::Tile(int id) : id_(id) {
+  name_ = nullptr;
+  city_segments_ = new std::vector<Segment*>();
+  field_segments_ = new std::vector<Segment*>();
+  road_segments_ = new std::vector<Segment*>();
+  cloister_segment_ = nullptr;
 }
 
 Tile::~Tile() {
