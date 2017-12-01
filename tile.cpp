@@ -6,7 +6,7 @@
 #include "tile.hpp"
 #include "utils.hpp"
 
-Tile::Tile(int id, char* name, BorderType* border_types, int* cities, int* roads, int* fields,
+Tile::Tile(int id, char* name, BorderType* border_types, const int* cities, const int* roads, const int* fields,
   std::vector<Segment*>* city_segments, std::vector<Segment*>* field_segments,
   std::vector<Segment*>* road_segments, Segment* cloister_segment)
   : id_(id), name_(name), city_segments_(city_segments),

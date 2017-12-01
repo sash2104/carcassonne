@@ -13,7 +13,7 @@ enum class BorderType {
 
 class Tile {
   public:
-    Tile(int id, char* name, BorderType* borderTypes, int* cities, int* roads, int* fields,
+    Tile(int id, char* name, BorderType* borderTypes, const int* cities, const int* roads, const int* fields,
        std::vector<Segment*>* city_segments, std::vector<Segment*>* field_segments,
        std::vector<Segment*>* road_segments, Segment* cloister_segment);
     Tile(int id); // for testing

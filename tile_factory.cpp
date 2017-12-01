@@ -10,51 +10,165 @@
 
 using json = nlohmann::json;
 
+TileParts::TileParts(const std::string name, const int* cities, const int* roads, const int* fields,
+   bool has_cloister, bool* pennants, int pennants_n) : name_(name) {
+  for (int i = 0; i < 4; i++) {
+    cities_[i] = cities[i];
+    roads_[i] = roads[i];
+    fields_[2 * i] = fields[2 * i];
+    fields_[2 * i + 1] = fields[2 * i + 1];
+  }
+  has_cloister = has_cloister;
+  pennants_n_ = pennants_n;
+  pennants_ = new bool[pennants_n_];
+  for (int i = 0; i < pennants_n_; i++) {
+    pennants_[i] = pennants[i];
+  }
+
+  city_segment_n_ = 0;
+  for (int i = 0; i < 4; i++) {
+    if (city_segment_n_ < cities_[i] + 1) {
+      city_segment_n_ = cities_[i] + 1;
+    }
+  }
+  road_segment_n_ = 0;
+  for (int i = 0; i < 4; i++) {
+    if (road_segment_n_ < roads_[i] + 1) {
+      road_segment_n_ = roads_[i] + 1;
+    }
+  }
+  field_segment_n_ = 0;
+  for (int i = 0; i < 8; i++) {
+    if (field_segment_n_ < fields_[i] + 1) {
+      field_segment_n_ = fields_[i] + 1;
+    }
+  }
+}
+
+TileParts::~TileParts() {
+  delete[] pennants_;
+}
+
+inline std::string TileParts::getName() const {
+  return name_;
+}
+
+inline const int* TileParts::getCities() const {
+  return cities_;
+}
+
+inline const int* TileParts::getRoads() const {
+  return roads_;
+}
+
+inline const int* TileParts::getFields() const {
+  return fields_;
+}
+
+inline bool TileParts::getHasCloister() const {
+  return has_cloister_;
+}
+
+inline const bool* TileParts::getPennants() const {
+  return pennants_;
+}
+
+inline int TileParts::getPennantsNum() const {
+  return pennants_n_;
+}
+
+inline int TileParts::getCitySegmentNum() const {
+  return city_segment_n_;
+}
+
+inline int TileParts::getRoadSegmentNum() const {
+  return road_segment_n_;
+}
+
+inline int TileParts::getFieldSegmentNum() const {
+  return field_segment_n_;
+}
+
+void TileParts::print() const {
+  std::cout << name_ << std::endl;
+  std::cout << "cities: ";
+  for (int i = 0; i < 4; i++) {
+    std::cout << cities_[i] << " ";
+  }
+  std::cout << std::endl;
+  std::cout << "fields: ";
+  for (int i = 0; i < 8; i++) {
+    std::cout <<fields_[i] << " ";
+  }
+  std::cout << std::endl;
+  std::cout << "pennants: ";
+  for (int i = 0; i < pennants_n_; i++) {
+    std::cout << pennants_[i] << " ";
+  }
+  std::cout << std::endl;
+  std::cout << has_cloister_ << std::endl;
+}
+
 bool TileFactory::loadResource(const char* resource_file) {
   std::ifstream i(resource_file);
   json j;
   i >> j;
   for (json::iterator it = j.begin(); it != j.end(); ++it) {
     TileParts* parts = constractTileParts(&(*it));
-    parts_map_[parts->name] = parts;
+    parts_map_[parts->getName()] = parts;
   }
   return true;
 }
 
+TileFactory::TileFactory() : parts_map_() {
+}
+
+TileFactory::~TileFactory() {
+  for (auto it = parts_map_.begin(); it != parts_map_.end(); it++) {
+    TileParts* parts = it->second;
+    parts_map_.erase(it);
+    delete parts;
+  }
+}
+
 TileParts* TileFactory::constractTileParts(json* j) {
-  TileParts* parts = new TileParts();
   int i = 0;
+  int cities[4];
   for (json::iterator it = (*j)["cities"].begin(); it != (*j)["cities"].end(); ++it) {
     if (i < 4) {
-      parts->cities[i] = *it;
+      cities[i] = *it;
     }
     ++i;
   }
   i = 0;
+  int roads[4];
   for (json::iterator it = (*j)["roads"].begin(); it != (*j)["roads"].end(); ++it) {
     if (i < 4) {
-      parts->roads[i] = *it;
+      roads[i] = *it;
     }
     ++i;
   }
   i = 0;
+  int fields[8];
   for (json::iterator it = (*j)["fields"].begin(); it != (*j)["fields"].end(); ++it) {
     if (i < 8) {
-      parts->fields[i] = *it;
+      fields[i] = *it;
     }
     ++i;
   }
   i = 0;
-  int n = (*j)["pennants"].size();
-  parts->pennants = new bool[n];
+  int pennants_n = (*j)["pennants"].size();
+  bool* pennants = new bool[pennants_n];
   for (json::iterator it = (*j)["pennants"].begin(); it != (*j)["pennants"].end(); ++it) {
     if (i < 8) {
-      parts->pennants[i] = *it;
+      pennants[i] = *it;
     }
     ++i;
   }
-  parts->has_cloister = (*j)["hasCloister"];
-  parts->name = (*j)["name"];
+  bool has_cloister = (*j)["hasCloister"];
+  std::string name = (*j)["name"];
+  TileParts* parts = new TileParts(name, cities, roads, fields, has_cloister, pennants, pennants_n);
+  delete[] pennants;
   return parts;
 }
 
@@ -64,49 +178,29 @@ Tile* TileFactory::newFromName(const std::string* name, int tile_id) {
     return nullptr;
   }
   TileParts* parts = (*it).second;
-  int city_segment_n = 0;
-  for (int i = 0; i < 4; i++) {
-    if (city_segment_n < parts->cities[i] + 1) {
-      city_segment_n = parts->cities[i] + 1;
-    }
-  }
   std::vector<Segment*>* city_segments = new std::vector<Segment*>();
-  for (int i = 0; i < city_segment_n; i++) {
-    city_segments->push_back(new Segment(i, SegmentType::CITY, parts->pennants[i]));
-  }
-
-  int road_segment_n = 0;
-  for (int i = 0; i < 4; i++) {
-    if (road_segment_n < parts->roads[i] + 1) {
-      road_segment_n = parts->roads[i] + 1;
-    }
+  for (int i = 0; i < parts->getCitySegmentNum(); i++) {
+    city_segments->push_back(new Segment(i, SegmentType::CITY, parts->getPennants()[i]));
   }
   std::vector<Segment*>* road_segments = new std::vector<Segment*>();
-  for (int i = 0; i < road_segment_n; i++) {
+  for (int i = 0; i < parts->getRoadSegmentNum(); i++) {
     road_segments->push_back(new Segment(i, SegmentType::ROAD, false));
   }
-
-  int field_segment_n = 0;
-  for (int i = 0; i < 8; i++) {
-    if (field_segment_n < parts->fields[i] + 1) {
-      field_segment_n = parts->fields[i] + 1;
-    }
-  }
   std::vector<Segment*>* field_segments = new std::vector<Segment*>();
-  for (int i = 0; i < field_segment_n; i++) {
+  for (int i = 0; i < parts->getFieldSegmentNum(); i++) {
     field_segments->push_back(new Segment(i, SegmentType::FIELD, false));
   }
 
   Segment* cloister_segment = nullptr;
-  if (parts->has_cloister) {
+  if (parts->getHasCloister()) {
     cloister_segment = new Segment(0, SegmentType::CLOISTER, false);
   }
 
   BorderType border_types[4];
   for (int d = 0; d < 4; d++) {
-    if (parts->cities[d] != -1) {
+    if (parts->getCities()[d] != -1) {
       border_types[d] = BorderType::CITY;
-    } else if (parts->roads[d] != -1) {
+    } else if (parts->getRoads()[d] != -1) {
       border_types[d] = BorderType::ROAD;
     } else {
       border_types[d] = BorderType::FIELD;
@@ -119,26 +213,6 @@ Tile* TileFactory::newFromName(const std::string* name, int tile_id) {
     s[i] = str[i];
   }
 
-  return new Tile(tile_id, s, border_types, parts->cities, parts->roads, parts->fields,
+  return new Tile(tile_id, s, border_types, parts->getCities(), parts->getRoads(), parts->getFields(),
     city_segments, field_segments, road_segments, cloister_segment);
-}
-
-void TileParts::print() {
-  std::cout << name << std::endl;
-  std::cout << "cities: ";
-  for (int i = 0; i < 4; i++) {
-    std::cout << cities[i] << " ";
-  }
-  std::cout << std::endl;
-  std::cout << "fields: ";
-  for (int i = 0; i < 8; i++) {
-    std::cout <<fields[i] << " ";
-  }
-  std::cout << std::endl;
-  std::cout << "pennants: ";
-  for (int i = 0; i < 2; i++) {
-    std::cout << pennants[i] << " ";
-  }
-  std::cout << std::endl;
-  std::cout << has_cloister << std::endl;
 }

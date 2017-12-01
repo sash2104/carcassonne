@@ -11,17 +11,37 @@ using json = nlohmann::json;
 
 class TileParts {
   public:
-    std::string name;
-    int cities[4];
-    int roads[4];
-    int fields[8];
-    bool has_cloister;
-    bool* pennants;
-    void print();
+    TileParts(const std::string name, const int* cities, const int* roads, const int* fields,
+      bool has_cloister, bool* pennants, int pennants_n);
+    ~TileParts();
+    std::string getName() const;
+    const int* getCities() const;
+    const int* getRoads() const;
+    const int* getFields() const;
+    bool getHasCloister() const;
+    const bool* getPennants() const;
+    int getPennantsNum() const;
+    int getCitySegmentNum() const;
+    int getRoadSegmentNum() const;
+    int getFieldSegmentNum() const;
+    void print() const;
+  private:
+    const std::string name_;
+    int cities_[4];
+    int roads_[4];
+    int fields_[8];
+    bool has_cloister_;
+    bool* pennants_;
+    int pennants_n_;
+    int city_segment_n_;
+    int road_segment_n_;
+    int field_segment_n_;
 };
 
 class TileFactory {
   public:
+    TileFactory();
+    ~TileFactory();
     bool loadResource(const char* resource_file);
     Tile* newFromName(const std::string* name, int tile_id);
   private:
