@@ -1,6 +1,8 @@
 #include <cstdlib>
 #include <set>
 
+#include "region.hpp"
+#include "segment.hpp"
 #include "test_util.hpp"
 #include "tile.hpp"
 #include "tile_position_map.hpp"
@@ -27,8 +29,37 @@ void tile_position_map_tests() {
   test_assert("tile_position_map_tests#8", s->size() == 6);
 }
 
+void cloister_region_tests() {
+  Board board(10);
+  CloisterRegion region(0, &board);
+  Segment s(0, SegmentType::CLOISTER, false);
+  Tile tile(0);
+  tile.setX(0).setY(0).setRotation(0);
+  s.setTile(&tile);
+  region.addSegment(&s);
+  TilePositionMap* map = board.getTilePositionMap();
+  map->placeTile(&tile, 0, 0);
+  test_assert("cloister_region_tests#0", !region.isCompleted());
+  test_assert("cloister_region_tests#1", region.calculatePoint() == 1);
+  for (int dx = -1; dx < 1; dx++) {
+    for (int dy = -1; dy <= 1; dy++) {
+      if (!(dx == 0 && dy == 0)) {
+	map->placeTile(&tile, dx, dy);
+      }
+    }
+  }
+  test_assert("cloister_region_tests#2", !region.isCompleted());
+  test_assert("cloister_region_tests#3", region.calculatePoint() == 6);
+  for (int dy = -1; dy <= 1; dy++) {
+    map->placeTile(&tile, 1, dy);
+  }
+  test_assert("cloister_region_tests#4", region.isCompleted());
+  test_assert("cloister_region_tests#5", region.calculatePoint() == 9);
+}
+
 void tests() {
   tile_position_map_tests();
+  cloister_region_tests();
 }
 
 int main(int argc, char* argv[]) {
