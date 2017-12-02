@@ -30,26 +30,102 @@ void tile_position_map_tests() {
   test_assert("tile_position_map_tests#8", s->size() == 6);
 }
 
-void cup_city_tests(TileFactory* tile_f) {
-  Tile* tile01 = tile_f->newFromName("E", 0);
-  Tile* tile02 = tile_f->newFromName("E", 1);
-  tile01->setX(0).setY(0).setRotation(2);
-  tile02->setX(0).setY(-1).setRotation(0);
+void cup_city_region_tests(TileFactory* tile_f) {
+  Tile* tile0 = tile_f->newFromName("E", 0);
+  Tile* tile1 = tile_f->newFromName("E", 1);
+  tile0->setX(0).setY(0).setRotation(2);
+  tile1->setX(0).setY(-1).setRotation(0);
   CityRegion region(0, nullptr);
-  region.addSegment(tile01->getCitySegments()->at(0));
+  region.addSegment(tile0->getCitySegments()->at(0));
   test_assert("cup_city_tests#0", !region.isCompleted());
   test_assert("cup_city_tests#1", region.calculatePoint() == 1);
-  region.addSegment(tile02->getCitySegments()->at(0));
+  region.addSegment(tile1->getCitySegments()->at(0));
   test_assert("cup_city_tests#2", region.isCompleted());
   test_assert("cup_city_tests#3", region.calculatePoint() == 4);
-  delete tile01;
-  delete tile02;
+  delete tile0;
+  delete tile1;
+}
+
+void diamond_city_region_tests(TileFactory* tile_f) {
+  Tile* tile0 = tile_f->newFromName("N", 0);
+  Tile* tile1 = tile_f->newFromName("N", 1);
+  Tile* tile2 = tile_f->newFromName("N", 2);
+  Tile* tile3 = tile_f->newFromName("P", 3);
+  tile0->setX(0).setY(0).setRotation(0);
+  tile1->setX(-1).setY(0).setRotation(1);
+  tile2->setX(-1).setY(1).setRotation(2);
+  tile3->setX(0).setY(1).setRotation(3);
+  CityRegion region(0, nullptr);
+  region.addSegment(tile0->getCitySegments()->at(0));
+  region.addSegment(tile1->getCitySegments()->at(0));
+  region.addSegment(tile2->getCitySegments()->at(0));
+  test_assert("diamond_city_region_tests#0", !region.isCompleted());
+  test_assert("diamond_city_region_tests#1", region.calculatePoint() == 3);
+  region.addSegment(tile3->getCitySegments()->at(0));
+  test_assert("diamond_city_region_tests#2", region.isCompleted());
+  test_assert("diamond_city_region_tests#3", region.calculatePoint() == 8);
+  delete tile0;
+  delete tile1;
+  delete tile2;
+  delete tile3;
+}
+
+void diamond_city_region_with_one_pennant_tests(TileFactory* tile_f) {
+  Tile* tile0 = tile_f->newFromName("N", 0);
+  Tile* tile1 = tile_f->newFromName("N", 1);
+  Tile* tile2 = tile_f->newFromName("M", 2);
+  Tile* tile3 = tile_f->newFromName("P", 3);
+  tile0->setX(0).setY(0).setRotation(0);
+  tile1->setX(-1).setY(0).setRotation(1);
+  tile2->setX(-1).setY(1).setRotation(2);
+  tile3->setX(0).setY(1).setRotation(3);
+  CityRegion region(0, nullptr);
+  region.addSegment(tile0->getCitySegments()->at(0));
+  region.addSegment(tile1->getCitySegments()->at(0));
+  region.addSegment(tile2->getCitySegments()->at(0));
+  test_assert("diamond_city_region_tests#0", !region.isCompleted());
+  test_assert("diamond_city_region_tests#1", region.calculatePoint() == 4);
+  region.addSegment(tile3->getCitySegments()->at(0));
+  test_assert("diamond_city_region_tests#2", region.isCompleted());
+  test_assert("diamond_city_region_tests#3", region.calculatePoint() == 10);
+  delete tile0;
+  delete tile1;
+  delete tile2;
+  delete tile3;
+}
+
+void diamond_city_region_including_i_tile_tests(TileFactory* tile_f) {
+  Tile* tile0 = tile_f->newFromName("N", 0);
+  Tile* tile1 = tile_f->newFromName("N", 1);
+  Tile* tile2 = tile_f->newFromName("I", 2);
+  Tile* tile3 = tile_f->newFromName("P", 3);
+  tile0->setX(0).setY(0).setRotation(0);
+  tile1->setX(-1).setY(0).setRotation(1);
+  tile2->setX(-1).setY(1).setRotation(0);
+  tile3->setX(0).setY(1).setRotation(3);
+  CityRegion region(0, nullptr);
+  region.addSegment(tile0->getCitySegments()->at(0));
+  region.addSegment(tile1->getCitySegments()->at(0));
+  region.addSegment(tile3->getCitySegments()->at(0));
+  test_assert("diamond_city_region_tests#0", !region.isCompleted());
+  test_assert("diamond_city_region_tests#1", region.calculatePoint() == 3);
+  region.addSegment(tile2->getCitySegments()->at(0));
+  region.addSegment(tile2->getCitySegments()->at(1));
+  test_assert("diamond_city_region_tests#2", region.isCompleted());
+  test_assert("diamond_city_region_tests#3", region.calculatePoint() == 8);
+  delete tile0;
+  delete tile1;
+  delete tile2;
+  delete tile3;
 }
 
 void city_region_tests() {
   TileFactory tile_f;
   tile_f.loadResource("tiles.json");
-  cup_city_tests(&tile_f);
+  cup_city_region_tests(&tile_f);
+  diamond_city_region_tests(&tile_f);
+  diamond_city_region_with_one_pennant_tests(&tile_f);
+  diamond_city_region_including_i_tile_tests(&tile_f);
 }
 
 
