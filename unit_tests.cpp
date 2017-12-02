@@ -157,10 +157,88 @@ void cloister_region_tests() {
   test_assert("cloister_region_tests#5", region.calculatePoint() == 9);
 }
 
+void loop_road_region_tests(TileFactory* tile_f) {
+  Tile* tile0 = tile_f->newFromName("V", 0);
+  Tile* tile1 = tile_f->newFromName("V", 1);
+  Tile* tile2 = tile_f->newFromName("V", 2);
+  Tile* tile3 = tile_f->newFromName("V", 3);
+  tile0->setX(0).setY(0).setRotation(0);
+  tile1->setX(0).setY(-1).setRotation(1);
+  tile2->setX(-1).setY(-1).setRotation(2);
+  tile3->setX(-1).setY(0).setRotation(3);
+  RoadRegion region(0, nullptr);
+  region.addSegment(tile0->getRoadSegments()->at(0));
+  region.addSegment(tile1->getRoadSegments()->at(0));
+  region.addSegment(tile2->getRoadSegments()->at(0));
+  test_assert("loop_road_region_tests#0", !region.isCompleted());
+  test_assert("loop_road_region_tests#1", region.calculatePoint() == 3);
+  region.addSegment(tile3->getRoadSegments()->at(0));
+  test_assert("loop_road_region_tests#2", region.isCompleted());
+  test_assert("loop_road_region_tests#3", region.calculatePoint() == 4);
+  delete tile0;
+  delete tile1;
+  delete tile2;
+  delete tile3;
+}
+
+void loop_road_region_with_cross_road_tests(TileFactory* tile_f) {
+  Tile* tile0 = tile_f->newFromName("W", 0);
+  Tile* tile1 = tile_f->newFromName("V", 1);
+  Tile* tile2 = tile_f->newFromName("V", 2);
+  Tile* tile3 = tile_f->newFromName("V", 3);
+  tile0->setX(0).setY(0).setRotation(0);
+  tile1->setX(0).setY(-1).setRotation(1);
+  tile2->setX(-1).setY(-1).setRotation(2);
+  tile3->setX(-1).setY(0).setRotation(3);
+  RoadRegion region(0, nullptr);
+  region.addSegment(tile0->getRoadSegments()->at(1));
+  region.addSegment(tile1->getRoadSegments()->at(0));
+  region.addSegment(tile2->getRoadSegments()->at(0));
+  test_assert("loop_road_region_with_cross_road_tests#0", !region.isCompleted());
+  test_assert("loop_road_region_with_cross_road_tests#1", region.calculatePoint() == 3);
+  region.addSegment(tile0->getRoadSegments()->at(2));
+  region.addSegment(tile3->getRoadSegments()->at(0));
+  test_assert("loop_road_region_with_cross_road_tests#2", region.isCompleted());
+  test_assert("loop_road_region_with_cross_road_tests#3", region.calculatePoint() == 4);
+  delete tile0;
+  delete tile1;
+  delete tile2;
+  delete tile3;
+}
+
+void non_loop_road_region_tests(TileFactory* tile_f) {
+  Tile* tile0 = tile_f->newFromName("A", 0);
+  Tile* tile1 = tile_f->newFromName("U", 1);
+  Tile* tile2 = tile_f->newFromName("X", 2);
+  tile0->setX(0).setY(0).setRotation(0);
+  tile1->setX(0).setY(-1).setRotation(0);
+  tile2->setX(0).setY(-2).setRotation(0);
+  RoadRegion region(0, nullptr);
+  region.addSegment(tile0->getRoadSegments()->at(0));
+  region.addSegment(tile1->getRoadSegments()->at(0));
+  test_assert("non_loop_road_region_tests#0", !region.isCompleted());
+  test_assert("non_loop_road_region_tests#1", region.calculatePoint() == 2);
+  region.addSegment(tile2->getRoadSegments()->at(0));
+  test_assert("non_loop_road_region_tests#2", region.isCompleted());
+  test_assert("non_loop_road_region_tests#3", region.calculatePoint() == 3);
+  delete tile0;
+  delete tile1;
+  delete tile2;
+}
+
+void road_region_tests() {
+  TileFactory tile_f;
+  tile_f.loadResource("tiles.json");
+  loop_road_region_tests(&tile_f);
+  loop_road_region_with_cross_road_tests(&tile_f);
+  non_loop_road_region_tests(&tile_f);
+}
+
 void tests() {
   tile_position_map_tests();
   cloister_region_tests();
   city_region_tests();
+  road_region_tests();
 }
 
 int main(int argc, char* argv[]) {
