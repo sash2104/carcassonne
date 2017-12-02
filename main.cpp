@@ -38,7 +38,7 @@ int main(int argc, char const* argv[])
   std::string name("A");
   TileFactory f;
   f.loadResource("tiles.json");
-  Tile* t = f.newFromName(&name, 90);
+  Tile* t = f.newFromName(name, 90);
   t->print_info();
 
   return 0;

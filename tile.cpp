@@ -10,13 +10,30 @@ Tile::Tile(int id, char* name, BorderType* border_types, const int* cities, cons
   std::vector<Segment*>* city_segments, std::vector<Segment*>* field_segments,
   std::vector<Segment*>* road_segments, Segment* cloister_segment)
   : id_(id), name_(name), city_segments_(city_segments),
-    field_segments_(field_segments), cloister_segment_(cloister_segment) {
+    field_segments_(field_segments), road_segments_(road_segments),
+    cloister_segment_(cloister_segment) {
   for (int i = 0; i < 4; i++) {
     border_types_[i] = border_types[i];
     cities_[i] = cities[i];
     roads_[i] = roads[i];
     fields_[2*i] = fields[2*i];
     fields_[2*i+1] = fields[2*i+1];
+  }
+
+  for (auto it = city_segments_->begin(); it != city_segments_->end(); it++) {
+    Segment* s = *it;
+    s->setTile(this);
+  }
+  for (auto it = field_segments_->begin(); it != field_segments_->end(); it++) {
+    Segment* s = *it;
+    s->setTile(this);
+  }
+  for (auto it = road_segments_->begin(); it != road_segments_->end(); it++) {
+    Segment* s = *it;
+    s->setTile(this);
+  }
+  if (cloister_segment_ != nullptr) {
+    cloister_segment_->setTile(this);
   }
 }
 

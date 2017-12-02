@@ -69,7 +69,7 @@ bool Region::meepleIsPlaced() const {
   return meeple_placed_segments_.size() != 0;
 }
 
-CityRegion::CityRegion(int id, Board* board) : Region(id, board) {
+CityRegion::CityRegion(int id, Board* board) : Region(id, board), completed_(false) {
 }
 
 bool CityRegion::isCompleted() {
@@ -208,7 +208,7 @@ bool FieldRegion::isAdjacentWith(const CityRegion* city_region) {
   return false;
 }
 
-RoadRegion::RoadRegion(int id, Board* board) : Region(id, board) {
+RoadRegion::RoadRegion(int id, Board* board) : Region(id, board), completed_(false) {
 }
 
 bool RoadRegion::isCompleted() {

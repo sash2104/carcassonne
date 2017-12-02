@@ -43,7 +43,7 @@ class TileFactory {
     TileFactory();
     ~TileFactory();
     bool loadResource(const char* resource_file);
-    Tile* newFromName(const std::string* name, int tile_id);
+    Tile* newFromName(const std::string name, int tile_id);
   private:
     TileParts* constractTileParts(json* j);
     std::map<std::string, TileParts*> parts_map_;
