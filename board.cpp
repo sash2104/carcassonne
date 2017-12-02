@@ -14,6 +14,22 @@ Board::Board(int tile_n) : region_id_(0), tile_map_(tile_n) {
 }
 
 Board::~Board() {
+  for (auto it = city_regions_.begin(); it != city_regions_.end(); it++) {
+    CityRegion* region = *it;
+    delete region;
+  }
+  for (auto it = cloister_regions_.begin(); it != cloister_regions_.end(); it++) {
+    CloisterRegion* region = *it;
+    delete region;
+  }
+  for (auto it = field_regions_.begin(); it != field_regions_.end(); it++) {
+    FieldRegion* region = *it;
+    delete region;
+  }
+  for (auto it = road_regions_.begin(); it != road_regions_.end(); it++) {
+    RoadRegion* region = *it;
+    delete region;
+  }
 }
 
 TilePositionMap* Board::getTilePositionMap() {

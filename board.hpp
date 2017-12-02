@@ -1,7 +1,6 @@
 #ifndef __BOARD_HPP__
 #define __BOARD_HPP__
 
-#include <array>
 #include <string>
 
 #include "meeple_color.hpp"
