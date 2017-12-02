@@ -8,7 +8,6 @@
 #include "region.hpp"
 #include "segment.hpp"
 #include "tile.hpp"
-#include "tile_holder.hpp"
 #include "utils.hpp"
 
 Board::Board(int tile_n) : region_id_(0), tile_map_(tile_n) {

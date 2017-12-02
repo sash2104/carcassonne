@@ -8,7 +8,6 @@
 #include "region.hpp"
 #include "segment.hpp"
 #include "tile.hpp"
-#include "tile_holder.hpp"
 #include "tile_position_map.hpp"
 
 class Region;
