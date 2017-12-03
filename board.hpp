@@ -3,6 +3,7 @@
 
 #include <string>
 
+#include "game_context.hpp"
 #include "meeple_color.hpp"
 #include "region.hpp"
 #include "segment.hpp"
@@ -14,6 +15,7 @@ class Segment;
 class CityRegion;
 class CloisterRegion;
 class FieldRegion;
+class GameContext;
 class LargeTileHolder;
 class RoadRegion;
 
@@ -31,10 +33,11 @@ class Board {
     bool adjacencyIsValid(Tile* tile, int x, int y, int rotation);
     void setInitialTile(Tile* tile);
     void setInitialTile(Tile* tile, int rotation);
-    bool placeTile(Tile* tile, int x, int y, int rotation, std::vector<Segment*>* meeplePlaceCandidates);
-    bool placeMeeple(Segment* segment, MeepleColor meeple);
+    bool placeTile(Tile* tile, int x, int y, int rotation,
+      std::vector<Segment*>* meeplePlaceCandidates, GameContext* context);
+    bool placeMeeple(Segment* segment, MeepleColor color, GameContext* context);
+    void transferRemainingPoints(GameContext* context, bool returnMeeple);
   private:
-    void doPlaceTile(Tile* tile, int x, int y, int rotation, std::vector<Segment*>* meeplePlaceCandidates);
     int region_id_;
     TilePositionMap tile_map_;
     std::vector<Tile*> placed_tiles_;

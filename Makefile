@@ -2,7 +2,7 @@ CXX = g++
 TARGET = carcassonne
 TEST = test
 CXXFLAGS = -Wall -std=c++11
-SRCS = tile_factory.cpp region.cpp segment.cpp tile_position_map.cpp tile.cpp board.cpp game.cpp player.cpp
+SRCS = tile_factory.cpp game_context.cpp region.cpp segment.cpp tile_position_map.cpp tile.cpp board.cpp game.cpp player.cpp
 MAIN_SRCS = main.cpp $(SRCS)
 TEST_SRCS = unit_tests.cpp test_util.cpp $(SRCS)
 OBJS := $(MAIN_SRCS:.cpp=.o)

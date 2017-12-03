@@ -4,6 +4,7 @@
 #include <vector>
 
 #include "board.hpp"
+#include "game_context.hpp"
 #include "region.hpp"
 #include "segment.hpp"
 #include "utils.hpp"
@@ -67,6 +68,65 @@ const std::vector<Segment*>* Region::getMeeplePlacedSegments() const {
 
 bool Region::meepleIsPlaced() const {
   return meeple_placed_segments_.size() != 0;
+}
+
+void Region::getWinningMeeples(std::vector<MeepleColor>* winning_meeples) const {
+  assert(winning_meeples->size() == 0);
+  std::map<int, int> counts;
+  for (auto it = meeple_placed_segments_.begin(); it != meeple_placed_segments_.end(); it++) {
+    Segment* s = *it;
+    MeepleColor color = s->getPlacedMeeple();
+    assert(color != MeepleColor::NOT_PLACED);
+    int k = static_cast<int>(color);
+    int count;
+    auto it2 = counts.find(k);
+    if (counts.find(k) == counts.end()) {
+      count = 1;
+    } else {
+      count = it2->second + 1;
+    }
+    counts[k] = count;
+  }
+  int max_count = 1;
+  for (auto it = counts.begin(); it != counts.end(); it++) {
+    int count = it->second;
+    if (count > max_count) {
+      max_count = count;
+    }
+  }
+  for (auto it = counts.begin(); it != counts.end(); it++) {
+    int k = it->first;
+    int count = it->second;
+    if (count == max_count) {
+      winning_meeples->push_back(static_cast<MeepleColor>(k));
+    }
+  }
+}
+
+void Region::returnMeeples(GameContext* context) {
+  const std::vector<Segment*>* segments = getMeeplePlacedSegments();
+  for (auto it = segments->begin(); it != segments->end(); it++) {
+    Segment* s = *it;
+    MeepleColor color = s->getPlacedMeeple();
+    context->returnMeeple(color, 1);
+  }
+}
+
+void Region::transferPoint(GameContext* context, bool return_meeple) {
+  int point = calculatePoint();
+  std::vector<MeepleColor> winning_meeples;
+  getWinningMeeples(&winning_meeples);
+  for (auto it = winning_meeples.begin(); it != winning_meeples.end(); it++) {
+    MeepleColor color = *it;
+    context->addPoint(color, getType(), point);
+  }
+  if (return_meeple) {
+    returnMeeples(context);
+  }
+}
+
+bool Region::pointIsTransfered() const {
+  return point_transfered_;
 }
 
 CityRegion::CityRegion(int id, Board* board) : Region(id, board), completed_(false) {

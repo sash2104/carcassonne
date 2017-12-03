@@ -4,6 +4,7 @@
 #include <vector>
 
 #include "board.hpp"
+#include "game_context.hpp"
 #include "meeple_color.hpp"
 #include "region.hpp"
 #include "segment.hpp"
@@ -135,7 +136,7 @@ void Board::setInitialTile(Tile* tile, int rotation) {
   }
 }
 
-bool Board::placeTile(Tile* tile, int x, int y, int rotation, std::vector<Segment*>* meeple_place_candidates) {
+bool Board::placeTile(Tile* tile, int x, int y, int rotation, std::vector<Segment*>* meeple_place_candidates, GameContext* context) {
   if (!canPlaceTile(tile, x, y, rotation)) {
     return false;
   }
@@ -180,7 +181,7 @@ bool Board::placeTile(Tile* tile, int x, int y, int rotation, std::vector<Segmen
       if (!region->meepleIsPlaced()) {
         meeple_place_candidates->push_back(my_s);
       } else if (region->isCompleted()) {
-        // TODO
+	region->transferPoint(context, true);
       }
     }
   }
@@ -215,7 +216,7 @@ bool Board::placeTile(Tile* tile, int x, int y, int rotation, std::vector<Segmen
       if (!region->meepleIsPlaced()) {
         meeple_place_candidates->push_back(my_s);
       } else if (region->isCompleted()) {
-        // TODO
+	region->transferPoint(context, true);
       }
     }
   }
@@ -255,6 +256,12 @@ bool Board::placeTile(Tile* tile, int x, int y, int rotation, std::vector<Segmen
   }
   adjacent_regions.clear();
 
+  for (auto it = cloister_regions_.begin(); it != cloister_regions_.end(); it++) {
+    CloisterRegion* region = *it;
+    if (region->isCompleted()) {
+      region->transferPoint(context, true);
+    }
+  }
   Segment* cloister_segment = tile->getCloisterSegment();
   if (cloister_segment != nullptr) {
     CloisterRegion* region = new CloisterRegion(region_id_++, this);
@@ -266,14 +273,42 @@ bool Board::placeTile(Tile* tile, int x, int y, int rotation, std::vector<Segmen
   return true;
 }
 
-bool Board::placeMeeple(Segment* segment, MeepleColor meeple) {
+bool Board::placeMeeple(Segment* segment, MeepleColor color, GameContext* context) {
   Region* region = segment->getRegion();
   if (region->meepleIsPlaced()) {
     return false;
   }
-  segment->placeMeeple(meeple);
+  segment->placeMeeple(color);
+  context->placeMeeple(color);
   if (region->isCompleted()) {
-    // TODO: 色々処理
+    region->transferPoint(context, true);
   }
   return true;
+}
+
+void Board::transferRemainingPoints(GameContext* context, bool returnMeeple) {
+  for (auto it = city_regions_.begin(); it != city_regions_.end(); it++) {
+    CityRegion* region = *it;
+    if (!region->pointIsTransfered()) {
+      region->transferPoint(context, returnMeeple);
+    }
+  }
+  for (auto it = cloister_regions_.begin(); it != cloister_regions_.end(); it++) {
+    CloisterRegion* region = *it;
+    if (!region->pointIsTransfered()) {
+      region->transferPoint(context, returnMeeple);
+    }
+  }
+  for (auto it = field_regions_.begin(); it != field_regions_.end(); it++) {
+    FieldRegion* region = *it;
+    if (!region->pointIsTransfered()) {
+      region->transferPoint(context, returnMeeple);
+    }
+  }
+  for (auto it = road_regions_.begin(); it != road_regions_.end(); it++) {
+    RoadRegion* region = *it;
+    if (!region->pointIsTransfered()) {
+      region->transferPoint(context, returnMeeple);
+    }
+  }
 }

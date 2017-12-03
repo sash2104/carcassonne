@@ -61,6 +61,11 @@ void Segment::placeMeeple(MeepleColor meeple) {
   placed_meeple_ = meeple;
 }
 
+MeepleColor Segment::getPlacedMeeple() const {
+  assert(placed_meeple_ != MeepleColor::NOT_PLACED);
+  return placed_meeple_;
+}
+
 bool Segment::meepleIsPlaced() const {
   return placed_meeple_ != MeepleColor::NOT_PLACED;
 }
