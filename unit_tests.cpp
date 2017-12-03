@@ -1,6 +1,8 @@
 #include <cstdlib>
 #include <set>
 
+#include "game_context.hpp"
+#include "meeple_color.hpp"
 #include "region.hpp"
 #include "segment.hpp"
 #include "test_util.hpp"
@@ -234,11 +236,75 @@ void road_region_tests() {
   non_loop_road_region_tests(&tile_f);
 }
 
+void game_context_tests() {
+  GameContext context(7);
+  context.registerMeeple(MeepleColor::RED);
+  context.registerMeeple(MeepleColor::GREEN);
+
+  context.placeMeeple(MeepleColor::RED);
+  context.placeMeeple(MeepleColor::RED);
+  context.placeMeeple(MeepleColor::GREEN);
+  context.placeMeeple(MeepleColor::GREEN);
+  context.placeMeeple(MeepleColor::GREEN);
+  test_assert("game_context_tests#0.0", context.getHoldingMeepleCount(MeepleColor::RED) == 5);
+  test_assert("game_context_tests#0.1", context.getOnBoardMeepleCount(MeepleColor::RED) == 2);
+  test_assert("game_context_tests#0.2", context.getReturnedMeepleCount(MeepleColor::RED) == 0);
+  test_assert("game_context_tests#0.3", context.getHoldingMeepleCount(MeepleColor::GREEN) == 4);
+  test_assert("game_context_tests#0.4", context.getOnBoardMeepleCount(MeepleColor::GREEN) == 3);
+  test_assert("game_context_tests#0.5", context.getReturnedMeepleCount(MeepleColor::GREEN) == 0);
+
+  context.addPoint(MeepleColor::RED, RegionType::CITY, 4);
+  context.returnMeeple(MeepleColor::RED, 1);
+  context.addPoint(MeepleColor::RED, RegionType::CLOISTER, 9);
+  context.returnMeeple(MeepleColor::RED, 1);
+  context.addPoint(MeepleColor::GREEN, RegionType::ROAD, 3);
+  context.returnMeeple(MeepleColor::GREEN, 1);
+  test_assert("game_context_tests#1.0", context.getHoldingMeepleCount(MeepleColor::RED) == 5);
+  test_assert("game_context_tests#1.1", context.getOnBoardMeepleCount(MeepleColor::RED) == 0);
+  test_assert("game_context_tests#1.2", context.getReturnedMeepleCount(MeepleColor::RED) == 2);
+  test_assert("game_context_tests#1.3", context.getHoldingMeepleCount(MeepleColor::GREEN) == 4);
+  test_assert("game_context_tests#1.4", context.getOnBoardMeepleCount(MeepleColor::GREEN) == 2);
+  test_assert("game_context_tests#1.5", context.getReturnedMeepleCount(MeepleColor::GREEN) == 1);
+  test_assert("game_context_tests#1.6", context.getTotalPoint(MeepleColor::RED) == 0);
+  test_assert("game_context_tests#1.7", context.getGainedPoint(MeepleColor::RED) == 13);
+  test_assert("game_context_tests#1.8", context.getGainedPoint(MeepleColor::RED, RegionType::CITY) == 4);
+  test_assert("game_context_tests#1.9", context.getGainedPoint(MeepleColor::RED, RegionType::CLOISTER) == 9);
+  test_assert("game_context_tests#1.10", context.getGainedPoint(MeepleColor::RED, RegionType::ROAD) == 0);
+  test_assert("game_context_tests#1.11", context.getGainedPoint(MeepleColor::RED, RegionType::FIELD) == 0);
+  test_assert("game_context_tests#1.12", context.getTotalPoint(MeepleColor::GREEN) == 0);
+  test_assert("game_context_tests#1.13", context.getGainedPoint(MeepleColor::GREEN) == 3);
+  test_assert("game_context_tests#1.14", context.getGainedPoint(MeepleColor::GREEN, RegionType::CITY) == 0);
+  test_assert("game_context_tests#1.15", context.getGainedPoint(MeepleColor::GREEN, RegionType::CLOISTER) == 0);
+  test_assert("game_context_tests#1.16", context.getGainedPoint(MeepleColor::GREEN, RegionType::ROAD) == 3);
+  test_assert("game_context_tests#1.17", context.getGainedPoint(MeepleColor::GREEN, RegionType::FIELD) == 0);
+
+  context.endTurn();
+  test_assert("game_context_tests#2.0", context.getHoldingMeepleCount(MeepleColor::RED) == 7);
+  test_assert("game_context_tests#2.1", context.getOnBoardMeepleCount(MeepleColor::RED) == 0);
+  test_assert("game_context_tests#2.2", context.getReturnedMeepleCount(MeepleColor::RED) == 0);
+  test_assert("game_context_tests#2.3", context.getHoldingMeepleCount(MeepleColor::GREEN) == 5);
+  test_assert("game_context_tests#2.4", context.getOnBoardMeepleCount(MeepleColor::GREEN) == 2);
+  test_assert("game_context_tests#2.5", context.getReturnedMeepleCount(MeepleColor::GREEN) == 0);
+  test_assert("game_context_tests#2.6", context.getTotalPoint(MeepleColor::RED) == 13);
+  test_assert("game_context_tests#2.7", context.getGainedPoint(MeepleColor::RED) == 0);
+  test_assert("game_context_tests#2.8", context.getGainedPoint(MeepleColor::RED, RegionType::CITY) == 0);
+  test_assert("game_context_tests#2.9", context.getGainedPoint(MeepleColor::RED, RegionType::CLOISTER) == 0);
+  test_assert("game_context_tests#2.10", context.getGainedPoint(MeepleColor::RED, RegionType::ROAD) == 0);
+  test_assert("game_context_tests#2.11", context.getGainedPoint(MeepleColor::RED, RegionType::FIELD) == 0);
+  test_assert("game_context_tests#2.12", context.getTotalPoint(MeepleColor::GREEN) == 3);
+  test_assert("game_context_tests#2.13", context.getGainedPoint(MeepleColor::GREEN) == 0);
+  test_assert("game_context_tests#2.14", context.getGainedPoint(MeepleColor::GREEN, RegionType::CITY) == 0);
+  test_assert("game_context_tests#2.15", context.getGainedPoint(MeepleColor::GREEN, RegionType::CLOISTER) == 0);
+  test_assert("game_context_tests#2.16", context.getGainedPoint(MeepleColor::GREEN, RegionType::ROAD) == 0);
+  test_assert("game_context_tests#2.17", context.getGainedPoint(MeepleColor::GREEN, RegionType::FIELD) == 0);
+}
+
 void tests() {
   tile_position_map_tests();
   cloister_region_tests();
   city_region_tests();
   road_region_tests();
+  game_context_tests();
 }
 
 int main(int argc, char* argv[]) {
