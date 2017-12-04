@@ -72,7 +72,7 @@ void GameContext::addPoint(MeepleColor color, RegionType type, int point) {
   c->gainedPoints()[static_cast<int>(type)] += point;
 }
 
-int GameContext::getTotalPoint(MeepleColor color) {
+int GameContext::getTotalPoint(MeepleColor color) const {
   int k = static_cast<int>(color);
   auto it = containers_.find(k);
   assert(it != containers_.end());
@@ -80,7 +80,7 @@ int GameContext::getTotalPoint(MeepleColor color) {
   return c->totalPoint();
 }
 
-int GameContext::getGainedPoint(MeepleColor color) {
+int GameContext::getGainedPoint(MeepleColor color) const {
   int k = static_cast<int>(color);
   auto it = containers_.find(k);
   assert(it != containers_.end());
@@ -92,7 +92,7 @@ int GameContext::getGainedPoint(MeepleColor color) {
   return point;
 }
 
-int GameContext::getGainedPoint(MeepleColor color, RegionType type) {
+int GameContext::getGainedPoint(MeepleColor color, RegionType type) const {
   int k = static_cast<int>(color);
   auto it = containers_.find(k);
   assert(it != containers_.end());
@@ -100,7 +100,7 @@ int GameContext::getGainedPoint(MeepleColor color, RegionType type) {
   return c->gainedPoints()[static_cast<int>(type)];
 }
 
-int GameContext::getHoldingMeepleCount(MeepleColor color) {
+int GameContext::getHoldingMeepleCount(MeepleColor color) const {
   int k = static_cast<int>(color);
   auto it = containers_.find(k);
   assert(it != containers_.end());
@@ -108,7 +108,7 @@ int GameContext::getHoldingMeepleCount(MeepleColor color) {
   return c->holdingMeepleCount();
 }
 
-int GameContext::getReturnedMeepleCount(MeepleColor color) {
+int GameContext::getReturnedMeepleCount(MeepleColor color) const {
   int k = static_cast<int>(color);
   auto it = containers_.find(k);
   assert(it != containers_.end());
@@ -116,7 +116,7 @@ int GameContext::getReturnedMeepleCount(MeepleColor color) {
   return c->returnedMeepleCount();
 }
 
-int GameContext::getOnBoardMeepleCount(MeepleColor color) {
+int GameContext::getOnBoardMeepleCount(MeepleColor color) const {
   int k = static_cast<int>(color);
   auto it = containers_.find(k);
   assert(it != containers_.end());

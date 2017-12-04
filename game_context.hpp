@@ -19,12 +19,12 @@ class GameContext {
     void returnMeeple(MeepleColor color, int n);
     void placeMeeple(MeepleColor color);
     void addPoint(MeepleColor color, RegionType type, int point);
-    int getTotalPoint(MeepleColor color);
-    int getGainedPoint(MeepleColor color);
-    int getGainedPoint(MeepleColor color, RegionType type);
-    int getHoldingMeepleCount(MeepleColor color);
-    int getReturnedMeepleCount(MeepleColor color);
-    int getOnBoardMeepleCount(MeepleColor color);
+    int getTotalPoint(MeepleColor color) const;
+    int getGainedPoint(MeepleColor color) const;
+    int getGainedPoint(MeepleColor color, RegionType type) const;
+    int getHoldingMeepleCount(MeepleColor color) const;
+    int getReturnedMeepleCount(MeepleColor color) const;
+    int getOnBoardMeepleCount(MeepleColor color) const;
   private:
     class Container {
       public:
