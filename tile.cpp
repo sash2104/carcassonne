@@ -165,6 +165,8 @@ bool Tile::canLeftAdjacentWith(Tile* tile, int rotation) {
 }
 
 bool Tile::canAdjacentWith(int direction, Tile* tile, int rotation) {
+  assert(direction >= 0 && direction < 4);
+  assert(rotation >= 0 && rotation < 4);
   BorderType my_border_type = getBorderType(direction);
   BorderType your_border_type = tile->getBorderType(modBy4(direction + 2), rotation);
   return my_border_type == your_border_type;
