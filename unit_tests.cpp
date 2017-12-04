@@ -32,6 +32,53 @@ void tile_position_map_tests() {
   test_assert("tile_position_map_tests#8", s->size() == 6);
 }
 
+void tile_get_border_type_tests(TileFactory* tile_f) {
+  Tile* tile_d = tile_f->newFromName("D", 0);
+  tile_d->setRotation(0);
+  test_assert("tile_get_border_type_tests#0", tile_d->getBorderType(0) == BorderType::ROAD);
+  test_assert("tile_get_border_type_tests#1", tile_d->getBorderType(1) == BorderType::CITY);
+  test_assert("tile_get_border_type_tests#2", tile_d->getBorderType(2) == BorderType::ROAD);
+  test_assert("tile_get_border_type_tests#3", tile_d->getBorderType(3) == BorderType::FIELD);
+  tile_d->setRotation(3);
+  test_assert("tile_get_border_type_tests#4", tile_d->getBorderType(0) == BorderType::CITY);
+  test_assert("tile_get_border_type_tests#5", tile_d->getBorderType(1) == BorderType::ROAD);
+  test_assert("tile_get_border_type_tests#6", tile_d->getBorderType(2) == BorderType::FIELD);
+  test_assert("tile_get_border_type_tests#7", tile_d->getBorderType(3) == BorderType::ROAD);
+  delete tile_d;
+}
+
+void tile_can_adjacent_with_tests(TileFactory* tile_f) {
+  Tile* tile_d = tile_f->newFromName("D", 0);
+  Tile* tile_j = tile_f->newFromName("J", 1);
+  tile_d->setRotation(0);
+  test_assert("tile_can_adjacent_with_tests#0", tile_d->canAdjacentWith(0, tile_j, 0));
+  test_assert("tile_can_adjacent_with_tests#1", !tile_d->canAdjacentWith(0, tile_j, 2));
+  test_assert("tile_can_adjacent_with_tests#2", !tile_d->canAdjacentWith(3, tile_j, 0));
+  test_assert("tile_can_adjacent_with_tests#3", tile_d->canAdjacentWith(3, tile_j, 2));
+  tile_d->setRotation(2);
+  test_assert("tile_can_adjacent_with_tests#4", tile_d->canAdjacentWith(0, tile_j, 0));
+  test_assert("tile_can_adjacent_with_tests#5", !tile_d->canAdjacentWith(0, tile_j, 2));
+  test_assert("tile_can_adjacent_with_tests#6", !tile_d->canAdjacentWith(3, tile_j, 0));
+  test_assert("tile_can_adjacent_with_tests#7", !tile_d->canAdjacentWith(3, tile_j, 2));
+  delete tile_d;
+  delete tile_j;
+}
+
+void tile_is_two_segment_adjacent_tests(TileFactory* tile_f) {
+  Tile* tile_j = tile_f->newFromName("J", 0);
+  test_assert("tile_is_two_segment_adjacent_tests#0", tile_j->isTwoSegmentAdjacent(0, 0));
+  test_assert("tile_is_two_segment_adjacent_tests#1", !tile_j->isTwoSegmentAdjacent(1, 0));
+  delete tile_j;
+}
+
+void tile_tests() {
+  TileFactory tile_f;
+  tile_f.loadResource("tiles.json");
+  tile_get_border_type_tests(&tile_f);
+  tile_can_adjacent_with_tests(&tile_f);
+  tile_is_two_segment_adjacent_tests(&tile_f);
+}
+
 void cup_city_region_tests(TileFactory* tile_f) {
   Tile* tile0 = tile_f->newFromName("E", 0);
   Tile* tile1 = tile_f->newFromName("E", 1);
@@ -301,6 +348,7 @@ void game_context_tests() {
 
 void tests() {
   tile_position_map_tests();
+  tile_tests();
   cloister_region_tests();
   city_region_tests();
   road_region_tests();
