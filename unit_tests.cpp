@@ -79,6 +79,24 @@ void tile_tests() {
   tile_is_two_segment_adjacent_tests(&tile_f);
 }
 
+void segment_is_adjacent_to_tests(TileFactory* tile_f) {
+  Tile* tile_d = tile_f->newFromName("D", 0);
+  tile_d->setRotation(0);
+  Segment* s = tile_d->getCitySegments()->at(0);
+  test_assert("segment_is_adjacent_to_tests#0", s->isAdjacentTo(1));
+  test_assert("segment_is_adjacent_to_tests#1", !s->isAdjacentTo(3));
+  tile_d->setRotation(2);
+  test_assert("segment_is_adjacent_to_tests#2", !s->isAdjacentTo(1));
+  test_assert("segment_is_adjacent_to_tests#3", s->isAdjacentTo(3));
+  delete tile_d;
+}
+
+void segment_tests() {
+  TileFactory tile_f;
+  tile_f.loadResource("tiles.json");
+  segment_is_adjacent_to_tests(&tile_f);
+}
+
 void cup_city_region_tests(TileFactory* tile_f) {
   Tile* tile0 = tile_f->newFromName("E", 0);
   Tile* tile1 = tile_f->newFromName("E", 1);
@@ -349,6 +367,7 @@ void game_context_tests() {
 void tests() {
   tile_position_map_tests();
   tile_tests();
+  segment_tests();
   cloister_region_tests();
   city_region_tests();
   road_region_tests();
