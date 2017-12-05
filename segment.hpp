@@ -12,6 +12,7 @@ enum class SegmentType {
   CITY, CLOISTER, ROAD, FIELD
 };
 
+// タイル中でミープルを置く対象となる個々の場所を表すクラス
 class Segment {
   public:
     Segment(int index, SegmentType type, bool has_pennant);

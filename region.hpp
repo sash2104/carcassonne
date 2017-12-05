@@ -15,6 +15,12 @@ enum class RegionType {
   CITY, CLOISTER, ROAD, FIELD
 };
 
+
+// 複数のセグメントが繋がってできる領域を表すクラス
+// Regionは抽象クラスになっており、具象クラスとして
+// CityRegion, CloisterRegion, FieldRegion, RoadRegion
+// の4つがある
+// それぞれ、得点の計算方法や完成の条件が違っている
 class Region {
   public:
     Region(int id, Board* board);
@@ -30,6 +36,7 @@ class Region {
     void meepleIsPlacedOnSegment(Segment* segment);
     const std::vector<Segment*>* getMeeplePlacedSegments() const;
     bool meepleIsPlaced() const;
+    // 置いているミープルの数が多い色を返す(同数の場合、複数の色を返す)
     void getWinningMeeples(std::vector<MeepleColor>* winning_meeples) const;
     void returnMeeples(GameContext* context);
     void transferPoint(GameContext* context, bool return_meeple);

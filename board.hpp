@@ -35,6 +35,7 @@ class Board {
     bool placeTile(Tile* tile, int x, int y, int rotation,
       std::vector<Segment*>* meeple_place_candidates, GameContext* context);
     bool placeMeeple(Segment* segment, MeepleColor color, GameContext* context);
+    // ゲーム終了後、残りの得点を計算するときに使う
     void transferRemainingPoints(GameContext* context, bool return_meeple);
   private:
     bool adjacencyIsValid(Tile* tile, int x, int y, int rotation);

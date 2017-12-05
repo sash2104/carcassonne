@@ -9,6 +9,8 @@
 
 using json = nlohmann::json;
 
+// タイルの名前を元にタイルを生成するクラス
+// 最初にJSONファイルからタイルの情報を読み込む
 class TileFactory {
   public:
     TileFactory();

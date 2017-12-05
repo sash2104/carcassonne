@@ -9,6 +9,8 @@
 
 enum class RegionType;
 
+
+// ミープルの個数や得点を管理するためのクラス
 class GameContext {
   public:
     GameContext(int initial_meeple_n);
