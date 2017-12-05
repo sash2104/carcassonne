@@ -32,8 +32,8 @@ void tile_position_map_tests() {
   test_assert("tile_position_map_tests#8", s->size() == 6);
 }
 
-void tile_get_border_type_tests(TileFactory* tile_f) {
-  Tile* tile_d = tile_f->newFromName("D", 0);
+void tile_get_border_type_tests(TileFactory* tile_factory) {
+  Tile* tile_d = tile_factory->newFromName("D", 0);
   tile_d->setRotation(0);
   test_assert("tile_get_border_type_tests#0", tile_d->getBorderType(0) == BorderType::ROAD);
   test_assert("tile_get_border_type_tests#1", tile_d->getBorderType(1) == BorderType::CITY);
@@ -47,9 +47,9 @@ void tile_get_border_type_tests(TileFactory* tile_f) {
   delete tile_d;
 }
 
-void tile_can_adjacent_with_tests(TileFactory* tile_f) {
-  Tile* tile_d = tile_f->newFromName("D", 0);
-  Tile* tile_j = tile_f->newFromName("J", 1);
+void tile_can_adjacent_with_tests(TileFactory* tile_factory) {
+  Tile* tile_d = tile_factory->newFromName("D", 0);
+  Tile* tile_j = tile_factory->newFromName("J", 1);
   tile_d->setRotation(0);
   test_assert("tile_can_adjacent_with_tests#0", tile_d->canAdjacentWith(0, tile_j, 0));
   test_assert("tile_can_adjacent_with_tests#1", !tile_d->canAdjacentWith(0, tile_j, 2));
@@ -64,23 +64,23 @@ void tile_can_adjacent_with_tests(TileFactory* tile_f) {
   delete tile_j;
 }
 
-void tile_is_two_segment_adjacent_tests(TileFactory* tile_f) {
-  Tile* tile_j = tile_f->newFromName("J", 0);
+void tile_is_two_segment_adjacent_tests(TileFactory* tile_factory) {
+  Tile* tile_j = tile_factory->newFromName("J", 0);
   test_assert("tile_is_two_segment_adjacent_tests#0", tile_j->isTwoSegmentAdjacent(0, 0));
   test_assert("tile_is_two_segment_adjacent_tests#1", !tile_j->isTwoSegmentAdjacent(1, 0));
   delete tile_j;
 }
 
 void tile_tests() {
-  TileFactory tile_f;
-  tile_f.loadResource("tiles.json");
-  tile_get_border_type_tests(&tile_f);
-  tile_can_adjacent_with_tests(&tile_f);
-  tile_is_two_segment_adjacent_tests(&tile_f);
+  TileFactory tile_factory;
+  tile_factory.loadResource("tiles.json");
+  tile_get_border_type_tests(&tile_factory);
+  tile_can_adjacent_with_tests(&tile_factory);
+  tile_is_two_segment_adjacent_tests(&tile_factory);
 }
 
-void segment_is_adjacent_to_tests(TileFactory* tile_f) {
-  Tile* tile_d = tile_f->newFromName("D", 0);
+void segment_is_adjacent_to_tests(TileFactory* tile_factory) {
+  Tile* tile_d = tile_factory->newFromName("D", 0);
   tile_d->setRotation(0);
   Segment* s = tile_d->getCitySegments()->at(0);
   test_assert("segment_is_adjacent_to_tests#0", s->isAdjacentTo(1));
@@ -92,14 +92,14 @@ void segment_is_adjacent_to_tests(TileFactory* tile_f) {
 }
 
 void segment_tests() {
-  TileFactory tile_f;
-  tile_f.loadResource("tiles.json");
-  segment_is_adjacent_to_tests(&tile_f);
+  TileFactory tile_factory;
+  tile_factory.loadResource("tiles.json");
+  segment_is_adjacent_to_tests(&tile_factory);
 }
 
-void cup_city_region_tests(TileFactory* tile_f) {
-  Tile* tile0 = tile_f->newFromName("E", 0);
-  Tile* tile1 = tile_f->newFromName("E", 1);
+void cup_city_region_tests(TileFactory* tile_factory) {
+  Tile* tile0 = tile_factory->newFromName("E", 0);
+  Tile* tile1 = tile_factory->newFromName("E", 1);
   tile0->setX(0).setY(0).setRotation(2);
   tile1->setX(0).setY(-1).setRotation(0);
   CityRegion region(0, nullptr);
@@ -113,11 +113,11 @@ void cup_city_region_tests(TileFactory* tile_f) {
   delete tile1;
 }
 
-void diamond_city_region_tests(TileFactory* tile_f) {
-  Tile* tile0 = tile_f->newFromName("N", 0);
-  Tile* tile1 = tile_f->newFromName("N", 1);
-  Tile* tile2 = tile_f->newFromName("N", 2);
-  Tile* tile3 = tile_f->newFromName("P", 3);
+void diamond_city_region_tests(TileFactory* tile_factory) {
+  Tile* tile0 = tile_factory->newFromName("N", 0);
+  Tile* tile1 = tile_factory->newFromName("N", 1);
+  Tile* tile2 = tile_factory->newFromName("N", 2);
+  Tile* tile3 = tile_factory->newFromName("P", 3);
   tile0->setX(0).setY(0).setRotation(0);
   tile1->setX(-1).setY(0).setRotation(1);
   tile2->setX(-1).setY(1).setRotation(2);
@@ -137,11 +137,11 @@ void diamond_city_region_tests(TileFactory* tile_f) {
   delete tile3;
 }
 
-void diamond_city_region_with_one_pennant_tests(TileFactory* tile_f) {
-  Tile* tile0 = tile_f->newFromName("N", 0);
-  Tile* tile1 = tile_f->newFromName("N", 1);
-  Tile* tile2 = tile_f->newFromName("M", 2);
-  Tile* tile3 = tile_f->newFromName("P", 3);
+void diamond_city_region_with_one_pennant_tests(TileFactory* tile_factory) {
+  Tile* tile0 = tile_factory->newFromName("N", 0);
+  Tile* tile1 = tile_factory->newFromName("N", 1);
+  Tile* tile2 = tile_factory->newFromName("M", 2);
+  Tile* tile3 = tile_factory->newFromName("P", 3);
   tile0->setX(0).setY(0).setRotation(0);
   tile1->setX(-1).setY(0).setRotation(1);
   tile2->setX(-1).setY(1).setRotation(2);
@@ -161,11 +161,11 @@ void diamond_city_region_with_one_pennant_tests(TileFactory* tile_f) {
   delete tile3;
 }
 
-void diamond_city_region_including_i_tile_tests(TileFactory* tile_f) {
-  Tile* tile0 = tile_f->newFromName("N", 0);
-  Tile* tile1 = tile_f->newFromName("N", 1);
-  Tile* tile2 = tile_f->newFromName("I", 2);
-  Tile* tile3 = tile_f->newFromName("P", 3);
+void diamond_city_region_including_i_tile_tests(TileFactory* tile_factory) {
+  Tile* tile0 = tile_factory->newFromName("N", 0);
+  Tile* tile1 = tile_factory->newFromName("N", 1);
+  Tile* tile2 = tile_factory->newFromName("I", 2);
+  Tile* tile3 = tile_factory->newFromName("P", 3);
   tile0->setX(0).setY(0).setRotation(0);
   tile1->setX(-1).setY(0).setRotation(1);
   tile2->setX(-1).setY(1).setRotation(0);
@@ -187,12 +187,12 @@ void diamond_city_region_including_i_tile_tests(TileFactory* tile_f) {
 }
 
 void city_region_tests() {
-  TileFactory tile_f;
-  tile_f.loadResource("tiles.json");
-  cup_city_region_tests(&tile_f);
-  diamond_city_region_tests(&tile_f);
-  diamond_city_region_with_one_pennant_tests(&tile_f);
-  diamond_city_region_including_i_tile_tests(&tile_f);
+  TileFactory tile_factory;
+  tile_factory.loadResource("tiles.json");
+  cup_city_region_tests(&tile_factory);
+  diamond_city_region_tests(&tile_factory);
+  diamond_city_region_with_one_pennant_tests(&tile_factory);
+  diamond_city_region_including_i_tile_tests(&tile_factory);
 }
 
 
@@ -225,16 +225,16 @@ void cloister_region_tests() {
 }
 
 void field_region_tests() {
-  TileFactory tile_f;
-  tile_f.loadResource("tiles.json");
+  TileFactory tile_factory;
+  tile_factory.loadResource("tiles.json");
 
-  Tile* tile_e0 = tile_f.newFromName("E", 0);
-  Tile* tile_e1 = tile_f.newFromName("E", 1);
-  Tile* tile_e2 = tile_f.newFromName("E", 2);
-  Tile* tile_e3 = tile_f.newFromName("E", 3);
-  Tile* tile_e4 = tile_f.newFromName("E", 4);
-  Tile* tile_e5 = tile_f.newFromName("E", 5);
-  Tile* tile_d  = tile_f.newFromName("D", 6);
+  Tile* tile_e0 = tile_factory.newFromName("E", 0);
+  Tile* tile_e1 = tile_factory.newFromName("E", 1);
+  Tile* tile_e2 = tile_factory.newFromName("E", 2);
+  Tile* tile_e3 = tile_factory.newFromName("E", 3);
+  Tile* tile_e4 = tile_factory.newFromName("E", 4);
+  Tile* tile_e5 = tile_factory.newFromName("E", 5);
+  Tile* tile_d  = tile_factory.newFromName("D", 6);
   tile_e0->setX(0).setY(0).setRotation(0);
   tile_e1->setX(0).setY(1).setRotation(2);
   tile_e2->setX(-1).setY(0).setRotation(3);
@@ -279,11 +279,11 @@ void field_region_tests() {
   delete tile_e5;
 }
 
-void loop_road_region_tests(TileFactory* tile_f) {
-  Tile* tile0 = tile_f->newFromName("V", 0);
-  Tile* tile1 = tile_f->newFromName("V", 1);
-  Tile* tile2 = tile_f->newFromName("V", 2);
-  Tile* tile3 = tile_f->newFromName("V", 3);
+void loop_road_region_tests(TileFactory* tile_factory) {
+  Tile* tile0 = tile_factory->newFromName("V", 0);
+  Tile* tile1 = tile_factory->newFromName("V", 1);
+  Tile* tile2 = tile_factory->newFromName("V", 2);
+  Tile* tile3 = tile_factory->newFromName("V", 3);
   tile0->setX(0).setY(0).setRotation(0);
   tile1->setX(0).setY(-1).setRotation(1);
   tile2->setX(-1).setY(-1).setRotation(2);
@@ -303,11 +303,11 @@ void loop_road_region_tests(TileFactory* tile_f) {
   delete tile3;
 }
 
-void loop_road_region_with_cross_road_tests(TileFactory* tile_f) {
-  Tile* tile0 = tile_f->newFromName("W", 0);
-  Tile* tile1 = tile_f->newFromName("V", 1);
-  Tile* tile2 = tile_f->newFromName("V", 2);
-  Tile* tile3 = tile_f->newFromName("V", 3);
+void loop_road_region_with_cross_road_tests(TileFactory* tile_factory) {
+  Tile* tile0 = tile_factory->newFromName("W", 0);
+  Tile* tile1 = tile_factory->newFromName("V", 1);
+  Tile* tile2 = tile_factory->newFromName("V", 2);
+  Tile* tile3 = tile_factory->newFromName("V", 3);
   tile0->setX(0).setY(0).setRotation(0);
   tile1->setX(0).setY(-1).setRotation(1);
   tile2->setX(-1).setY(-1).setRotation(2);
@@ -328,10 +328,10 @@ void loop_road_region_with_cross_road_tests(TileFactory* tile_f) {
   delete tile3;
 }
 
-void non_loop_road_region_tests(TileFactory* tile_f) {
-  Tile* tile0 = tile_f->newFromName("A", 0);
-  Tile* tile1 = tile_f->newFromName("U", 1);
-  Tile* tile2 = tile_f->newFromName("X", 2);
+void non_loop_road_region_tests(TileFactory* tile_factory) {
+  Tile* tile0 = tile_factory->newFromName("A", 0);
+  Tile* tile1 = tile_factory->newFromName("U", 1);
+  Tile* tile2 = tile_factory->newFromName("X", 2);
   tile0->setX(0).setY(0).setRotation(0);
   tile1->setX(0).setY(-1).setRotation(0);
   tile2->setX(0).setY(-2).setRotation(0);
@@ -349,11 +349,11 @@ void non_loop_road_region_tests(TileFactory* tile_f) {
 }
 
 void road_region_tests() {
-  TileFactory tile_f;
-  tile_f.loadResource("tiles.json");
-  loop_road_region_tests(&tile_f);
-  loop_road_region_with_cross_road_tests(&tile_f);
-  non_loop_road_region_tests(&tile_f);
+  TileFactory tile_factory;
+  tile_factory.loadResource("tiles.json");
+  loop_road_region_tests(&tile_factory);
+  loop_road_region_with_cross_road_tests(&tile_factory);
+  non_loop_road_region_tests(&tile_factory);
 }
 
 void game_context_tests() {
@@ -420,19 +420,19 @@ void game_context_tests() {
 }
 
 void board_tests() {
-  TileFactory tile_f;
-  tile_f.loadResource("tiles.json");
+  TileFactory tile_factory;
+  tile_factory.loadResource("tiles.json");
   Board board(20);
   GameContext context(7);
   context.registerMeeple(MeepleColor::RED);
   context.registerMeeple(MeepleColor::GREEN);
   std::vector<Segment*> meeple_place_candidates;
 
-  Tile* tile0 = tile_f.newFromName("D", 0);
-  Tile* tile1 = tile_f.newFromName("E", 1);
-  Tile* tile2 = tile_f.newFromName("C", 2);
-  Tile* tile3 = tile_f.newFromName("B", 3);
-  Tile* tile4 = tile_f.newFromName("U", 4);
+  Tile* tile0 = tile_factory.newFromName("D", 0);
+  Tile* tile1 = tile_factory.newFromName("E", 1);
+  Tile* tile2 = tile_factory.newFromName("C", 2);
+  Tile* tile3 = tile_factory.newFromName("B", 3);
+  Tile* tile4 = tile_factory.newFromName("U", 4);
 
   board.setInitialTile(tile0, 3);
   test_assert("board_tests#0", board.canPlaceTile(tile1, 0, 1, 2));

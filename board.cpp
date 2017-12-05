@@ -285,29 +285,29 @@ bool Board::placeMeeple(Segment* segment, MeepleColor color, GameContext* contex
   return true;
 }
 
-void Board::transferRemainingPoints(GameContext* context, bool returnMeeple) {
+void Board::transferRemainingPoints(GameContext* context, bool return_meeple) {
   for (auto it = city_regions_.begin(); it != city_regions_.end(); it++) {
     CityRegion* region = *it;
     if (!region->pointIsTransfered()) {
-      region->transferPoint(context, returnMeeple);
+      region->transferPoint(context, return_meeple);
     }
   }
   for (auto it = cloister_regions_.begin(); it != cloister_regions_.end(); it++) {
     CloisterRegion* region = *it;
     if (!region->pointIsTransfered()) {
-      region->transferPoint(context, returnMeeple);
+      region->transferPoint(context, return_meeple);
     }
   }
   for (auto it = field_regions_.begin(); it != field_regions_.end(); it++) {
     FieldRegion* region = *it;
     if (!region->pointIsTransfered()) {
-      region->transferPoint(context, returnMeeple);
+      region->transferPoint(context, return_meeple);
     }
   }
   for (auto it = road_regions_.begin(); it != road_regions_.end(); it++) {
     RoadRegion* region = *it;
     if (!region->pointIsTransfered()) {
-      region->transferPoint(context, returnMeeple);
+      region->transferPoint(context, return_meeple);
     }
   }
 }

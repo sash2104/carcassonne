@@ -33,9 +33,9 @@ class Board {
     void setInitialTile(Tile* tile);
     void setInitialTile(Tile* tile, int rotation);
     bool placeTile(Tile* tile, int x, int y, int rotation,
-      std::vector<Segment*>* meeplePlaceCandidates, GameContext* context);
+      std::vector<Segment*>* meeple_place_candidates, GameContext* context);
     bool placeMeeple(Segment* segment, MeepleColor color, GameContext* context);
-    void transferRemainingPoints(GameContext* context, bool returnMeeple);
+    void transferRemainingPoints(GameContext* context, bool return_meeple);
   private:
     bool adjacencyIsValid(Tile* tile, int x, int y, int rotation);
     int region_id_;
