@@ -224,6 +224,61 @@ void cloister_region_tests() {
   test_assert("cloister_region_tests#5", region.calculatePoint() == 9);
 }
 
+void field_region_tests() {
+  TileFactory tile_f;
+  tile_f.loadResource("tiles.json");
+
+  Tile* tile_e0 = tile_f.newFromName("E", 0);
+  Tile* tile_e1 = tile_f.newFromName("E", 1);
+  Tile* tile_e2 = tile_f.newFromName("E", 2);
+  Tile* tile_e3 = tile_f.newFromName("E", 3);
+  Tile* tile_e4 = tile_f.newFromName("E", 4);
+  Tile* tile_e5 = tile_f.newFromName("E", 5);
+  Tile* tile_d  = tile_f.newFromName("D", 6);
+  tile_e0->setX(0).setY(0).setRotation(0);
+  tile_e1->setX(0).setY(1).setRotation(2);
+  tile_e2->setX(-1).setY(0).setRotation(3);
+  tile_e3->setX(-2).setY(0).setRotation(1);
+  tile_e4->setX(0).setY(-1).setRotation(2);
+  tile_e5->setX(2).setY(0).setRotation(3);
+  tile_d->setX(1).setY(0).setRotation(0);
+
+  FieldRegion field_region(0, nullptr);
+  field_region.addSegment(tile_e0->getFieldSegments()->at(0));
+  field_region.addSegment(tile_e2->getFieldSegments()->at(0));
+  field_region.addSegment(tile_e4->getFieldSegments()->at(0));
+  field_region.addSegment(tile_d->getFieldSegments()->at(1));
+  CityRegion city_region0(1, nullptr);
+  city_region0.addSegment(tile_e0->getCitySegments()->at(0));
+  city_region0.addSegment(tile_e1->getCitySegments()->at(0));
+  CityRegion city_region1(2, nullptr);
+  city_region1.addSegment(tile_e2->getCitySegments()->at(0));
+  city_region1.addSegment(tile_e3->getCitySegments()->at(0));
+  CityRegion city_region2(3, nullptr);
+  city_region2.addSegment(tile_d->getCitySegments()->at(0));
+  city_region2.addSegment(tile_e5->getCitySegments()->at(0));
+  CityRegion city_region3(2, nullptr);
+  city_region3.addSegment(tile_e4->getCitySegments()->at(0));
+  test_assert("field_region_tests#0", city_region0.isCompleted());
+  test_assert("field_region_tests#1", city_region1.isCompleted());
+  test_assert("field_region_tests#2", city_region2.isCompleted());
+  test_assert("field_region_tests#3", !city_region3.isCompleted());
+
+  std::vector<CityRegion*> city_regions;
+  city_regions.push_back(&city_region0);
+  city_regions.push_back(&city_region1);
+  city_regions.push_back(&city_region2);
+  city_regions.push_back(&city_region3);
+  test_assert("field_region_tests#4", field_region.calculatePoint(&city_regions) == 9);
+
+  delete tile_e0;
+  delete tile_e1;
+  delete tile_e2;
+  delete tile_e3;
+  delete tile_e4;
+  delete tile_e5;
+}
+
 void loop_road_region_tests(TileFactory* tile_f) {
   Tile* tile0 = tile_f->newFromName("V", 0);
   Tile* tile1 = tile_f->newFromName("V", 1);
@@ -370,6 +425,7 @@ void tests() {
   segment_tests();
   cloister_region_tests();
   city_region_tests();
+  field_region_tests();
   road_region_tests();
   game_context_tests();
 }

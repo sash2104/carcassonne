@@ -72,6 +72,8 @@ class FieldRegion : public Region {
     FieldRegion(int id, Board* board);
     bool isCompleted();
     int calculatePoint();
+    // テストをしやすくするため
+    int calculatePoint(const std::vector<CityRegion*>* city_regions);
     RegionType getType() const;
     bool isAdjacentWith(const CityRegion* city_region);
   private:

@@ -235,8 +235,12 @@ bool FieldRegion::isCompleted() {
 }
 
 int FieldRegion::calculatePoint() {
+ const std::vector<CityRegion*>* city_regions = getBoard()->getCityRegions();
+ return calculatePoint(city_regions);
+}
+
+int FieldRegion::calculatePoint(const std::vector<CityRegion*>* city_regions) {
   int point = 0;
- const  std::vector<CityRegion*>* city_regions = getBoard()->getCityRegions();
   for (auto it = city_regions->cbegin(); it != city_regions->cend(); it++) {
     CityRegion* region = *it;
     if (!region->isMerged() && region->isCompleted() && isAdjacentWith(region)) {
