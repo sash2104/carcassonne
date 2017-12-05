@@ -10,7 +10,7 @@
 
 using json = nlohmann::json;
 
-bool TileFactory::loadResource(const char* resource_file) {
+void TileFactory::loadResource(const char* resource_file) {
   std::ifstream i(resource_file);
   json j;
   i >> j;
@@ -18,7 +18,6 @@ bool TileFactory::loadResource(const char* resource_file) {
     TileParts* parts = constractTileParts(&(*it));
     parts_map_[parts->getName()] = parts;
   }
-  return true;
 }
 
 TileFactory::TileFactory() : parts_map_() {

@@ -1,3 +1,4 @@
+#include <cassert>
 
 #include "region.hpp"
 #include "segment.hpp"
@@ -37,6 +38,7 @@ bool Segment::hasPennant() const {
 }
 
 bool Segment::isAdjacentTo(int direction) const {
+  assert(direction >= 0 && direction < 4);
   int pre_rotated_d;
   if (type_ != SegmentType::FIELD) {
     pre_rotated_d = modBy4(direction - tile_->getRotation());
@@ -54,10 +56,12 @@ bool Segment::isAdjacentTo(int direction) const {
     return false;
   }
   // ここには到達しない
+  assert(false);
   return true;
 }
 
 void Segment::placeMeeple(MeepleColor meeple) {
+  assert(meeple != MeepleColor::NOT_PLACED);
   placed_meeple_ = meeple;
 }
 

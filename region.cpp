@@ -33,6 +33,7 @@ const std::vector<Segment*>* Region::getSegments() const {
 }
 
 bool Region::mergeRegion(Region* region) {
+  assert(getType() == region->getType());
   if (this != region && !region->isMerged()) {
     auto segments = region->getSegments();
     for (auto it = segments->cbegin(); it != segments->cend(); it++) {
@@ -259,6 +260,7 @@ bool FieldRegion::isAdjacentWith(const CityRegion* city_region) {
       Segment* city_s = *city_it;
       Tile* city_t = city_s->getTile();
       if (field_t->getX() == city_t->getX() && field_t->getY() == city_t->getY()) {
+	assert(field_t == city_t);
         if (field_t->isTwoSegmentAdjacent(field_s->getIndex(), city_s->getIndex())) {
           return true;
         }

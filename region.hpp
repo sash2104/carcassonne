@@ -26,6 +26,7 @@ class Region {
     bool mergeRegion(Region* region);
     bool isMerged() const;
     void merged();
+    // segmentにミープルを置いたときsegmentから呼び出す
     void meepleIsPlacedOnSegment(Segment* segment);
     const std::vector<Segment*>* getMeeplePlacedSegments() const;
     bool meepleIsPlaced() const;

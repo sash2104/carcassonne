@@ -7,6 +7,7 @@
 
 
 GameContext::GameContext(int initial_meeple_n) : containers_(), initial_meeple_n_(initial_meeple_n) {
+  assert(initial_meeple_n > 0);
 }
 
 GameContext::~GameContext() {
@@ -18,6 +19,7 @@ GameContext::~GameContext() {
 }
 
 void GameContext::registerMeeple(MeepleColor color) {
+  assert(color != MeepleColor::NOT_PLACED);
   int k = static_cast<int>(color);
   if (containers_.find(k) != containers_.end()) {
     return;
@@ -45,6 +47,7 @@ void GameContext::endGame() {
 }
 
 void GameContext::returnMeeple(MeepleColor color, int n) {
+  assert(n > 0);
   int k = static_cast<int>(color);
   auto it = containers_.find(k);
   assert(it != containers_.end());

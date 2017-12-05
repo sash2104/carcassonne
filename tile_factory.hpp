@@ -13,7 +13,7 @@ class TileFactory {
   public:
     TileFactory();
     ~TileFactory();
-    bool loadResource(const char* resource_file);
+    void loadResource(const char* resource_file);
     Tile* newFromName(const std::string name, int tile_id);
   private:
     class TileParts {

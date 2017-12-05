@@ -98,7 +98,6 @@ void Board::setInitialTile(Tile* tile) {
 }
 
 void Board::setInitialTile(Tile* tile, int rotation) {
-  assert(rotation >= 0 && rotation < 4);
   if (placed_tiles_.size() != 0) {
     return;
   }
