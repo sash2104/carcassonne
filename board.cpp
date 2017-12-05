@@ -11,7 +11,7 @@
 #include "tile.hpp"
 #include "utils.hpp"
 
-Board::Board(int tile_n) : region_id_(0), tile_map_(tile_n) {
+Board::Board(int tile_n) : region_id_(0), tile_map_(tile_n), placed_tiles_(), city_regions_(), cloister_regions_(), field_regions_(), road_regions_() {
 }
 
 Board::~Board() {
@@ -139,10 +139,10 @@ bool Board::placeTile(Tile* tile, int x, int y, int rotation, std::vector<Segmen
   if (!canPlaceTile(tile, x, y, rotation)) {
     return false;
   }
-  tile->setX(0);
-  tile->setY(0);
+  tile->setX(x);
+  tile->setY(y);
   tile->setRotation(rotation);
-  tile_map_.placeTile(tile, 0, 0);
+  tile_map_.placeTile(tile, x, y);
   placed_tiles_.push_back(tile);
 
   Tile* around_tiles[4] = {
@@ -183,8 +183,8 @@ bool Board::placeTile(Tile* tile, int x, int y, int rotation, std::vector<Segmen
 	region->transferPoint(context, true);
       }
     }
+    adjacent_regions.clear();
   }
-  adjacent_regions.clear();
 
   const std::vector<Segment*>* road_segments = tile->getRoadSegments();
   for (auto it = road_segments->cbegin(); it != road_segments->cend(); it++) {
@@ -218,8 +218,8 @@ bool Board::placeTile(Tile* tile, int x, int y, int rotation, std::vector<Segmen
 	region->transferPoint(context, true);
       }
     }
+    adjacent_regions.clear();
   }
-  adjacent_regions.clear();
 
   const std::vector<Segment*>* field_segments = tile->getFieldSegments();
   for (auto it = field_segments->cbegin(); it != field_segments->cend(); it++) {
@@ -252,8 +252,8 @@ bool Board::placeTile(Tile* tile, int x, int y, int rotation, std::vector<Segmen
         meeple_place_candidates->push_back(my_s);
       }
     }
+    adjacent_regions.clear();
   }
-  adjacent_regions.clear();
 
   for (auto it = cloister_regions_.begin(); it != cloister_regions_.end(); it++) {
     CloisterRegion* region = *it;

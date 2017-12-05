@@ -37,6 +37,7 @@ class Region {
     virtual bool isCompleted() = 0;
     virtual int calculatePoint() = 0;
     virtual RegionType getType() const = 0;
+    void debugPrint() const;
   protected:
     int id_;
     Board* board_;

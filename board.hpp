@@ -30,7 +30,6 @@ class Board {
     const std::vector<RoadRegion*>* getRoadRegions() const;
     bool canPlaceTile(Tile* tile, int x, int y, int rotation);
     bool hasPossiblePlacement(Tile* tile);
-    bool adjacencyIsValid(Tile* tile, int x, int y, int rotation);
     void setInitialTile(Tile* tile);
     void setInitialTile(Tile* tile, int rotation);
     bool placeTile(Tile* tile, int x, int y, int rotation,
@@ -38,6 +37,7 @@ class Board {
     bool placeMeeple(Segment* segment, MeepleColor color, GameContext* context);
     void transferRemainingPoints(GameContext* context, bool returnMeeple);
   private:
+    bool adjacencyIsValid(Tile* tile, int x, int y, int rotation);
     int region_id_;
     TilePositionMap tile_map_;
     std::vector<Tile*> placed_tiles_;

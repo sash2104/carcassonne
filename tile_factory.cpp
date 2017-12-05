@@ -119,20 +119,17 @@ Tile* TileFactory::newFromName(const std::string name, int tile_id) {
 
 TileFactory::TileParts::TileParts(const std::string name,
   const int* cities, const int* roads, const int* fields,
-  bool has_cloister, bool* pennants, int pennants_n) : name_(name) {
+  bool has_cloister, bool* pennants, int pennants_n) : name_(name), has_cloister_(has_cloister), pennants_n_(pennants_n) {
   for (int i = 0; i < 4; i++) {
     cities_[i] = cities[i];
     roads_[i] = roads[i];
     fields_[2 * i] = fields[2 * i];
     fields_[2 * i + 1] = fields[2 * i + 1];
   }
-  has_cloister = has_cloister;
-  pennants_n_ = pennants_n;
   pennants_ = new bool[pennants_n_];
   for (int i = 0; i < pennants_n_; i++) {
     pennants_[i] = pennants[i];
   }
-
   city_segment_n_ = 0;
   for (int i = 0; i < 4; i++) {
     if (city_segment_n_ < cities_[i] + 1) {

@@ -1,4 +1,5 @@
 #include <cassert>
+#include <iostream>
 #include <set>
 #include <utility>
 #include <vector>
@@ -128,6 +129,16 @@ void Region::transferPoint(GameContext* context, bool return_meeple) {
 
 bool Region::pointIsTransfered() const {
   return point_transfered_;
+}
+
+void Region::debugPrint() const {
+  std::cout << "Region#" << id_ << "(" << merged_ << "): ";
+  for (auto it = segments_.begin(); it != segments_.end(); it++) {
+    Segment* s = *it;
+    std::cout << s->getIndex() << "th ";
+    std::cout << static_cast<int>(s->getType()) << " Segment of " << "Tile#" << s->getTile()->getId() << ", ";
+  }
+  std::cout << std::endl;
 }
 
 CityRegion::CityRegion(int id, Board* board) : Region(id, board), completed_(false) {

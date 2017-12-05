@@ -38,11 +38,12 @@ bool Segment::hasPennant() const {
 }
 
 bool Segment::isAdjacentTo(int direction) const {
-  assert(direction >= 0 && direction < 4);
   int pre_rotated_d;
   if (type_ != SegmentType::FIELD) {
+    assert(direction >= 0 && direction < 4);
     pre_rotated_d = modBy4(direction - tile_->getRotation());
   } else {
+    assert(direction >= 0 && direction < 8);
     pre_rotated_d = modBy8(direction - tile_->getRotation() * 2);
   }
   switch (type_) {
