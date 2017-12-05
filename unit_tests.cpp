@@ -419,6 +419,84 @@ void game_context_tests() {
   test_assert("game_context_tests#2.17", context.getGainedPoint(MeepleColor::GREEN, RegionType::FIELD) == 0);
 }
 
+void board_tests() {
+  TileFactory tile_f;
+  tile_f.loadResource("tiles.json");
+  Board board(20);
+  GameContext context(7);
+  context.registerMeeple(MeepleColor::RED);
+  context.registerMeeple(MeepleColor::GREEN);
+  std::vector<Segment*> meeple_place_candidates;
+
+  Tile* tile0 = tile_f.newFromName("D", 0);
+  Tile* tile1 = tile_f.newFromName("E", 1);
+  Tile* tile2 = tile_f.newFromName("C", 2);
+  Tile* tile3 = tile_f.newFromName("B", 3);
+  Tile* tile4 = tile_f.newFromName("U", 4);
+
+  board.setInitialTile(tile0, 3);
+  test_assert("board_tests#0", board.canPlaceTile(tile1, 0, 1, 2));
+  board.placeTile(tile1, 0, 1, 2, &meeple_place_candidates, &context);
+  test_assert("board_tests#1", meeple_place_candidates.size() == 2);
+  meeple_place_candidates.clear();
+  test_assert("board_tests#2", !board.hasPossiblePlacement(tile2));
+  test_assert("board_tests#3", board.canPlaceTile(tile3, 1, 1, 0));
+  board.placeTile(tile3, 1, 1, 0, &meeple_place_candidates, &context);
+  test_assert("board_tests#4", meeple_place_candidates.size() == 2);
+  meeple_place_candidates.clear();
+  test_assert("board_tests#5", board.canPlaceTile(tile4, -1, 0, 1));
+  board.placeTile(tile4, -1, 0, 1, &meeple_place_candidates, &context);
+  test_assert("board_tests#6", meeple_place_candidates.size() == 3);
+  meeple_place_candidates.clear();
+
+  int region_count = 0;
+  const std::vector<CityRegion*>* city_regions = board.getCityRegions();
+  for (auto it = city_regions->begin(); it != city_regions->end(); it++) {
+    CityRegion* r = *it;
+    if (!r->isMerged()) {
+      region_count++;
+    }
+  }
+  test_assert("board_tests#7", region_count == 1);
+
+  region_count = 0;
+  const std::vector<CloisterRegion*>* cloister_regions = board.getCloisterRegions();
+  for (auto it = cloister_regions->begin(); it != cloister_regions->end(); it++) {
+    CloisterRegion* r = *it;
+    if (!r->isMerged()) {
+      region_count++;
+    }
+  }
+  test_assert("board_tests#8", region_count == 1);
+
+  region_count = 0;
+  const std::vector<FieldRegion*>* field_regions = board.getFieldRegions();
+  for (auto it = field_regions->begin(); it != field_regions->end(); it++) {
+    FieldRegion* r = *it;
+    if (!r->isMerged()) {
+      region_count++;
+    }
+  }
+  test_assert("board_tests#9", region_count == 3);
+
+  region_count = 0;
+  const std::vector<RoadRegion*>* road_regions = board.getRoadRegions();
+  for (auto it = road_regions->begin(); it != road_regions->end(); it++) {
+    RoadRegion* r = *it;
+    if (!r->isMerged()) {
+      region_count++;
+    }
+  }
+  test_assert("board_tests#10", region_count == 1);
+  region_count = 0;
+
+  delete tile0;
+  delete tile1;
+  delete tile2;
+  delete tile3;
+  delete tile4;
+}
+
 void tests() {
   tile_position_map_tests();
   tile_tests();
@@ -428,6 +506,7 @@ void tests() {
   field_region_tests();
   road_region_tests();
   game_context_tests();
+  board_tests();
 }
 
 int main(int argc, char* argv[]) {
