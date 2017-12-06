@@ -102,8 +102,7 @@ void cup_city_region_tests(TileFactory* tile_factory) {
   Tile* tile1 = tile_factory->newFromName("E", 1);
   tile0->setX(0).setY(0).setRotation(2);
   tile1->setX(0).setY(-1).setRotation(0);
-  CityRegion region(0, nullptr);
-  region.addSegment(tile0->getCitySegments()->at(0));
+  CityRegion region(0, tile0->getCitySegments()->at(0), nullptr);
   test_assert("cup_city_tests#0", !region.isCompleted());
   test_assert("cup_city_tests#1", region.calculatePoint() == 1);
   region.addSegment(tile1->getCitySegments()->at(0));
@@ -122,8 +121,7 @@ void diamond_city_region_tests(TileFactory* tile_factory) {
   tile1->setX(-1).setY(0).setRotation(1);
   tile2->setX(-1).setY(1).setRotation(2);
   tile3->setX(0).setY(1).setRotation(3);
-  CityRegion region(0, nullptr);
-  region.addSegment(tile0->getCitySegments()->at(0));
+  CityRegion region(0, tile0->getCitySegments()->at(0), nullptr);
   region.addSegment(tile1->getCitySegments()->at(0));
   region.addSegment(tile2->getCitySegments()->at(0));
   test_assert("diamond_city_region_tests#0", !region.isCompleted());
@@ -146,8 +144,7 @@ void diamond_city_region_with_one_pennant_tests(TileFactory* tile_factory) {
   tile1->setX(-1).setY(0).setRotation(1);
   tile2->setX(-1).setY(1).setRotation(2);
   tile3->setX(0).setY(1).setRotation(3);
-  CityRegion region(0, nullptr);
-  region.addSegment(tile0->getCitySegments()->at(0));
+  CityRegion region(0, tile0->getCitySegments()->at(0), nullptr);
   region.addSegment(tile1->getCitySegments()->at(0));
   region.addSegment(tile2->getCitySegments()->at(0));
   test_assert("diamond_city_region_with_one_pennant_tests#0", !region.isCompleted());
@@ -170,8 +167,7 @@ void diamond_city_region_including_i_tile_tests(TileFactory* tile_factory) {
   tile1->setX(-1).setY(0).setRotation(1);
   tile2->setX(-1).setY(1).setRotation(0);
   tile3->setX(0).setY(1).setRotation(3);
-  CityRegion region(0, nullptr);
-  region.addSegment(tile0->getCitySegments()->at(0));
+  CityRegion region(0, tile0->getCitySegments()->at(0), nullptr);
   region.addSegment(tile1->getCitySegments()->at(0));
   region.addSegment(tile3->getCitySegments()->at(0));
   test_assert("diamond_city_region_including_i_tile_tests#0", !region.isCompleted());
@@ -198,12 +194,11 @@ void city_region_tests() {
 
 void cloister_region_tests() {
   Board board(10);
-  CloisterRegion region(0, &board);
   Segment s(0, SegmentType::CLOISTER, false);
   Tile tile(0);
   tile.setX(0).setY(0).setRotation(0);
   s.setTile(&tile);
-  region.addSegment(&s);
+  CloisterRegion region(0, &s, &board);
   TilePositionMap* map = board.getTilePositionMap();
   map->placeTile(&tile, 0, 0);
   test_assert("cloister_region_tests#0", !region.isCompleted());
@@ -243,22 +238,17 @@ void field_region_tests() {
   tile_e5->setX(2).setY(0).setRotation(3);
   tile_d->setX(1).setY(0).setRotation(0);
 
-  FieldRegion field_region(0, nullptr);
-  field_region.addSegment(tile_e0->getFieldSegments()->at(0));
+  FieldRegion field_region(0, tile_e0->getFieldSegments()->at(0), nullptr);
   field_region.addSegment(tile_e2->getFieldSegments()->at(0));
   field_region.addSegment(tile_e4->getFieldSegments()->at(0));
   field_region.addSegment(tile_d->getFieldSegments()->at(1));
-  CityRegion city_region0(1, nullptr);
-  city_region0.addSegment(tile_e0->getCitySegments()->at(0));
+  CityRegion city_region0(1, tile_e0->getCitySegments()->at(0), nullptr);
   city_region0.addSegment(tile_e1->getCitySegments()->at(0));
-  CityRegion city_region1(2, nullptr);
-  city_region1.addSegment(tile_e2->getCitySegments()->at(0));
+  CityRegion city_region1(2, tile_e2->getCitySegments()->at(0), nullptr);
   city_region1.addSegment(tile_e3->getCitySegments()->at(0));
-  CityRegion city_region2(3, nullptr);
-  city_region2.addSegment(tile_d->getCitySegments()->at(0));
+  CityRegion city_region2(3, tile_d->getCitySegments()->at(0), nullptr);
   city_region2.addSegment(tile_e5->getCitySegments()->at(0));
-  CityRegion city_region3(2, nullptr);
-  city_region3.addSegment(tile_e4->getCitySegments()->at(0));
+  CityRegion city_region3(2, tile_e4->getCitySegments()->at(0), nullptr);
   test_assert("field_region_tests#0", city_region0.isCompleted());
   test_assert("field_region_tests#1", city_region1.isCompleted());
   test_assert("field_region_tests#2", city_region2.isCompleted());
@@ -288,8 +278,7 @@ void loop_road_region_tests(TileFactory* tile_factory) {
   tile1->setX(0).setY(-1).setRotation(1);
   tile2->setX(-1).setY(-1).setRotation(2);
   tile3->setX(-1).setY(0).setRotation(3);
-  RoadRegion region(0, nullptr);
-  region.addSegment(tile0->getRoadSegments()->at(0));
+  RoadRegion region(0, tile0->getRoadSegments()->at(0), nullptr);
   region.addSegment(tile1->getRoadSegments()->at(0));
   region.addSegment(tile2->getRoadSegments()->at(0));
   test_assert("loop_road_region_tests#0", !region.isCompleted());
@@ -312,8 +301,7 @@ void loop_road_region_with_cross_road_tests(TileFactory* tile_factory) {
   tile1->setX(0).setY(-1).setRotation(1);
   tile2->setX(-1).setY(-1).setRotation(2);
   tile3->setX(-1).setY(0).setRotation(3);
-  RoadRegion region(0, nullptr);
-  region.addSegment(tile0->getRoadSegments()->at(1));
+  RoadRegion region(0, tile0->getRoadSegments()->at(1), nullptr);
   region.addSegment(tile1->getRoadSegments()->at(0));
   region.addSegment(tile2->getRoadSegments()->at(0));
   test_assert("loop_road_region_with_cross_road_tests#0", !region.isCompleted());
@@ -335,8 +323,7 @@ void non_loop_road_region_tests(TileFactory* tile_factory) {
   tile0->setX(0).setY(0).setRotation(0);
   tile1->setX(0).setY(-1).setRotation(0);
   tile2->setX(0).setY(-2).setRotation(0);
-  RoadRegion region(0, nullptr);
-  region.addSegment(tile0->getRoadSegments()->at(0));
+  RoadRegion region(0, tile0->getRoadSegments()->at(0), nullptr);
   region.addSegment(tile1->getRoadSegments()->at(0));
   test_assert("non_loop_road_region_tests#0", !region.isCompleted());
   test_assert("non_loop_road_region_tests#1", region.calculatePoint() == 2);

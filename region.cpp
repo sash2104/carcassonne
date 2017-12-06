@@ -10,7 +10,8 @@
 #include "segment.hpp"
 #include "utils.hpp"
 
-Region::Region(int id, Board* board) : id_(id), board_(board), merged_(false) {
+Region::Region(int id, Segment* segment, Board* board) : id_(id), board_(board), segments_(), meeple_placed_segments_(), winning_meeples_(), merged_(false), point_transfered_(false) {
+  addSegment(segment);
 }
 
 Region::~Region() {
@@ -141,7 +142,7 @@ void Region::debugPrint() const {
   std::cout << std::endl;
 }
 
-CityRegion::CityRegion(int id, Board* board) : Region(id, board), completed_(false) {
+CityRegion::CityRegion(int id, Segment* segment, Board* board) : Region(id, segment, board), completed_(false) {
 }
 
 bool CityRegion::isCompleted() {
@@ -198,7 +199,7 @@ inline RegionType CityRegion::getType() const {
 }
 
 
-CloisterRegion::CloisterRegion(int id, Board* board) : Region(id, board), completed_(false) {
+CloisterRegion::CloisterRegion(int id, Segment* segment, Board* board) : Region(id, segment, board), completed_(false) {
 }
 
 bool CloisterRegion::isCompleted() {
@@ -238,7 +239,7 @@ inline RegionType CloisterRegion::getType() const {
 }
 
 
-FieldRegion::FieldRegion(int id, Board* board) : Region(id, board) {
+FieldRegion::FieldRegion(int id, Segment* segment, Board* board) : Region(id, segment, board) {
 }
 
 bool FieldRegion::isCompleted() {
@@ -285,7 +286,7 @@ bool FieldRegion::isAdjacentWith(const CityRegion* city_region) {
   return false;
 }
 
-RoadRegion::RoadRegion(int id, Board* board) : Region(id, board), completed_(false) {
+RoadRegion::RoadRegion(int id, Segment* segment, Board* board) : Region(id, segment, board), completed_(false) {
 }
 
 bool RoadRegion::isCompleted() {

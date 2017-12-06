@@ -109,28 +109,24 @@ void Board::setInitialTile(Tile* tile, int rotation) {
   const std::vector<Segment*>* city_segments = tile->getCitySegments();
   for (auto it = city_segments->cbegin(); it != city_segments->cend(); it++) {
     Segment* s = *it;
-    CityRegion* region = new CityRegion(region_id_++, this);
-    region->addSegment(s);
+    CityRegion* region = new CityRegion(region_id_++, s, this);
     city_regions_.push_back(region);
   }
   const std::vector<Segment*>* field_segments = tile->getFieldSegments();
   for (auto it = field_segments->cbegin(); it != field_segments->cend(); it++) {
     Segment* s = *it;
-    FieldRegion* region = new FieldRegion(region_id_++, this);
-    region->addSegment(s);
+    FieldRegion* region = new FieldRegion(region_id_++, s, this);
     field_regions_.push_back(region);
   }
   const std::vector<Segment*>* road_segments = tile->getRoadSegments();
   for (auto it = road_segments->cbegin(); it != road_segments->cend(); it++) {
     Segment* s = *it;
-    RoadRegion* region = new RoadRegion(region_id_++, this);
-    region->addSegment(s);
+    RoadRegion* region = new RoadRegion(region_id_++, s, this);
     road_regions_.push_back(region);
   }
   Segment* cloister_segment = tile->getCloisterSegment();
   if (cloister_segment != nullptr) {
-    CloisterRegion* region = new CloisterRegion(region_id_++, this);
-    region->addSegment(cloister_segment);
+    CloisterRegion* region = new CloisterRegion(region_id_++, cloister_segment, this);
     cloister_regions_.push_back(region);
   }
 }
@@ -165,8 +161,7 @@ bool Board::placeTile(Tile* tile, int x, int y, int rotation, std::vector<Segmen
       }
     }
     if (adjacent_regions.size() == 0) {
-      CityRegion* region = new CityRegion(region_id_++, this);
-      region->addSegment(my_s);
+      CityRegion* region = new CityRegion(region_id_++, my_s, this);
       city_regions_.push_back(region);
       meeple_place_candidates->push_back(my_s);
     } else {
@@ -200,8 +195,7 @@ bool Board::placeTile(Tile* tile, int x, int y, int rotation, std::vector<Segmen
       }
     }
     if (adjacent_regions.size() == 0) {
-      RoadRegion* region = new RoadRegion(region_id_++, this);
-      region->addSegment(my_s);
+      RoadRegion* region = new RoadRegion(region_id_++, my_s, this);
       road_regions_.push_back(region);
       meeple_place_candidates->push_back(my_s);
     } else {
@@ -236,8 +230,7 @@ bool Board::placeTile(Tile* tile, int x, int y, int rotation, std::vector<Segmen
       }
     }
     if (adjacent_regions.size() == 0) {
-      FieldRegion* region = new FieldRegion(region_id_++, this);
-      region->addSegment(my_s);
+      FieldRegion* region = new FieldRegion(region_id_++, my_s, this);
       field_regions_.push_back(region);
       meeple_place_candidates->push_back(my_s);
     } else {
@@ -263,8 +256,7 @@ bool Board::placeTile(Tile* tile, int x, int y, int rotation, std::vector<Segmen
   }
   Segment* cloister_segment = tile->getCloisterSegment();
   if (cloister_segment != nullptr) {
-    CloisterRegion* region = new CloisterRegion(region_id_++, this);
-    region->addSegment(cloister_segment);
+    CloisterRegion* region = new CloisterRegion(region_id_++, cloister_segment, this);
     cloister_regions_.push_back(region);
     meeple_place_candidates->push_back(cloister_segment);
   }

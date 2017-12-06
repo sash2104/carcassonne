@@ -23,7 +23,7 @@ enum class RegionType {
 // それぞれ、得点の計算方法や完成の条件が違っている
 class Region {
   public:
-    Region(int id, Board* board);
+    Region(int id, Segment* segment, Board* board);
     virtual ~Region();
     int getId() const;
     Board* getBoard() const;
@@ -57,7 +57,7 @@ class Region {
 
 class CityRegion : public Region {
   public:
-    CityRegion(int id, Board* board);
+    CityRegion(int id, Segment* segment, Board* board);
     bool isCompleted();
     int calculatePoint();
     RegionType getType() const;
@@ -67,7 +67,7 @@ class CityRegion : public Region {
 
 class CloisterRegion : public Region {
   public:
-    CloisterRegion(int id, Board* board);
+    CloisterRegion(int id, Segment* segment, Board* board);
     bool isCompleted();
     int calculatePoint();
     RegionType getType() const;
@@ -77,7 +77,7 @@ class CloisterRegion : public Region {
 
 class FieldRegion : public Region {
   public:
-    FieldRegion(int id, Board* board);
+    FieldRegion(int id, Segment* segment, Board* board);
     bool isCompleted();
     int calculatePoint();
     // テストをしやすくするため
@@ -90,7 +90,7 @@ class FieldRegion : public Region {
 
 class RoadRegion : public Region {
   public:
-    RoadRegion(int id, Board* board);
+    RoadRegion(int id, Segment* segment, Board* board);
     bool isCompleted();
     int calculatePoint();
     RegionType getType() const;
