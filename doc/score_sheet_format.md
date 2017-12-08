@@ -28,7 +28,7 @@ SCORE_SHEETはひとつの試合に関する棋譜の情報を表す。
 | フィールド名 | 必須か | 値の型 | 説明 |
 |---|---|---|---|
 | "info" | 必須 | object | 試合の情報を表す[INFO](#info)という形式のobjectが値にくる。 |
-| "placements" | 必須 | object | 手順の情報を表す[PLACEMENTS](#placements)という形式のarrayが値にくる。 | 
+| "placements" | 必須 | array | 手順の情報を表す[PLACEMENTS](#placements)という形式のarrayが値にくる。 |
 
 ### INFO
 
