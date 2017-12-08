@@ -64,6 +64,7 @@ bool Segment::isAdjacentTo(int direction) const {
 void Segment::placeMeeple(MeepleColor meeple) {
   assert(meeple != MeepleColor::NOT_PLACED);
   placed_meeple_ = meeple;
+  region_->meepleIsPlacedOnSegment(this);
 }
 
 MeepleColor Segment::getPlacedMeeple() const {

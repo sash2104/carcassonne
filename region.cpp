@@ -123,6 +123,7 @@ void Region::transferPoint(GameContext* context, bool return_meeple) {
     MeepleColor color = *it;
     context->addPoint(color, getType(), point);
   }
+  point_transfered_ = true;
   if (return_meeple) {
     returnMeeples(context);
   }

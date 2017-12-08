@@ -132,6 +132,7 @@ void Board::setInitialTile(Tile* tile, int rotation) {
 }
 
 bool Board::placeTile(Tile* tile, int x, int y, int rotation, std::vector<Segment*>* meeple_place_candidates, GameContext* context) {
+  assert(meeple_place_candidates->size() == 0);
   if (!canPlaceTile(tile, x, y, rotation)) {
     return false;
   }
@@ -174,7 +175,7 @@ bool Board::placeTile(Tile* tile, int x, int y, int rotation, std::vector<Segmen
       }
       if (!region->meepleIsPlaced()) {
         meeple_place_candidates->push_back(my_s);
-      } else if (region->isCompleted()) {
+      } else if (region->isCompleted() && !region->pointIsTransfered()) {
 	region->transferPoint(context, true);
       }
     }
@@ -208,7 +209,7 @@ bool Board::placeTile(Tile* tile, int x, int y, int rotation, std::vector<Segmen
       }
       if (!region->meepleIsPlaced()) {
         meeple_place_candidates->push_back(my_s);
-      } else if (region->isCompleted()) {
+      } else if (region->isCompleted() && !region->pointIsTransfered()) {
 	region->transferPoint(context, true);
       }
     }
@@ -250,7 +251,7 @@ bool Board::placeTile(Tile* tile, int x, int y, int rotation, std::vector<Segmen
 
   for (auto it = cloister_regions_.begin(); it != cloister_regions_.end(); it++) {
     CloisterRegion* region = *it;
-    if (region->isCompleted()) {
+    if (region->isCompleted() && !region->pointIsTransfered()) {
       region->transferPoint(context, true);
     }
   }
@@ -280,25 +281,25 @@ bool Board::placeMeeple(Segment* segment, MeepleColor color, GameContext* contex
 void Board::transferRemainingPoints(GameContext* context, bool return_meeple) {
   for (auto it = city_regions_.begin(); it != city_regions_.end(); it++) {
     CityRegion* region = *it;
-    if (!region->pointIsTransfered()) {
+    if (!region->isMerged() && !region->pointIsTransfered()) {
       region->transferPoint(context, return_meeple);
     }
   }
   for (auto it = cloister_regions_.begin(); it != cloister_regions_.end(); it++) {
     CloisterRegion* region = *it;
-    if (!region->pointIsTransfered()) {
+    if (!region->isMerged() && !region->pointIsTransfered()) {
       region->transferPoint(context, return_meeple);
     }
   }
   for (auto it = field_regions_.begin(); it != field_regions_.end(); it++) {
     FieldRegion* region = *it;
-    if (!region->pointIsTransfered()) {
+    if (!region->isMerged() && !region->pointIsTransfered()) {
       region->transferPoint(context, return_meeple);
     }
   }
   for (auto it = road_regions_.begin(); it != road_regions_.end(); it++) {
     RoadRegion* region = *it;
-    if (!region->pointIsTransfered()) {
+    if (!region->isMerged() && !region->pointIsTransfered()) {
       region->transferPoint(context, return_meeple);
     }
   }
