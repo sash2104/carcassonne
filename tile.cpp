@@ -173,8 +173,8 @@ bool Tile::canAdjacentWith(int direction, Tile* tile, int rotation) {
 }
 
 bool Tile::isTwoSegmentAdjacent(int field_segment_index, int city_segment_index) {
-  assert(field_segment_index >= 0 && field_segment_index < field_segments_->size());
-  assert(city_segment_index >= 0 && city_segment_index < city_segments_->size());
+  assert(field_segment_index >= 0 && field_segment_index < (int) field_segments_->size());
+  assert(city_segment_index >= 0 && city_segment_index < (int) city_segments_->size());
   for (int field_d = 0; field_d < 8; field_d++) {
     if (fields_[field_d] != field_segment_index) {
       continue;

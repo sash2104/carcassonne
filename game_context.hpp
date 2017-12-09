@@ -37,14 +37,14 @@ class GameContext {
         int& returnedMeepleCount();
         int& onBoardMeepleCount();
       private:
-        int total_point_;
         std::map<int, int> gained_points_;
+        int total_point_;
         int holding_meeple_count_;
         int returned_meeple_count_;
         int on_board_meeple_count_;
     };
-    const int initial_meeple_n_;
     std::map<int, Container*> containers_;
+    const int initial_meeple_n_;
 };
 
 #endif

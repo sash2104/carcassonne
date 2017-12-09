@@ -1,3 +1,4 @@
+#include <cstddef>
 #include <iostream>
 #include <fstream>
 #include <string>
@@ -109,7 +110,7 @@ Tile* TileFactory::newFromName(const std::string name, int tile_id) {
 
   const char* str = name.c_str();
   char* s = new char[name.size() + 1];
-  for (int i = 0; i < name.size() + 1; i++) {
+  for (std::size_t i = 0; i < name.size() + 1; i++) {
     s[i] = str[i];
   }
 

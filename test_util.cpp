@@ -1,4 +1,5 @@
 #include <iostream>
+#include <string>
 
 #include "test_util.hpp"
 
@@ -10,7 +11,7 @@ void start_test() {
   failed_n = 0;
 }
 
-void test_assert(char* test_name, bool cond) {
+void test_assert(const std::string& test_name, bool cond) {
   if (cond) {
     std::cout << "Passed: " << test_name << std::endl;
     passed_n++;
