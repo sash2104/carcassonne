@@ -108,13 +108,15 @@ Tile* TileFactory::newFromName(const std::string name, int tile_id) {
     }
   }
 
+  /*
   const char* str = name.c_str();
   char* s = new char[name.size() + 1];
   for (std::size_t i = 0; i < name.size() + 1; i++) {
     s[i] = str[i];
   }
+*/
 
-  return new Tile(tile_id, s, border_types, parts->getCities(), parts->getRoads(), parts->getFields(),
+  return new Tile(tile_id, name, border_types, parts->getCities(), parts->getRoads(), parts->getFields(),
     city_segments, field_segments, road_segments, cloister_segment);
 }
 

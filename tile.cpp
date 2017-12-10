@@ -1,12 +1,13 @@
 #include <cassert>
 #include <iostream>
+#include <string>
 #include <vector>
 
 #include "segment.hpp"
 #include "tile.hpp"
 #include "utils.hpp"
 
-Tile::Tile(int id, char* name, BorderType* border_types, const int* cities, const int* roads, const int* fields,
+Tile::Tile(int id, const std::string& name, BorderType* border_types, const int* cities, const int* roads, const int* fields,
   std::vector<Segment*>* city_segments, std::vector<Segment*>* field_segments,
   std::vector<Segment*>* road_segments, Segment* cloister_segment)
   : id_(id), name_(name), city_segments_(city_segments),
@@ -37,8 +38,7 @@ Tile::Tile(int id, char* name, BorderType* border_types, const int* cities, cons
   }
 }
 
-Tile::Tile(int id) : id_(id) {
-  name_ = nullptr;
+Tile::Tile(int id) : id_(id), name_("") {
   city_segments_ = new std::vector<Segment*>();
   field_segments_ = new std::vector<Segment*>();
   road_segments_ = new std::vector<Segment*>();
@@ -68,7 +68,7 @@ Tile::~Tile() {
 
 int Tile::getId() const { return id_; }
 
-const char* Tile::getName() const { return name_; }
+const std::string& Tile::getName() const { return name_; }
 
 int Tile::getX() const { return x_; }
 

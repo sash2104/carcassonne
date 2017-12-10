@@ -1,6 +1,7 @@
 #ifndef __TILEINFO_HPP__
 #define __TILEINFO_HPP__
 
+#include <string>
 #include <vector>
 
 #include "segment.hpp"
@@ -13,13 +14,13 @@ enum class BorderType {
 
 class Tile {
   public:
-    Tile(int id, char* name, BorderType* borderTypes, const int* cities, const int* roads, const int* fields,
+    Tile(int id, const std::string& name, BorderType* borderTypes, const int* cities, const int* roads, const int* fields,
        std::vector<Segment*>* city_segments, std::vector<Segment*>* field_segments,
        std::vector<Segment*>* road_segments, Segment* cloister_segment);
     Tile(int id); // for testing
     ~Tile();
     int getId() const;
-    const char* getName() const;
+    const std::string& getName() const;
     int getX() const;
     int getY() const;
     int getRotation() const;
@@ -52,7 +53,7 @@ class Tile {
     void print_info();
   private:
     int id_; // タイルごとに固有のid
-    char* name_;
+    std::string name_;
     int x_;
     int y_;
     int rotation_;
