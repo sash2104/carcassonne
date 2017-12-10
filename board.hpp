@@ -1,28 +1,51 @@
 #ifndef __BOARD_HPP__
 #define __BOARD_HPP__
 
-#include <array>
 #include <string>
 
+#include "game_context.hpp"
+#include "meeple_color.hpp"
+#include "region.hpp"
+#include "segment.hpp"
 #include "tile.hpp"
-#include "tile_holder.hpp"
+#include "tile_position_map.hpp"
+
+class Region;
+class Segment;
+class CityRegion;
+class CloisterRegion;
+class FieldRegion;
+class GameContext;
+class LargeTileHolder;
+class RoadRegion;
 
 class Board {
   public:
-    Board();
+    Board(int tile_n);
     ~Board();
-    static const int N_TILES = 72;
-    static const int FIELD_SIZE = 441;
-
-    const Tile* getCurrentTile(int turn) const;
-    int getFieldPosId(int x, int y);
-    void setPile(const std::vector<Tile*> &tiles);
-    void placeTile(const Tile* tile, int dir, int x, int y); // field_の(x, y)にタイルをdirの向きに配置
-    void printField(); // LargeTileHolderが埋まった位置のpos_idのリストを出力
+    TilePositionMap* getTilePositionMap();
+    const std::vector<CityRegion*>* getCityRegions() const;
+    const std::vector<CloisterRegion*>* getCloisterRegions() const;
+    const std::vector<FieldRegion*>* getFieldRegions() const;
+    const std::vector<RoadRegion*>* getRoadRegions() const;
+    bool canPlaceTile(Tile* tile, int x, int y, int rotation);
+    bool hasPossiblePlacement(Tile* tile);
+    void setInitialTile(Tile* tile);
+    void setInitialTile(Tile* tile, int rotation);
+    bool placeTile(Tile* tile, int x, int y, int rotation,
+      std::vector<Segment*>* meeple_place_candidates, GameContext* context);
+    bool placeMeeple(Segment* segment, MeepleColor color, GameContext* context);
+    // ゲーム終了後、残りの得点を計算するときに使う
+    void transferRemainingPoints(GameContext* context, bool return_meeple);
   private:
-    std::array<const Tile*, N_TILES> pile_; // 未配置のタイルを管理
-    std::array<LargeTileHolder*, FIELD_SIZE> field_; // 配置済のタイルを管理
-    int num_remain_tiles_;
+    bool adjacencyIsValid(Tile* tile, int x, int y, int rotation);
+    int region_id_;
+    TilePositionMap tile_map_;
+    std::vector<Tile*> placed_tiles_;
+    std::vector<CityRegion*> city_regions_;
+    std::vector<CloisterRegion*> cloister_regions_;
+    std::vector<FieldRegion*> field_regions_;
+    std::vector<RoadRegion*> road_regions_;
 };
 
 #endif
