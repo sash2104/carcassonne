@@ -36,12 +36,14 @@ class TilePositionMap {
     // (x, y)にタイルを置くことが可能ならtrueを返す。
     // 置くことが可能の意味はgetPlacablePositionsと同じ。
     bool isPlacablePosition(int x, int y) const;
+    Tile* undo(int x, int y);
   private:
     int size_;
     int shift_;
     Tile** tiles_;
     std::set<BoardPosition> placables_;
     void checkAndAddPlacablePosition(int x, int y);
+    void checkAndRemovePlacablePosition(int x, int y);
     int convertToIndex(int x, int y) const;
 };
 
