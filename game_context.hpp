@@ -1,7 +1,6 @@
 #ifndef __GAME_CONTEXT_HPP__
 #define __GAME_CONTEXT_HPP__
 
-#include <map>
 #include <unordered_map>
 
 #include "meeple_color.hpp"
@@ -32,18 +31,18 @@ class GameContext {
       public:
         Container();
         int& totalPoint();
-        std::map<int, int>& gainedPoints();
+        std::unordered_map<int, int>& gainedPoints();
         int& holdingMeepleCount();
         int& returnedMeepleCount();
         int& onBoardMeepleCount();
       private:
-        std::map<int, int> gained_points_;
+        std::unordered_map<int, int> gained_points_;
         int total_point_;
         int holding_meeple_count_;
         int returned_meeple_count_;
         int on_board_meeple_count_;
     };
-    std::map<int, Container*> containers_;
+    std::unordered_map<int, Container*> containers_;
     const int initial_meeple_n_;
 };
 

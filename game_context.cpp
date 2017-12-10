@@ -1,5 +1,5 @@
 #include <cassert>
-#include <map>
+#include <unordered_map>
 
 #include "game_context.hpp"
 #include "meeple_color.hpp"
@@ -140,7 +140,7 @@ int& GameContext::Container::totalPoint() {
   return total_point_;
 }
 
-std::map<int, int>& GameContext::Container::gainedPoints() {
+std::unordered_map<int, int>& GameContext::Container::gainedPoints() {
   return gained_points_;
 }
 

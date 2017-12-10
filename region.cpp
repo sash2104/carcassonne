@@ -1,5 +1,6 @@
 #include <cassert>
 #include <iostream>
+#include <map>
 #include <set>
 #include <utility>
 #include <vector>
