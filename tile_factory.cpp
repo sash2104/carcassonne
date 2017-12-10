@@ -11,8 +11,8 @@
 
 using json = nlohmann::json;
 
-void TileFactory::loadResource(const char* resource_file) {
-  std::ifstream i(resource_file);
+void TileFactory::loadResource(const std::string& resource_file) {
+  std::ifstream i(resource_file.c_str());
   json j;
   i >> j;
   for (json::iterator it = j.begin(); it != j.end(); ++it) {
