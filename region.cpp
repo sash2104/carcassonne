@@ -11,7 +11,10 @@
 #include "segment.hpp"
 #include "utils.hpp"
 
-Region::Region(int id, Segment* segment, Board* board) : id_(id), board_(board), segments_(), meeple_placed_segments_(), winning_meeples_(), merged_(false), point_transfered_(false) {
+Region::Region(int id, Segment* segment, Board* board)
+  : id_(id), board_(board), segments_(), meeple_placed_count_(0), winning_meeples_(),
+    parent_(nullptr), first_child_(nullptr), last_child_(nullptr), prev_sibling_(nullptr),
+    point_transfered_(false) {
   addSegment(segment);
 }
 
@@ -27,58 +30,109 @@ Board* Region::getBoard() const {
 }
 
 void Region::addSegment(Segment* segment) {
+  assert(segment->getRegion() == nullptr);
   segments_.push_back(segment);
   segment->setRegion(this);
 }
 
-const std::vector<Segment*>* Region::getSegments() const {
-  return &segments_;
+void Region::undoAddSegment(Segment* segment) {
+  assert(segment->getRegion() == this);
+  assert(!segment->meepleIsPlaced()); // ミープルは取り除いておく必要がある
+  assert(segments_.size() > 1); // 最初のセグメントは取り除けない
+  for (auto it = segments_.begin(); it != segments_.end(); ++it) {
+    Segment* s = *it;
+    if (s == segment) {
+      segments_.erase(it);
+      segment->unsetRegion();
+      return;
+    }
+  }
+  // ここに来てはいけない
+  assert(false);
+}
+
+Region::SegmentIterator Region::segmentBegin() const {
+  return Region::SegmentIterator(this, this, segments_.begin());
+}
+
+Region::SegmentIterator Region::segmentEnd() const {
+  return Region::SegmentIterator(this, this, segments_.end());
 }
 
 bool Region::mergeRegion(Region* region) {
   assert(getType() == region->getType());
   if (this != region && !region->isMerged()) {
-    auto segments = region->getSegments();
-    for (auto it = segments->cbegin(); it != segments->cend(); it++) {
+    for (auto it = region->segmentBegin(); it != region->segmentEnd(); ++it) {
       Segment* s = *it;
-      addSegment(s);
-      if (s->meepleIsPlaced()) {
-        meeple_placed_segments_.push_back(s);
-      }
+      s->setRegion(this);
     }
-    region->merged();
+    appendChild(region);
+    meeple_placed_count_ += region->meeple_placed_count_;
     return true;
   }
   return false;
 }
 
-bool Region::isMerged() const {
-  return merged_;
+inline void Region::appendChild(Region* region) {
+  if (first_child_ == nullptr) {
+    first_child_ = last_child_ = region;
+  } else {
+    region->prev_sibling_ = last_child_;
+    last_child_ = region;
+  }
+  region->parent_ = this;
 }
 
-void Region::merged() {
-  merged_ = true;
+void Region::undoMergeRegion(Region* region) {
+  assert(region->parent_ == this);
+  assert(last_child_ == region);
+  for (auto it = region->segmentBegin(); it != region->segmentEnd(); ++it) {
+    Segment* s = *it;
+    s->setRegion(region);
+  }
+  removeLastChild();
+}
+
+inline void Region::removeLastChild() {
+  Region* removed = last_child_;
+  last_child_ = removed->prev_sibling_;
+  if (last_child_ == nullptr) {
+    first_child_ = nullptr;
+  } else {
+    removed->prev_sibling_ = nullptr;
+  }
+  removed->parent_ = nullptr;
+}
+
+bool Region::isMerged() const {
+  return parent_ != nullptr;
 }
 
 void Region::meepleIsPlacedOnSegment(Segment* segment) {
   assert(segment->getRegion() == this);
   assert(segment->meepleIsPlaced());
-  meeple_placed_segments_.push_back(segment);
+  // TODO: 色毎にカウントする
+  meeple_placed_count_++;
 }
 
-const std::vector<Segment*>* Region::getMeeplePlacedSegments() const {
-  return &meeple_placed_segments_;
+void Region::meepleIsUnplacedOnSegment(Segment* segment) {
+  assert(segment->getRegion() == this);
+  assert(!segment->meepleIsPlaced());
+  meeple_placed_count_++;
 }
 
 bool Region::meepleIsPlaced() const {
-  return meeple_placed_segments_.size() != 0;
+  return meeple_placed_count_ != 0;
 }
 
 void Region::getWinningMeeples(std::vector<MeepleColor>* winning_meeples) const {
   assert(winning_meeples->size() == 0);
   std::map<int, int> counts;
-  for (auto it = meeple_placed_segments_.begin(); it != meeple_placed_segments_.end(); it++) {
+  for (auto it = segmentBegin(); it != segmentEnd(); ++it) {
     Segment* s = *it;
+    if (!s->meepleIsPlaced()) {
+      continue;
+    }
     MeepleColor color = s->getPlacedMeeple();
     assert(color != MeepleColor::NOT_PLACED);
     int k = static_cast<int>(color);
@@ -92,13 +146,13 @@ void Region::getWinningMeeples(std::vector<MeepleColor>* winning_meeples) const 
     counts[k] = count;
   }
   int max_count = 1;
-  for (auto it = counts.begin(); it != counts.end(); it++) {
+  for (auto it = counts.begin(); it != counts.end(); ++it) {
     int count = it->second;
     if (count > max_count) {
       max_count = count;
     }
   }
-  for (auto it = counts.begin(); it != counts.end(); it++) {
+  for (auto it = counts.begin(); it != counts.end(); ++it) {
     int k = it->first;
     int count = it->second;
     if (count == max_count) {
@@ -108,11 +162,12 @@ void Region::getWinningMeeples(std::vector<MeepleColor>* winning_meeples) const 
 }
 
 void Region::returnMeeples(GameContext* context) {
-  const std::vector<Segment*>* segments = getMeeplePlacedSegments();
-  for (auto it = segments->begin(); it != segments->end(); it++) {
+  for (auto it = segmentBegin(); it != segmentEnd(); ++it) {
     Segment* s = *it;
-    MeepleColor color = s->getPlacedMeeple();
-    context->returnMeeple(color, 1);
+    if (s->meepleIsPlaced()) {
+      MeepleColor color = s->getPlacedMeeple();
+      context->returnMeeple(color, 1);
+    }
   }
 }
 
@@ -120,7 +175,7 @@ void Region::transferPoint(GameContext* context, bool return_meeple) {
   int point = calculatePoint();
   std::vector<MeepleColor> winning_meeples;
   getWinningMeeples(&winning_meeples);
-  for (auto it = winning_meeples.begin(); it != winning_meeples.end(); it++) {
+  for (auto it = winning_meeples.begin(); it != winning_meeples.end(); ++it) {
     MeepleColor color = *it;
     context->addPoint(color, getType(), point);
   }
@@ -135,14 +190,74 @@ bool Region::pointIsTransfered() const {
 }
 
 void Region::debugPrint() const {
-  std::cout << "Region#" << id_ << "(" << merged_ << "): ";
-  for (auto it = segments_.begin(); it != segments_.end(); it++) {
+  std::cout << "Region#" << id_ << "(" << isMerged() << "): ";
+  for (auto it = segments_.begin(); it != segments_.end(); ++it) {
     Segment* s = *it;
     std::cout << s->getIndex() << "th ";
     std::cout << static_cast<int>(s->getType()) << " Segment of " << "Tile#" << s->getTile()->getId() << ", ";
   }
   std::cout << std::endl;
 }
+
+
+Region::SegmentIterator::SegmentIterator(const Region::SegmentIterator& iter)
+  : start_(iter.start_), current_(iter.current_), iter_(iter.iter_) {
+}
+
+Region::SegmentIterator::SegmentIterator(const Region* start, const Region* current,
+  std::vector<Segment*>::const_iterator iter)
+  : start_(start), current_(start), iter_(iter) {
+}
+
+Region::SegmentIterator& Region::SegmentIterator::operator++() {
+  iter_++;
+  advanceToActualNext();
+  return *this;
+}
+
+Segment* Region::SegmentIterator::operator*() {
+  return *iter_;
+}
+
+bool Region::SegmentIterator::operator==(const SegmentIterator& iter) {
+  return start_ == iter.start_ && current_ == iter.current_ && iter_ == iter.iter_;
+}
+
+bool Region::SegmentIterator::operator!=(const SegmentIterator& iter) {
+  return start_ != iter.start_ || current_ != iter.current_ || iter_ != iter.iter_;
+}
+
+inline void Region::SegmentIterator::advanceToActualNext() {
+  if (iter_ != current_->segments_.end()) {
+    return;
+  }
+  if (current_->first_child_ != nullptr) {
+    current_ = current_->first_child_;
+    iter_ = current_->segments_.begin();
+    return;
+   }
+  if (current_->prev_sibling_ != nullptr) {
+    current_ = current_->prev_sibling_;
+    iter_ = current_->segments_.begin();
+    return;
+  }
+  for (Region* region = current_->parent_;
+       region != nullptr && region != start_;
+       region = region->parent_) {
+    if (region->prev_sibling_ != nullptr) {
+      current_ = region->prev_sibling_;
+      iter_ = current_->segments_.begin();
+      return;
+    }
+  }
+  setToEnd();
+}
+
+inline void Region::SegmentIterator::setToEnd() {
+  current_ = start_;
+  iter_ = current_->segments_.end();
+}
+
 
 CityRegion::CityRegion(int id, Segment* segment, Board* board) : Region(id, segment, board), completed_(false) {
 }
@@ -151,8 +266,7 @@ bool CityRegion::isCompleted() {
   if (completed_) {
     return true;
   }
-  const std::vector<Segment*>* segments = getSegments();
-  for (auto it = segments->cbegin(); it != segments->cend(); it++) {
+  for (auto it = segmentBegin(); it != segmentEnd(); ++it) {
     Segment* s = *it;
     for (int d = 0; d < 4; d++) {
       if (!s->isAdjacentTo(d)) {
@@ -162,7 +276,7 @@ bool CityRegion::isCompleted() {
       int adjacent_x = p.first;
       int adjacent_y = p.second;
       bool adjacent_segment_is_found = false;
-      for (auto it2 = segments->cbegin(); it2 != segments->cend(); it2++) {
+      for (auto it2 = segmentBegin(); it2 != segmentEnd(); ++it2) {
         Segment* s2 = *it2;
         if (s2->getTile()->getX() == adjacent_x && s2->getTile()->getY() == adjacent_y &&
             s2->isAdjacentTo(modBy4(d + 2))) {
@@ -180,10 +294,9 @@ bool CityRegion::isCompleted() {
 }
 
 int CityRegion::calculatePoint() {
-  const std::vector<Segment*>* segments = getSegments();
   int pennant_count = 0;
   std::set<int> uniq_tiles;
-  for (auto it = segments->cbegin(); it != segments->cend(); it++) {
+  for (auto it = segmentBegin(); it != segmentEnd(); ++it) {
     Segment* s = *it;
     std::pair<std::set<int>::iterator, bool> res = uniq_tiles.insert(s->getTile()->getId());
     if (res.second) {
@@ -216,9 +329,8 @@ int CloisterRegion::calculatePoint() {
     return 9;
   }
   const TilePositionMap* m = getBoard()->getTilePositionMap();
-  const std::vector<Segment*>* segments = getSegments();
-  assert(segments->size() == 1);
-  const Segment* segment = segments->at(0);
+  assert(segments_.size() == 1);
+  const Segment* segment = segments_.at(0);
   const Tile* tile = segment->getTile();
   int x = tile->getX();
   int y = tile->getY();
@@ -269,16 +381,14 @@ inline RegionType FieldRegion::getType() const {
 }
 
 bool FieldRegion::isAdjacentWith(const CityRegion* city_region) {
-  const std::vector<Segment*>* field_segments = getSegments();
-  const std::vector<Segment*>* city_segments = city_region->getSegments();
-  for (auto field_it = field_segments->cbegin(); field_it != field_segments->cend(); field_it++) {
+  for (auto field_it = segmentBegin(); field_it != segmentEnd(); ++field_it) {
     Segment* field_s = *field_it;
     Tile* field_t = field_s->getTile();
-    for (auto city_it = city_segments->cbegin(); city_it != city_segments->cend(); city_it++) {
+    for (auto city_it = city_region->segmentBegin(); city_it != city_region->segmentEnd(); ++city_it) {
       Segment* city_s = *city_it;
       Tile* city_t = city_s->getTile();
       if (field_t->getX() == city_t->getX() && field_t->getY() == city_t->getY()) {
-	assert(field_t == city_t);
+        assert(field_t == city_t);
         if (field_t->isTwoSegmentAdjacent(field_s->getIndex(), city_s->getIndex())) {
           return true;
         }
@@ -295,8 +405,7 @@ bool RoadRegion::isCompleted() {
   if (completed_) {
     return true;
   }
-  const std::vector<Segment*>* segments = getSegments();
-  for (auto it = segments->cbegin(); it != segments->cend(); it++) {
+  for (auto it = segmentBegin(); it != segmentEnd(); ++it) {
     Segment* s = *it;
     for (int d = 0; d < 4; d++) {
       if (!s->isAdjacentTo(d)) {
@@ -306,7 +415,7 @@ bool RoadRegion::isCompleted() {
       int adjacent_x = p.first;
       int adjacent_y = p.second;
       bool adjacent_segment_is_found = false;
-      for (auto it2 = segments->cbegin(); it2 != segments->cend(); it2++) {
+      for (auto it2 = segmentBegin(); it2 != segmentEnd(); ++it2) {
         Segment* s2 = *it2;
         if (s2->getTile()->getX() == adjacent_x && s2->getTile()->getY() == adjacent_y &&
             s2->isAdjacentTo(modBy4(d + 2))) {
@@ -324,9 +433,8 @@ bool RoadRegion::isCompleted() {
 }
 
 int RoadRegion::calculatePoint() {
-  const std::vector<Segment*>* segments = getSegments();
   std::set<int> uniq_tiles;
-  for (auto it = segments->cbegin(); it != segments->cend(); it++) {
+  for (auto it = segmentBegin(); it != segmentEnd(); ++it) {
     Segment* s = *it;
     uniq_tiles.insert(s->getTile()->getId());
   }

@@ -23,18 +23,23 @@ enum class RegionType {
 // それぞれ、得点の計算方法や完成の条件が違っている
 class Region {
   public:
+    class SegmentIterator;
+    class MeeplePlacedSegmentIterator;
     Region(int id, Segment* segment, Board* board);
     virtual ~Region();
     int getId() const;
     Board* getBoard() const;
     void addSegment(Segment* segment);
-    const std::vector<Segment*>* getSegments() const;
+    void undoAddSegment(Segment* segment);
+    SegmentIterator segmentBegin() const;
+    SegmentIterator segmentEnd() const;
     bool mergeRegion(Region* region);
+    void undoMergeRegion(Region* region);
     bool isMerged() const;
-    void merged();
     // segmentにミープルを置いたときsegmentから呼び出す
     void meepleIsPlacedOnSegment(Segment* segment);
-    const std::vector<Segment*>* getMeeplePlacedSegments() const;
+    // segmentからミープルを除くときにsegmentから呼び出す
+    void meepleIsUnplacedOnSegment(Segment* segment);
     bool meepleIsPlaced() const;
     // 置いているミープルの数が多い色を返す(同数の場合、複数の色を返す)
     void getWinningMeeples(std::vector<MeepleColor>* winning_meeples) const;
@@ -45,13 +50,36 @@ class Region {
     virtual int calculatePoint() = 0;
     virtual RegionType getType() const = 0;
     void debugPrint() const;
+    class SegmentIterator {
+      public:
+        friend Region;
+        SegmentIterator(const SegmentIterator& iter);
+        SegmentIterator& operator++();
+        Segment* operator*();
+        bool operator==(const SegmentIterator& iter);
+        bool operator!=(const SegmentIterator& iter);
+      private:
+        SegmentIterator(const Region* start, const Region* current,
+	  std::vector<Segment*>::const_iterator iter);
+        void advanceToActualNext();
+        void setToEnd();
+        const Region* start_;
+        const Region* current_;
+        std::vector<Segment*>::const_iterator iter_;
+    };
+    friend SegmentIterator;
   protected:
+    void appendChild(Region* region);
+    void removeLastChild();
     int id_;
     Board* board_;
     std::vector<Segment*> segments_;
-    std::vector<Segment*> meeple_placed_segments_;
+    int meeple_placed_count_;
     std::vector<MeepleColor> winning_meeples_;
-    bool merged_;
+    Region* parent_;
+    Region* first_child_;
+    Region* last_child_;
+    Region* prev_sibling_;
     bool point_transfered_;
 };
 

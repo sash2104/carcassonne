@@ -6,7 +6,7 @@
 #include "utils.hpp"
 
 Segment::Segment(int index, SegmentType type, bool has_pennant) :
-  index_(index), type_(type), has_pennant_(has_pennant), placed_meeple_(MeepleColor::NOT_PLACED) {
+  index_(index), type_(type), tile_(nullptr), region_(nullptr), has_pennant_(has_pennant), placed_meeple_(MeepleColor::NOT_PLACED) {
 }
 
 int Segment::getIndex() const {
@@ -31,6 +31,11 @@ Region* Segment::getRegion() const {
 
 void Segment::setRegion(Region* region) {
   region_ = region;
+}
+
+void Segment::unsetRegion() {
+  assert(region_ != nullptr);
+  region_ = nullptr;
 }
 
 bool Segment::hasPennant() const {
@@ -63,8 +68,17 @@ bool Segment::isAdjacentTo(int direction) const {
 
 void Segment::placeMeeple(MeepleColor meeple) {
   assert(meeple != MeepleColor::NOT_PLACED);
+  assert(placed_meeple_ == MeepleColor::NOT_PLACED);
+  assert(region_ != nullptr);
   placed_meeple_ = meeple;
   region_->meepleIsPlacedOnSegment(this);
+}
+
+void Segment::unplaceMeeple() {
+  assert(placed_meeple_ != MeepleColor::NOT_PLACED);
+  assert(region_ != nullptr);
+  placed_meeple_ = MeepleColor::NOT_PLACED;
+  region_->meepleIsUnplacedOnSegment(this);
 }
 
 MeepleColor Segment::getPlacedMeeple() const {

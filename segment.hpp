@@ -22,17 +22,19 @@ class Segment {
     void setTile(Tile* tile);
     Region* getRegion() const;
     void setRegion(Region* region);
+    void unsetRegion();
     bool hasPennant() const;
     bool isAdjacentTo(int direction) const;
     void placeMeeple(MeepleColor meeple);
+    void unplaceMeeple();
     MeepleColor getPlacedMeeple() const;
     bool meepleIsPlaced() const;
   private:
-    int index_;
-    SegmentType type_;
+    const int index_;
+    const SegmentType type_;
     Tile* tile_;
     Region* region_;
-    bool has_pennant_;
+    const bool has_pennant_;
     MeepleColor placed_meeple_;
 };
 
