@@ -44,7 +44,9 @@ class Region {
     // 置いているミープルの数が多い色を返す(同数の場合、複数の色を返す)
     void getWinningMeeples(std::vector<MeepleColor>* winning_meeples) const;
     void returnMeeples(GameContext* context);
+    void undoReturnMeeples(GameContext* context);
     void transferPoint(GameContext* context, bool return_meeple);
+    void undoTransferPoint(GameContext* context, bool undo_return_meeple);
     bool pointIsTransfered() const;
     virtual bool isCompleted() = 0;
     virtual int calculatePoint() = 0;
@@ -69,8 +71,6 @@ class Region {
     };
     friend SegmentIterator;
   protected:
-    void appendChild(Region* region);
-    void removeLastChild();
     int id_;
     Board* board_;
     std::vector<Segment*> segments_;
@@ -81,6 +81,11 @@ class Region {
     Region* last_child_;
     Region* prev_sibling_;
     bool point_transfered_;
+  private:
+    void appendChild(Region* region);
+    void removeLastChild();
+    // undoAddSegmentやundoMergeRegionが呼ばれてRegionの構成が変化したときに呼び出される
+    virtual void rewindRegionState() = 0;
 };
 
 class CityRegion : public Region {
@@ -90,6 +95,7 @@ class CityRegion : public Region {
     int calculatePoint();
     RegionType getType() const;
   private:
+    void rewindRegionState();
     bool completed_;
 };
 
@@ -100,6 +106,7 @@ class CloisterRegion : public Region {
     int calculatePoint();
     RegionType getType() const;
   private:
+    void rewindRegionState();
     bool completed_;
 };
 
@@ -113,6 +120,7 @@ class FieldRegion : public Region {
     RegionType getType() const;
     bool isAdjacentWith(const CityRegion* city_region);
   private:
+    void rewindRegionState();
     bool completed_;
 };
 
@@ -123,6 +131,7 @@ class RoadRegion : public Region {
     int calculatePoint();
     RegionType getType() const;
   private:
+    void rewindRegionState();
     bool completed_;
 };
 

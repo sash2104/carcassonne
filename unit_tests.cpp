@@ -193,7 +193,7 @@ void city_region_tests() {
 
 
 void cloister_region_tests() {
-  Board board(10);
+  Board board(10, 7);
   Segment s(0, SegmentType::CLOISTER, false);
   Tile tile(0);
   tile.setX(0).setY(0).setRotation(0);
@@ -409,10 +409,9 @@ void game_context_tests() {
 void board_tests() {
   TileFactory tile_factory;
   tile_factory.loadResource("tiles.json");
-  Board board(20);
-  GameContext context(7);
-  context.registerMeeple(MeepleColor::RED);
-  context.registerMeeple(MeepleColor::GREEN);
+  Board board(20, 7);
+  board.registerMeeple(MeepleColor::RED);
+  board.registerMeeple(MeepleColor::GREEN);
   std::vector<Segment*> meeple_place_candidates;
 
   Tile* tile0 = tile_factory.newFromName("D", 0);
@@ -423,16 +422,16 @@ void board_tests() {
 
   board.setInitialTile(tile0, 3);
   test_assert("board_tests#0", board.canPlaceTile(tile1, 0, 1, 2));
-  board.placeTile(tile1, 0, 1, 2, &meeple_place_candidates, &context);
+  board.placeTile(tile1, 0, 1, 2, &meeple_place_candidates);
   test_assert("board_tests#1", meeple_place_candidates.size() == 2);
   meeple_place_candidates.clear();
   test_assert("board_tests#2", !board.hasPossiblePlacement(tile2));
   test_assert("board_tests#3", board.canPlaceTile(tile3, 1, 1, 0));
-  board.placeTile(tile3, 1, 1, 0, &meeple_place_candidates, &context);
+  board.placeTile(tile3, 1, 1, 0, &meeple_place_candidates);
   test_assert("board_tests#4", meeple_place_candidates.size() == 2);
   meeple_place_candidates.clear();
   test_assert("board_tests#5", board.canPlaceTile(tile4, -1, 0, 1));
-  board.placeTile(tile4, -1, 0, 1, &meeple_place_candidates, &context);
+  board.placeTile(tile4, -1, 0, 1, &meeple_place_candidates);
   test_assert("board_tests#6", meeple_place_candidates.size() == 3);
   meeple_place_candidates.clear();
 

@@ -4,7 +4,6 @@
 #include <unordered_map>
 
 #include "meeple_color.hpp"
-#include "region.hpp"
 
 enum class RegionType;
 

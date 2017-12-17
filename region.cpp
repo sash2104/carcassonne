@@ -44,6 +44,7 @@ void Region::undoAddSegment(Segment* segment) {
     if (s == segment) {
       segments_.erase(it);
       segment->unsetRegion();
+      rewindRegionState();
       return;
     }
   }
@@ -91,6 +92,7 @@ void Region::undoMergeRegion(Region* region) {
     s->setRegion(region);
   }
   removeLastChild();
+  rewindRegionState();
 }
 
 inline void Region::removeLastChild() {
@@ -171,6 +173,16 @@ void Region::returnMeeples(GameContext* context) {
   }
 }
 
+void Region::undoReturnMeeples(GameContext* context) {
+  for (auto it = segmentBegin(); it != segmentEnd(); ++it) {
+    Segment* s = *it;
+    if (s->meepleIsPlaced()) {
+      MeepleColor color = s->getPlacedMeeple();
+      context->placeMeeple(color);
+    }
+  }
+}
+
 void Region::transferPoint(GameContext* context, bool return_meeple) {
   int point = calculatePoint();
   std::vector<MeepleColor> winning_meeples;
@@ -182,6 +194,20 @@ void Region::transferPoint(GameContext* context, bool return_meeple) {
   point_transfered_ = true;
   if (return_meeple) {
     returnMeeples(context);
+  }
+}
+
+void Region::undoTransferPoint(GameContext* context, bool undo_return_meeple) {
+  int point = -calculatePoint();
+  std::vector<MeepleColor> winning_meeples;
+  getWinningMeeples(&winning_meeples);
+  for (auto it = winning_meeples.begin(); it != winning_meeples.end(); ++it) {
+    MeepleColor color = *it;
+    context->addPoint(color, getType(), point);
+  }
+  point_transfered_ = false;
+  if (undo_return_meeple) {
+    undoReturnMeeples(context);
   }
 }
 
@@ -313,6 +339,10 @@ inline RegionType CityRegion::getType() const {
   return RegionType::CITY;
 }
 
+void CityRegion::rewindRegionState() {
+  completed_ = false;
+}
+
 
 CloisterRegion::CloisterRegion(int id, Segment* segment, Board* board) : Region(id, segment, board), completed_(false) {
 }
@@ -350,6 +380,10 @@ int CloisterRegion::calculatePoint() {
 
 inline RegionType CloisterRegion::getType() const {
   return RegionType::CLOISTER;
+}
+
+void CloisterRegion::rewindRegionState() {
+  completed_ = false;
 }
 
 
@@ -398,6 +432,10 @@ bool FieldRegion::isAdjacentWith(const CityRegion* city_region) {
   return false;
 }
 
+void FieldRegion::rewindRegionState() {
+}
+
+
 RoadRegion::RoadRegion(int id, Segment* segment, Board* board) : Region(id, segment, board), completed_(false) {
 }
 
@@ -443,4 +481,8 @@ int RoadRegion::calculatePoint() {
 
 inline RegionType RoadRegion::getType() const {
   return RegionType::ROAD;
+}
+
+void RoadRegion::rewindRegionState() {  
+  completed_ = false;
 }

@@ -4,7 +4,7 @@
 
 // TODO : n_players_ とタイルの種類はconfigファイルから読み込む
 Game::Game()
-  : turn_(0), n_players_(2), board_(72)
+  : turn_(0), n_players_(2), board_(72, 7)
 {
   //board_.setPile(tiles_);
   for (int pid = 0; pid < n_players_; ++pid) {
