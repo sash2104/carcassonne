@@ -11,7 +11,7 @@
 #include "tile.hpp"
 #include "utils.hpp"
 
-Board::Board(int tile_n) : region_id_(0), tile_map_(tile_n), placed_tiles_(), city_regions_(), cloister_regions_(), field_regions_(), road_regions_() {
+Board::Board(int tile_n) : region_id_(0), tile_map_(tile_n), context_(7), placed_tiles_(), city_regions_(), cloister_regions_(), field_regions_(), road_regions_() {
 }
 
 Board::~Board() {

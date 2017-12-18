@@ -41,6 +41,7 @@ class Board {
     bool adjacencyIsValid(Tile* tile, int x, int y, int rotation);
     int region_id_;
     TilePositionMap tile_map_;
+    GameContext context_;
     std::vector<Tile*> placed_tiles_;
     std::vector<CityRegion*> city_regions_;
     std::vector<CloisterRegion*> cloister_regions_;
