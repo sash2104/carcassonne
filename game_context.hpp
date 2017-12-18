@@ -4,9 +4,14 @@
 #include <unordered_map>
 
 #include "meeple_color.hpp"
-#include "region.hpp"
+// #include "region.hpp"
 
-enum class RegionType;
+// enum class RegionType;
+enum class RegionType {
+  CITY, CLOISTER, ROAD, FIELD
+};
+
+
 
 
 // ミープルの個数や得点を管理するためのクラス

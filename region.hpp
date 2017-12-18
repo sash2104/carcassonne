@@ -11,11 +11,6 @@ class Board;
 class GameContext;
 class Segment;
 
-enum class RegionType {
-  CITY, CLOISTER, ROAD, FIELD
-};
-
-
 // 複数のセグメントが繋がってできる領域を表すクラス
 // Regionは抽象クラスになっており、具象クラスとして
 // CityRegion, CloisterRegion, FieldRegion, RoadRegion
