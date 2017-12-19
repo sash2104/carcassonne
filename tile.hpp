@@ -4,8 +4,6 @@
 #include <string>
 #include <vector>
 
-#include "segment.hpp"
-
 class Segment;
 
 enum class BorderType {

@@ -6,19 +6,17 @@
 
 #include "game_context.hpp"
 #include "meeple_color.hpp"
-#include "region.hpp"
-#include "segment.hpp"
-#include "tile.hpp"
 #include "tile_position_map.hpp"
 
-class Region;
+enum class MeepleColor;
+class Tile;
 class Segment;
+class Region;
 class CityRegion;
 class CloisterRegion;
 class FieldRegion;
-class GameContext;
-class LargeTileHolder;
 class RoadRegion;
+class GameContext;
 
 class MeeplePlacementEvent {
   public:

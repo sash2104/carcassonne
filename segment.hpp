@@ -1,10 +1,7 @@
 #ifndef __SEGMENT_HPP__
 #define __SEGMENT_HPP__
 
-#include "meeple_color.hpp"
-#include "region.hpp"
-#include "tile.hpp"
-
+enum class MeepleColor;
 class Region;
 class Tile;
 
