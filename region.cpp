@@ -42,19 +42,12 @@ inline void SegmentIterator::advanceToActualNext() {
   if (iter_ != current_->segments_.end()) {
     return;
   }
-  if (current_->first_child_ != nullptr) {
-    current_ = current_->first_child_;
+  if (current_->last_child_ != nullptr) {
+    current_ = current_->last_child_;
     iter_ = current_->segments_.begin();
     return;
    }
-  if (current_->prev_sibling_ != nullptr) {
-    current_ = current_->prev_sibling_;
-    iter_ = current_->segments_.begin();
-    return;
-  }
-  for (Region* region = current_->parent_;
-       region != nullptr && region != root_;
-       region = region->parent_) {
+  for (const Region* region = current_; region != root_; region = region->parent_) {
     if (region->prev_sibling_ != nullptr) {
       current_ = region->prev_sibling_;
       iter_ = current_->segments_.begin();
