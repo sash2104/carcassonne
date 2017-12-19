@@ -1,6 +1,7 @@
 #include <cstdlib>
 #include <set>
 
+#include "board.hpp"
 #include "game_context.hpp"
 #include "meeple_color.hpp"
 #include "region.hpp"

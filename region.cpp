@@ -11,6 +11,65 @@
 #include "segment.hpp"
 #include "utils.hpp"
 
+SegmentIterator::SegmentIterator(const SegmentIterator& iter)
+  : root_(iter.root_), current_(iter.current_), iter_(iter.iter_) {
+}
+
+SegmentIterator::SegmentIterator(const Region* root, const Region* current,
+  std::vector<Segment*>::const_iterator iter)
+  : root_(root), current_(root), iter_(iter) {
+}
+
+SegmentIterator& SegmentIterator::operator++() {
+  iter_++;
+  advanceToActualNext();
+  return *this;
+}
+
+Segment* SegmentIterator::operator*() {
+  return *iter_;
+}
+
+bool SegmentIterator::operator==(const SegmentIterator& iter) {
+  return root_ == iter.root_ && current_ == iter.current_ && iter_ == iter.iter_;
+}
+
+bool SegmentIterator::operator!=(const SegmentIterator& iter) {
+  return root_ != iter.root_ || current_ != iter.current_ || iter_ != iter.iter_;
+}
+
+inline void SegmentIterator::advanceToActualNext() {
+  if (iter_ != current_->segments_.end()) {
+    return;
+  }
+  if (current_->first_child_ != nullptr) {
+    current_ = current_->first_child_;
+    iter_ = current_->segments_.begin();
+    return;
+   }
+  if (current_->prev_sibling_ != nullptr) {
+    current_ = current_->prev_sibling_;
+    iter_ = current_->segments_.begin();
+    return;
+  }
+  for (Region* region = current_->parent_;
+       region != nullptr && region != root_;
+       region = region->parent_) {
+    if (region->prev_sibling_ != nullptr) {
+      current_ = region->prev_sibling_;
+      iter_ = current_->segments_.begin();
+      return;
+    }
+  }
+  setToEnd();
+}
+
+inline void SegmentIterator::setToEnd() {
+  current_ = root_;
+  iter_ = current_->segments_.end();
+}
+
+
 Region::Region(int id, Segment* segment, Board* board)
   : id_(id), board_(board), segments_(), meeple_placed_count_(0), winning_meeples_(),
     parent_(nullptr), first_child_(nullptr), last_child_(nullptr), prev_sibling_(nullptr),
@@ -52,12 +111,12 @@ void Region::undoAddSegment(Segment* segment) {
   assert(false);
 }
 
-Region::SegmentIterator Region::segmentBegin() const {
-  return Region::SegmentIterator(this, this, segments_.begin());
+SegmentIterator Region::segmentBegin() const {
+  return SegmentIterator(this, this, segments_.begin());
 }
 
-Region::SegmentIterator Region::segmentEnd() const {
-  return Region::SegmentIterator(this, this, segments_.end());
+SegmentIterator Region::segmentEnd() const {
+  return SegmentIterator(this, this, segments_.end());
 }
 
 bool Region::mergeRegion(Region* region) {
@@ -223,65 +282,6 @@ void Region::debugPrint() const {
     std::cout << static_cast<int>(s->getType()) << " Segment of " << "Tile#" << s->getTile()->getId() << ", ";
   }
   std::cout << std::endl;
-}
-
-
-Region::SegmentIterator::SegmentIterator(const Region::SegmentIterator& iter)
-  : start_(iter.start_), current_(iter.current_), iter_(iter.iter_) {
-}
-
-Region::SegmentIterator::SegmentIterator(const Region* start, const Region* current,
-  std::vector<Segment*>::const_iterator iter)
-  : start_(start), current_(start), iter_(iter) {
-}
-
-Region::SegmentIterator& Region::SegmentIterator::operator++() {
-  iter_++;
-  advanceToActualNext();
-  return *this;
-}
-
-Segment* Region::SegmentIterator::operator*() {
-  return *iter_;
-}
-
-bool Region::SegmentIterator::operator==(const SegmentIterator& iter) {
-  return start_ == iter.start_ && current_ == iter.current_ && iter_ == iter.iter_;
-}
-
-bool Region::SegmentIterator::operator!=(const SegmentIterator& iter) {
-  return start_ != iter.start_ || current_ != iter.current_ || iter_ != iter.iter_;
-}
-
-inline void Region::SegmentIterator::advanceToActualNext() {
-  if (iter_ != current_->segments_.end()) {
-    return;
-  }
-  if (current_->first_child_ != nullptr) {
-    current_ = current_->first_child_;
-    iter_ = current_->segments_.begin();
-    return;
-   }
-  if (current_->prev_sibling_ != nullptr) {
-    current_ = current_->prev_sibling_;
-    iter_ = current_->segments_.begin();
-    return;
-  }
-  for (Region* region = current_->parent_;
-       region != nullptr && region != start_;
-       region = region->parent_) {
-    if (region->prev_sibling_ != nullptr) {
-      current_ = region->prev_sibling_;
-      iter_ = current_->segments_.begin();
-      return;
-    }
-  }
-  setToEnd();
-}
-
-inline void Region::SegmentIterator::setToEnd() {
-  current_ = start_;
-  iter_ = current_->segments_.end();
 }
 
 

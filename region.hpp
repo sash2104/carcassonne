@@ -3,10 +3,6 @@
 
 #include <vector>
 
-#include "board.hpp"
-#include "game_context.hpp"
-#include "segment.hpp"
-
 class Board;
 class GameContext;
 class Segment;
@@ -15,6 +11,25 @@ enum class RegionType {
   CITY, CLOISTER, ROAD, FIELD
 };
 
+class Region;
+
+class SegmentIterator {
+  public:
+    friend Region;
+    SegmentIterator(const SegmentIterator& iter);
+    SegmentIterator& operator++();
+    Segment* operator*();
+    bool operator==(const SegmentIterator& iter);
+    bool operator!=(const SegmentIterator& iter);
+  private:
+    SegmentIterator(const Region* root, const Region* current,
+      std::vector<Segment*>::const_iterator iter);
+    void advanceToActualNext();
+    void setToEnd();
+    const Region* root_;
+    const Region* current_;
+    std::vector<Segment*>::const_iterator iter_;
+};
 
 // 複数のセグメントが繋がってできる領域を表すクラス
 // Regionは抽象クラスになっており、具象クラスとして
@@ -23,8 +38,7 @@ enum class RegionType {
 // それぞれ、得点の計算方法や完成の条件が違っている
 class Region {
   public:
-    class SegmentIterator;
-    class MeeplePlacedSegmentIterator;
+    friend SegmentIterator;
     Region(int id, Segment* segment, Board* board);
     virtual ~Region();
     int getId() const;
@@ -52,24 +66,6 @@ class Region {
     virtual int calculatePoint() = 0;
     virtual RegionType getType() const = 0;
     void debugPrint() const;
-    class SegmentIterator {
-      public:
-        friend Region;
-        SegmentIterator(const SegmentIterator& iter);
-        SegmentIterator& operator++();
-        Segment* operator*();
-        bool operator==(const SegmentIterator& iter);
-        bool operator!=(const SegmentIterator& iter);
-      private:
-        SegmentIterator(const Region* start, const Region* current,
-	  std::vector<Segment*>::const_iterator iter);
-        void advanceToActualNext();
-        void setToEnd();
-        const Region* start_;
-        const Region* current_;
-        std::vector<Segment*>::const_iterator iter_;
-    };
-    friend SegmentIterator;
   protected:
     int id_;
     Board* board_;

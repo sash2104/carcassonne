@@ -1,5 +1,6 @@
 #include <cassert>
 
+#include "meeple_color.hpp"
 #include "region.hpp"
 #include "segment.hpp"
 #include "tile.hpp"
