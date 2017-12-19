@@ -98,6 +98,53 @@ void segment_tests() {
   segment_is_adjacent_to_tests(&tile_factory);
 }
 
+int count_region_segments(Region* region) {
+  int count = 0;
+  for (auto it = region->segmentBegin(); it != region->segmentEnd(); ++it) {
+    count++;
+  }
+  return count;
+}
+
+void region_iterator_tests() {
+  Segment s0(0, SegmentType::CITY, false);
+  Segment s1(1, SegmentType::CITY, false);
+  Segment s2(2, SegmentType::CITY, false);
+  Segment s3(3, SegmentType::CITY, false);
+  Segment s4(4, SegmentType::CITY, false);
+  Segment s5(5, SegmentType::CITY, false);
+  Segment s6(6, SegmentType::CITY, false);
+  Segment s7(7, SegmentType::CITY, false);
+  Segment s8(8, SegmentType::CITY, false);
+  CityRegion r0(0, &s0, nullptr);
+  CityRegion r1(1, &s3, nullptr);
+  CityRegion r2(2, &s4, nullptr);
+  CityRegion r3(3, &s6, nullptr);
+
+  r0.addSegment(&s1);
+  r0.addSegment(&s2);
+  r2.addSegment(&s5);
+  r3.addSegment(&s7);
+  r3.addSegment(&s8);
+  test_assert("region_iterator_tests#0", count_region_segments(&r0) == 3);
+  test_assert("region_iterator_tests#1", count_region_segments(&r1) == 1);
+  test_assert("region_iterator_tests#2", count_region_segments(&r2) == 2);
+  test_assert("region_iterator_tests#3", count_region_segments(&r3) == 3);
+  r2.mergeRegion(&r3);
+  test_assert("region_iterator_tests#4", count_region_segments(&r2) == 5);
+  r0.mergeRegion(&r1);
+  test_assert("region_iterator_tests#5", count_region_segments(&r0) == 4);
+  r0.mergeRegion(&r2);
+  test_assert("region_iterator_tests#6", count_region_segments(&r0) == 9);
+  test_assert("region_iterator_tests#7", count_region_segments(&r1) == 1);
+  test_assert("region_iterator_tests#8", count_region_segments(&r2) == 5);
+  test_assert("region_iterator_tests#9", count_region_segments(&r3) == 3);
+  r0.undoMergeRegion(&r2);
+  test_assert("region_iterator_tests#10", count_region_segments(&r0) == 4);
+  r0.undoMergeRegion(&r1);
+  test_assert("region_iterator_tests#11", count_region_segments(&r0) == 3);
+}
+
 void cup_city_region_tests(TileFactory* tile_factory) {
   Tile* tile0 = tile_factory->newFromName("E", 0);
   Tile* tile1 = tile_factory->newFromName("E", 1);
@@ -488,6 +535,7 @@ void tests() {
   tile_position_map_tests();
   tile_tests();
   segment_tests();
+  region_iterator_tests();
   cloister_region_tests();
   city_region_tests();
   field_region_tests();
