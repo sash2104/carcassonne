@@ -21,7 +21,7 @@ SegmentIterator::SegmentIterator(const Region* root, const Region* current,
 }
 
 SegmentIterator& SegmentIterator::operator++() {
-  iter_++;
+  ++iter_;
   advanceToActualNext();
   return *this;
 }
@@ -65,7 +65,7 @@ inline void SegmentIterator::setToEnd() {
 
 Region::Region(int id, Segment* segment, Board* board)
   : id_(id), board_(board), segments_(), meeple_placed_count_(0), winning_meeples_(),
-    parent_(nullptr), first_child_(nullptr), last_child_(nullptr), prev_sibling_(nullptr),
+    parent_(nullptr), last_child_(nullptr), prev_sibling_(nullptr),
     point_transfered_(false) {
   addSegment(segment);
 }
@@ -105,11 +105,11 @@ void Region::undoAddSegment(Segment* segment) {
 }
 
 SegmentIterator Region::segmentBegin() const {
-  return SegmentIterator(this, this, segments_.begin());
+  return std::move(SegmentIterator(this, this, segments_.begin()));
 }
 
 SegmentIterator Region::segmentEnd() const {
-  return SegmentIterator(this, this, segments_.end());
+  return std::move(SegmentIterator(this, this, segments_.end()));
 }
 
 bool Region::mergeRegion(Region* region) {
@@ -127,8 +127,8 @@ bool Region::mergeRegion(Region* region) {
 }
 
 inline void Region::appendChild(Region* region) {
-  if (first_child_ == nullptr) {
-    first_child_ = last_child_ = region;
+  if (last_child_ == nullptr) {
+    last_child_ = region;
   } else {
     region->prev_sibling_ = last_child_;
     last_child_ = region;
@@ -151,11 +151,7 @@ void Region::undoMergeRegion(Region* region) {
 inline void Region::removeLastChild() {
   Region* removed = last_child_;
   last_child_ = removed->prev_sibling_;
-  if (last_child_ == nullptr) {
-    first_child_ = nullptr;
-  } else {
-    removed->prev_sibling_ = nullptr;
-  }
+  removed->prev_sibling_ = nullptr;
   removed->parent_ = nullptr;
 }
 

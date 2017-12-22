@@ -73,7 +73,6 @@ class Region {
     int meeple_placed_count_;
     std::vector<MeepleColor> winning_meeples_;
     Region* parent_;
-    Region* first_child_;
     Region* last_child_;
     Region* prev_sibling_;
     bool point_transfered_;
