@@ -15,6 +15,7 @@ void tile_position_map_tests() {
   TilePositionMap m(10);
   Tile tile1(0);
   Tile tile2(1);
+  Tile* tp;
   const std::set<BoardPosition>* s;
 
   test_assert("tile_position_map_tests#0", !m.isTilePlaced(0, 0));
@@ -31,6 +32,11 @@ void tile_position_map_tests() {
   test_assert("tile_position_map_tests#7", m.getPlacedTile(1, 0) == &tile2);
   s = m.getPlacablePositions();
   test_assert("tile_position_map_tests#8", s->size() == 6);
+  tp = m.undo(1, 0);
+  test_assert("tile_position_map_tests#9", tp == &tile2);
+  test_assert("tile_position_map_tests#10", !m.isTilePlaced(1, 0));
+  s = m.getPlacablePositions();
+  test_assert("tile_position_map_tests#11", s->size() == 4);
 }
 
 void tile_get_border_type_tests(TileFactory* tile_factory) {

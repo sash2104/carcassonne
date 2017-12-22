@@ -88,6 +88,7 @@ Tile* TilePositionMap::undo(int x, int y) {
   int i = convertToIndex(x, y);
   Tile* tile = tiles_[i];
   tiles_[i] = nullptr;
+  checkAndAddPlacablePosition(x, y);
   checkAndRemovePlacablePosition(x, y + 1);
   checkAndRemovePlacablePosition(x + 1, y);
   checkAndRemovePlacablePosition(x, y - 1);
