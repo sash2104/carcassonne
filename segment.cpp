@@ -75,11 +75,13 @@ void Segment::placeMeeple(MeepleColor meeple) {
   region_->meepleIsPlacedOnSegment(this);
 }
 
-void Segment::undoPlaceMeeple() {
+MeepleColor Segment::undoPlaceMeeple() {
   assert(placed_meeple_ != MeepleColor::NOT_PLACED);
   assert(region_ != nullptr);
+  MeepleColor placed = placed_meeple_;
   placed_meeple_ = MeepleColor::NOT_PLACED;
   region_->meepleIsUnplacedOnSegment(this);
+  return placed;
 }
 
 MeepleColor Segment::getPlacedMeeple() const {

@@ -189,8 +189,9 @@ bool Board::placeTile(Tile* tile, int x, int y, int rotation, std::vector<Segmen
       auto it = adjacent_regions.cbegin();
       it++;
       for (; it != adjacent_regions.cend(); it++) {
-        region->mergeRegion(*it);
-	composition_event->addMergedRegion(*it);
+        if (region->mergeRegion(*it)) {
+	  composition_event->addMergedRegion(*it);
+	}
       }
       if (!region->meepleIsPlaced()) {
         meeple_place_candidates->push_back(my_s);
@@ -228,8 +229,9 @@ bool Board::placeTile(Tile* tile, int x, int y, int rotation, std::vector<Segmen
       auto it = adjacent_regions.cbegin();
       it++;
       for (; it != adjacent_regions.cend(); it++) {
-        region->mergeRegion(*it);
-	composition_event->addMergedRegion(*it);
+        if (region->mergeRegion(*it)) {
+	  composition_event->addMergedRegion(*it);
+	}
       }
       if (!region->meepleIsPlaced()) {
         meeple_place_candidates->push_back(my_s);
@@ -268,8 +270,9 @@ bool Board::placeTile(Tile* tile, int x, int y, int rotation, std::vector<Segmen
       auto it = adjacent_regions.cbegin();
       it++;
       for (; it != adjacent_regions.cend(); it++) {
-        region->mergeRegion(*it);
-	composition_event->addMergedRegion(*it);
+        if (region->mergeRegion(*it)) {
+	  composition_event->addMergedRegion(*it);
+	}
       }
       if (!region->meepleIsPlaced()) {
         meeple_place_candidates->push_back(my_s);
@@ -450,5 +453,6 @@ void Board::undoPlaceMeeple(MeeplePlacementEvent* meeple_event) {
   if (r->isCompleted() && r->pointIsTransfered()) {
     r->undoTransferPoint(&context_, true);
   }
-  s->undoPlaceMeeple();
+  MeepleColor placed_color = s->undoPlaceMeeple();
+  context_.returnMeeple(placed_color, 1);
 }

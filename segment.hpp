@@ -23,7 +23,7 @@ class Segment {
     bool hasPennant() const;
     bool isAdjacentTo(int direction) const;
     void placeMeeple(MeepleColor meeple);
-    void undoPlaceMeeple();
+    MeepleColor undoPlaceMeeple();
     MeepleColor getPlacedMeeple() const;
     bool meepleIsPlaced() const;
   private:
