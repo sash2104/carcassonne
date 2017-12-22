@@ -460,6 +460,18 @@ void game_context_tests() {
   test_assert("game_context_tests#2.17", context.getGainedPoint(MeepleColor::GREEN, RegionType::FIELD) == 0);
 }
 
+template <typename R>
+int count_unmerged_region(const std::vector<R*>* regions) {
+  int region_count = 0;
+  for (auto it = regions->begin(); it != regions->end(); it++) {
+    R* r = *it;
+    if (!r->isMerged()) {
+      region_count++;
+    }
+  }
+  return region_count;
+}
+
 void board_tests() {
   TileFactory tile_factory;
   tile_factory.loadResource("tiles.json");
@@ -489,46 +501,10 @@ void board_tests() {
   test_assert("board_tests#6", meeple_place_candidates.size() == 3);
   meeple_place_candidates.clear();
 
-  int region_count = 0;
-  const std::vector<CityRegion*>* city_regions = board.getCityRegions();
-  for (auto it = city_regions->begin(); it != city_regions->end(); it++) {
-    CityRegion* r = *it;
-    if (!r->isMerged()) {
-      region_count++;
-    }
-  }
-  test_assert("board_tests#7", region_count == 1);
-
-  region_count = 0;
-  const std::vector<CloisterRegion*>* cloister_regions = board.getCloisterRegions();
-  for (auto it = cloister_regions->begin(); it != cloister_regions->end(); it++) {
-    CloisterRegion* r = *it;
-    if (!r->isMerged()) {
-      region_count++;
-    }
-  }
-  test_assert("board_tests#8", region_count == 1);
-
-  region_count = 0;
-  const std::vector<FieldRegion*>* field_regions = board.getFieldRegions();
-  for (auto it = field_regions->begin(); it != field_regions->end(); it++) {
-    FieldRegion* r = *it;
-    if (!r->isMerged()) {
-      region_count++;
-    }
-  }
-  test_assert("board_tests#9", region_count == 3);
-
-  region_count = 0;
-  const std::vector<RoadRegion*>* road_regions = board.getRoadRegions();
-  for (auto it = road_regions->begin(); it != road_regions->end(); it++) {
-    RoadRegion* r = *it;
-    if (!r->isMerged()) {
-      region_count++;
-    }
-  }
-  test_assert("board_tests#10", region_count == 1);
-  region_count = 0;
+  test_assert("board_tests#7", count_unmerged_region<CityRegion>(board.getCityRegions()) == 1);
+  test_assert("board_tests#8", count_unmerged_region<CloisterRegion>(board.getCloisterRegions()) == 1);
+  test_assert("board_tests#9", count_unmerged_region<FieldRegion>(board.getFieldRegions()) == 3);
+  test_assert("board_tests#10", count_unmerged_region<RoadRegion>(board.getRoadRegions()) == 1);
 
   delete tile0;
   delete tile1;
