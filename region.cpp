@@ -144,6 +144,7 @@ void Region::undoMergeRegion(Region* region) {
     s->setRegion(region);
   }
   removeLastChild();
+  meeple_placed_count_ -= region->meeple_placed_count_;
   rewindRegionState();
 }
 
@@ -166,13 +167,13 @@ void Region::meepleIsPlacedOnSegment(Segment* segment) {
   assert(segment->getRegion() == this);
   assert(segment->meepleIsPlaced());
   // TODO: 色毎にカウントする
-  meeple_placed_count_++;
+  ++meeple_placed_count_;
 }
 
 void Region::meepleIsUnplacedOnSegment(Segment* segment) {
   assert(segment->getRegion() == this);
   assert(!segment->meepleIsPlaced());
-  meeple_placed_count_++;
+  --meeple_placed_count_;
 }
 
 bool Region::meepleIsPlaced() const {
