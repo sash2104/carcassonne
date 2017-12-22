@@ -343,6 +343,14 @@ void Board::transferRemainingPoints(bool return_meeple) {
   }
 }
 
+void Board::endTurn() {
+  context_.endTurn();
+}
+
+void Board::endGame() {
+  context_.endGame();
+}
+
 bool Board::isUndoable() const {
   // 最初のタイルはundoできない
   return placement_events_.size() >= 2;
@@ -360,6 +368,7 @@ Tile* Board::undo() {
   undoPlaceTile(tile_event);
   Tile* tile = tile_event->getTile();
   tile_map_.undo(tile->getX(), tile->getY());
+  endTurn();
   tile->setX(0);
   tile->setY(0);
   tile->setRotation(0);

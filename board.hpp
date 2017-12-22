@@ -132,6 +132,8 @@ class Board {
     bool placeMeeple(Segment* segment, MeepleColor color);
     // ゲーム終了後、残りの得点を計算するときに使う
     void transferRemainingPoints(bool return_meeple);
+    void endTurn();
+    void endGame();
     bool isUndoable() const;
     Tile* undo();
   private:
