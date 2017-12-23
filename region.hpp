@@ -80,6 +80,7 @@ class Region {
     void appendChild(Region* region);
     void removeLastChild();
     // undoAddSegmentやundoMergeRegionが呼ばれてRegionの構成が変化したときに呼び出される
+    // (undoAddSegmentやundoMergeRegionの中から呼ばれる)
     virtual void rewindRegionState() = 0;
 };
 

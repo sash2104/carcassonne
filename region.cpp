@@ -21,6 +21,7 @@ SegmentIterator::SegmentIterator(const Region* root, const Region* current,
 }
 
 SegmentIterator& SegmentIterator::operator++() {
+  // 深さ優先探索でRegionのツリーを移動しながら、全てのSegmentを辿っていく
   ++iter_;
   advanceToActualNext();
   return *this;

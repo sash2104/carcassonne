@@ -112,6 +112,20 @@ class PlacementEvent {
     MeeplePlacementEvent* meeple_event_;
 };
 
+
+// Boardクラスの利用方法:
+//  通常の利用方法
+//   1. 参加プレイヤーの数だけregisterMeepleを呼び出す
+//   2. setInitialTileを呼び出し初期タイルを配置する
+//   3. 各ターンの処理(タイルがなくなるまで以下を繰り返す)
+//       1. placeTileを呼び出しタイルを配置する
+//       2. ミープルを配置する場合はplaceMeepleを呼び出す
+//       3. endTurnを呼び出してターン終了処理を行う
+//   4. 全てのタイルを配置し終わったら、transferRemainingPointsを呼び出して残り得点の計算を行う
+//   5. endGameを呼び出してゲーム終了処理を行う
+// undoの利用方法
+//  - 3.3のendTurn呼び出し後のタイミングかundo呼び出し後に続けて呼び出すことができる
+//  - undo呼び出し後は前ターンのplaceTile呼び出し前の状態に戻っている
 class Board {
   public:
     Board(int tile_n, int initial_meeple_n);
@@ -134,7 +148,9 @@ class Board {
     void transferRemainingPoints(bool return_meeple);
     void endTurn();
     void endGame();
+    // undo可能かどうかを判定(setInitialTileで配置した処理タイルはundoできない)
     bool isUndoable() const;
+    // 返り値はundoによって配置が取り消されたTileへのポインタ
     Tile* undo();
   private:
     bool adjacencyIsValid(Tile* tile, int x, int y, int rotation) const;
