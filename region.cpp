@@ -265,8 +265,14 @@ bool Region::pointIsTransfered() const {
 }
 
 void Region::debugPrint() const {
-  std::cout << "Region#" << id_ << "(" << isMerged() << "): ";
-  for (auto it = segments_.begin(); it != segments_.end(); ++it) {
+  std::cout << "Region#" << id_ << "(parent: ";
+  if (parent_ == nullptr) {
+    std::cout << "-";
+  } else {
+    std::cout << "Region#" << parent_->getId();
+  }
+  std::cout << "): ";
+  for (auto it = segmentBegin(); it != segmentEnd(); ++it) {
     Segment* s = *it;
     std::cout << s->getIndex() << "th ";
     std::cout << static_cast<int>(s->getType()) << " Segment of " << "Tile#" << s->getTile()->getId() << ", ";
