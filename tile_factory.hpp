@@ -5,9 +5,10 @@
 #include <string>
 
 #include "json.hpp"
-#include "tile.hpp"
 
 using json = nlohmann::json;
+
+class Tile;
 
 // タイルの名前を元にタイルを生成するクラス
 // 最初にJSONファイルからタイルの情報を読み込む

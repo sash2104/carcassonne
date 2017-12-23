@@ -3,11 +3,8 @@
 
 #include <unordered_map>
 
-#include "meeple_color.hpp"
-#include "region.hpp"
-
+enum class MeepleColor;
 enum class RegionType;
-
 
 // ミープルの個数や得点を管理するためのクラス
 class GameContext {

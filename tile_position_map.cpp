@@ -52,6 +52,7 @@ TilePositionMap::~TilePositionMap() {
 
 void TilePositionMap::placeTile(Tile* tile, int x, int y) {
   assert(tile != nullptr);
+  assert(!isTilePlaced(x, y));
   BoardPosition pos(x, y);
   int i = convertToIndex(x, y);
   tiles_[i] = tile;
@@ -82,10 +83,31 @@ bool TilePositionMap::isPlacablePosition(int x, int y) const {
   return it != placables_.end();
 }
 
+Tile* TilePositionMap::undo(int x, int y) {
+  assert(isTilePlaced(x, y));
+  int i = convertToIndex(x, y);
+  Tile* tile = tiles_[i];
+  tiles_[i] = nullptr;
+  checkAndAddPlacablePosition(x, y);
+  checkAndRemovePlacablePosition(x, y + 1);
+  checkAndRemovePlacablePosition(x + 1, y);
+  checkAndRemovePlacablePosition(x, y - 1);
+  checkAndRemovePlacablePosition(x - 1, y);
+  return tile;
+}
+
 inline void TilePositionMap::checkAndAddPlacablePosition(int x, int y) {
   if (!isTilePlaced(x, y)) {
     BoardPosition pos(x, y);
     placables_.insert(pos);
+  }
+}
+
+inline void TilePositionMap::checkAndRemovePlacablePosition(int x, int y) {
+  if (!isTilePlaced(x, y + 1) && !isTilePlaced(x + 1, y) &&
+      !isTilePlaced(x, y - 1) && !isTilePlaced(x - 1, y)) {
+    BoardPosition pos(x, y);
+    placables_.erase(pos);
   }
 }
 

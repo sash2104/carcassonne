@@ -3,10 +3,6 @@
 
 #include <vector>
 
-#include "board.hpp"
-#include "game_context.hpp"
-#include "segment.hpp"
-
 class Board;
 class GameContext;
 class Segment;
@@ -15,6 +11,25 @@ enum class RegionType {
   CITY, CLOISTER, ROAD, FIELD
 };
 
+class Region;
+
+class SegmentIterator {
+  public:
+    friend Region;
+    SegmentIterator(const SegmentIterator& iter);
+    SegmentIterator& operator++();
+    Segment* operator*();
+    bool operator==(const SegmentIterator& iter);
+    bool operator!=(const SegmentIterator& iter);
+  private:
+    SegmentIterator(const Region* root, const Region* current,
+      std::vector<Segment*>::const_iterator iter);
+    void advanceToActualNext();
+    void setToEnd();
+    const Region* root_;
+    const Region* current_;
+    std::vector<Segment*>::const_iterator iter_;
+};
 
 // 複数のセグメントが繋がってできる領域を表すクラス
 // Regionは抽象クラスになっており、具象クラスとして
@@ -23,23 +38,29 @@ enum class RegionType {
 // それぞれ、得点の計算方法や完成の条件が違っている
 class Region {
   public:
+    friend SegmentIterator;
     Region(int id, Segment* segment, Board* board);
     virtual ~Region();
     int getId() const;
     Board* getBoard() const;
     void addSegment(Segment* segment);
-    const std::vector<Segment*>* getSegments() const;
+    void undoAddSegment(Segment* segment);
+    SegmentIterator segmentBegin() const;
+    SegmentIterator segmentEnd() const;
     bool mergeRegion(Region* region);
+    void undoMergeRegion(Region* region);
     bool isMerged() const;
-    void merged();
     // segmentにミープルを置いたときsegmentから呼び出す
     void meepleIsPlacedOnSegment(Segment* segment);
-    const std::vector<Segment*>* getMeeplePlacedSegments() const;
+    // segmentからミープルを除くときにsegmentから呼び出す
+    void meepleIsUnplacedOnSegment(Segment* segment);
     bool meepleIsPlaced() const;
     // 置いているミープルの数が多い色を返す(同数の場合、複数の色を返す)
     void getWinningMeeples(std::vector<MeepleColor>* winning_meeples) const;
     void returnMeeples(GameContext* context);
+    void undoReturnMeeples(GameContext* context);
     void transferPoint(GameContext* context, bool return_meeple);
+    void undoTransferPoint(GameContext* context, bool undo_return_meeple);
     bool pointIsTransfered() const;
     virtual bool isCompleted() = 0;
     virtual int calculatePoint() = 0;
@@ -49,10 +70,18 @@ class Region {
     int id_;
     Board* board_;
     std::vector<Segment*> segments_;
-    std::vector<Segment*> meeple_placed_segments_;
+    int meeple_placed_count_;
     std::vector<MeepleColor> winning_meeples_;
-    bool merged_;
+    Region* parent_;
+    Region* last_child_;
+    Region* prev_sibling_;
     bool point_transfered_;
+  private:
+    void appendChild(Region* region);
+    void removeLastChild();
+    // undoAddSegmentやundoMergeRegionが呼ばれてRegionの構成が変化したときに呼び出される
+    // (undoAddSegmentやundoMergeRegionの中から呼ばれる)
+    virtual void rewindRegionState() = 0;
 };
 
 class CityRegion : public Region {
@@ -62,6 +91,7 @@ class CityRegion : public Region {
     int calculatePoint();
     RegionType getType() const;
   private:
+    void rewindRegionState();
     bool completed_;
 };
 
@@ -72,6 +102,7 @@ class CloisterRegion : public Region {
     int calculatePoint();
     RegionType getType() const;
   private:
+    void rewindRegionState();
     bool completed_;
 };
 
@@ -85,6 +116,7 @@ class FieldRegion : public Region {
     RegionType getType() const;
     bool isAdjacentWith(const CityRegion* city_region);
   private:
+    void rewindRegionState();
     bool completed_;
 };
 
@@ -95,6 +127,7 @@ class RoadRegion : public Region {
     int calculatePoint();
     RegionType getType() const;
   private:
+    void rewindRegionState();
     bool completed_;
 };
 

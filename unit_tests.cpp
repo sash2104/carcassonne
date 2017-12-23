@@ -1,6 +1,7 @@
 #include <cstdlib>
 #include <set>
 
+#include "board.hpp"
 #include "game_context.hpp"
 #include "meeple_color.hpp"
 #include "region.hpp"
@@ -14,6 +15,7 @@ void tile_position_map_tests() {
   TilePositionMap m(10);
   Tile tile1(0);
   Tile tile2(1);
+  Tile* tp;
   const std::set<BoardPosition>* s;
 
   test_assert("tile_position_map_tests#0", !m.isTilePlaced(0, 0));
@@ -30,6 +32,11 @@ void tile_position_map_tests() {
   test_assert("tile_position_map_tests#7", m.getPlacedTile(1, 0) == &tile2);
   s = m.getPlacablePositions();
   test_assert("tile_position_map_tests#8", s->size() == 6);
+  tp = m.undo(1, 0);
+  test_assert("tile_position_map_tests#9", tp == &tile2);
+  test_assert("tile_position_map_tests#10", !m.isTilePlaced(1, 0));
+  s = m.getPlacablePositions();
+  test_assert("tile_position_map_tests#11", s->size() == 4);
 }
 
 void tile_get_border_type_tests(TileFactory* tile_factory) {
@@ -95,6 +102,53 @@ void segment_tests() {
   TileFactory tile_factory;
   tile_factory.loadResource("tiles.json");
   segment_is_adjacent_to_tests(&tile_factory);
+}
+
+int count_region_segments(Region* region) {
+  int count = 0;
+  for (auto it = region->segmentBegin(); it != region->segmentEnd(); ++it) {
+    count++;
+  }
+  return count;
+}
+
+void region_iterator_tests() {
+  Segment s0(0, SegmentType::CITY, false);
+  Segment s1(1, SegmentType::CITY, false);
+  Segment s2(2, SegmentType::CITY, false);
+  Segment s3(3, SegmentType::CITY, false);
+  Segment s4(4, SegmentType::CITY, false);
+  Segment s5(5, SegmentType::CITY, false);
+  Segment s6(6, SegmentType::CITY, false);
+  Segment s7(7, SegmentType::CITY, false);
+  Segment s8(8, SegmentType::CITY, false);
+  CityRegion r0(0, &s0, nullptr);
+  CityRegion r1(1, &s3, nullptr);
+  CityRegion r2(2, &s4, nullptr);
+  CityRegion r3(3, &s6, nullptr);
+
+  r0.addSegment(&s1);
+  r0.addSegment(&s2);
+  r2.addSegment(&s5);
+  r3.addSegment(&s7);
+  r3.addSegment(&s8);
+  test_assert("region_iterator_tests#0", count_region_segments(&r0) == 3);
+  test_assert("region_iterator_tests#1", count_region_segments(&r1) == 1);
+  test_assert("region_iterator_tests#2", count_region_segments(&r2) == 2);
+  test_assert("region_iterator_tests#3", count_region_segments(&r3) == 3);
+  r2.mergeRegion(&r3);
+  test_assert("region_iterator_tests#4", count_region_segments(&r2) == 5);
+  r0.mergeRegion(&r1);
+  test_assert("region_iterator_tests#5", count_region_segments(&r0) == 4);
+  r0.mergeRegion(&r2);
+  test_assert("region_iterator_tests#6", count_region_segments(&r0) == 9);
+  test_assert("region_iterator_tests#7", count_region_segments(&r1) == 1);
+  test_assert("region_iterator_tests#8", count_region_segments(&r2) == 5);
+  test_assert("region_iterator_tests#9", count_region_segments(&r3) == 3);
+  r0.undoMergeRegion(&r2);
+  test_assert("region_iterator_tests#10", count_region_segments(&r0) == 4);
+  r0.undoMergeRegion(&r1);
+  test_assert("region_iterator_tests#11", count_region_segments(&r0) == 3);
 }
 
 void cup_city_region_tests(TileFactory* tile_factory) {
@@ -193,7 +247,7 @@ void city_region_tests() {
 
 
 void cloister_region_tests() {
-  Board board(10);
+  Board board(10, 7);
   Segment s(0, SegmentType::CLOISTER, false);
   Tile tile(0);
   tile.setX(0).setY(0).setRotation(0);
@@ -406,76 +460,113 @@ void game_context_tests() {
   test_assert("game_context_tests#2.17", context.getGainedPoint(MeepleColor::GREEN, RegionType::FIELD) == 0);
 }
 
+template <typename R>
+int count_unmerged_region(const std::vector<R*>* regions) {
+  int region_count = 0;
+  for (auto it = regions->begin(); it != regions->end(); it++) {
+    R* r = *it;
+    if (!r->isMerged()) {
+      region_count++;
+    }
+  }
+  return region_count;
+}
+
 void board_tests() {
   TileFactory tile_factory;
   tile_factory.loadResource("tiles.json");
-  Board board(20);
-  GameContext context(7);
-  context.registerMeeple(MeepleColor::RED);
-  context.registerMeeple(MeepleColor::GREEN);
+  Board board(20, 7);
+  board.registerMeeple(MeepleColor::RED);
+  board.registerMeeple(MeepleColor::GREEN);
   std::vector<Segment*> meeple_place_candidates;
 
+  Tile* tile = nullptr;
   Tile* tile0 = tile_factory.newFromName("D", 0);
   Tile* tile1 = tile_factory.newFromName("E", 1);
   Tile* tile2 = tile_factory.newFromName("C", 2);
   Tile* tile3 = tile_factory.newFromName("B", 3);
   Tile* tile4 = tile_factory.newFromName("U", 4);
 
+  // turn 0
   board.setInitialTile(tile0, 3);
-  test_assert("board_tests#0", board.canPlaceTile(tile1, 0, 1, 2));
-  board.placeTile(tile1, 0, 1, 2, &meeple_place_candidates, &context);
-  test_assert("board_tests#1", meeple_place_candidates.size() == 2);
+  test_assert("board_tests#0.0", count_unmerged_region<CityRegion>(board.getCityRegions()) == 1);
+  test_assert("board_tests#0.1", count_unmerged_region<CloisterRegion>(board.getCloisterRegions()) == 0);
+  test_assert("board_tests#0.2", count_unmerged_region<FieldRegion>(board.getFieldRegions()) == 2);
+  test_assert("board_tests#0.3", count_unmerged_region<RoadRegion>(board.getRoadRegions()) == 1);
+  test_assert("board_tests#0.4", board.getGameContext()->getTotalPoint(MeepleColor::RED) == 0);
+  test_assert("board_tests#0.5", board.getGameContext()->getTotalPoint(MeepleColor::GREEN) == 0);
+  test_assert("board_tests#0.6", board.getGameContext()->getHoldingMeepleCount(MeepleColor::RED) == 7);
+  test_assert("board_tests#0.7", board.getGameContext()->getHoldingMeepleCount(MeepleColor::GREEN) == 7);
+
+  // turn 1
+  test_assert("board_tests#1.0", board.canPlaceTile(tile1, 0, 1, 2));
+  board.placeTile(tile1, 0, 1, 2, &meeple_place_candidates);
+  test_assert("board_tests#1.1", meeple_place_candidates.size() == 2);
   meeple_place_candidates.clear();
-  test_assert("board_tests#2", !board.hasPossiblePlacement(tile2));
-  test_assert("board_tests#3", board.canPlaceTile(tile3, 1, 1, 0));
-  board.placeTile(tile3, 1, 1, 0, &meeple_place_candidates, &context);
-  test_assert("board_tests#4", meeple_place_candidates.size() == 2);
+  board.placeMeeple(tile1->getCitySegments()->at(0), MeepleColor::RED);
+  board.endTurn();
+  test_assert("board_tests#1.2", count_unmerged_region<CityRegion>(board.getCityRegions()) == 1);
+  test_assert("board_tests#1.3", count_unmerged_region<CloisterRegion>(board.getCloisterRegions()) == 0);
+  test_assert("board_tests#1.4", count_unmerged_region<FieldRegion>(board.getFieldRegions()) == 3);
+  test_assert("board_tests#1.5", count_unmerged_region<RoadRegion>(board.getRoadRegions()) == 1);
+  test_assert("board_tests#1.6", board.getGameContext()->getTotalPoint(MeepleColor::RED) == 4);
+  test_assert("board_tests#1.7", board.getGameContext()->getTotalPoint(MeepleColor::GREEN) == 0);
+  test_assert("board_tests#1.8", board.getGameContext()->getHoldingMeepleCount(MeepleColor::RED) == 7);
+  test_assert("board_tests#1.9", board.getGameContext()->getHoldingMeepleCount(MeepleColor::GREEN) == 7);
+
+  // turn 2(skip)
+  test_assert("board_tests#2.0", !board.hasPossiblePlacement(tile2));
+
+  // turn 3
+  test_assert("board_tests#3.0", board.canPlaceTile(tile3, 1, 1, 0));
+  board.placeTile(tile3, 1, 1, 0, &meeple_place_candidates);
+  test_assert("board_tests#3.1", meeple_place_candidates.size() == 2);
   meeple_place_candidates.clear();
-  test_assert("board_tests#5", board.canPlaceTile(tile4, -1, 0, 1));
-  board.placeTile(tile4, -1, 0, 1, &meeple_place_candidates, &context);
-  test_assert("board_tests#6", meeple_place_candidates.size() == 3);
+  board.placeMeeple(tile3->getCloisterSegment(), MeepleColor::GREEN);
+  board.endTurn();
+  test_assert("board_tests#3.2", count_unmerged_region<CityRegion>(board.getCityRegions()) == 1);
+  test_assert("board_tests#3.3", count_unmerged_region<CloisterRegion>(board.getCloisterRegions()) == 1);
+  test_assert("board_tests#3.4", count_unmerged_region<FieldRegion>(board.getFieldRegions()) == 3);
+  test_assert("board_tests#3.5", count_unmerged_region<RoadRegion>(board.getRoadRegions()) == 1);
+  test_assert("board_tests#3.6", board.getGameContext()->getTotalPoint(MeepleColor::RED) == 4);
+  test_assert("board_tests#3.7", board.getGameContext()->getTotalPoint(MeepleColor::GREEN) == 0);
+  test_assert("board_tests#3.8", board.getGameContext()->getHoldingMeepleCount(MeepleColor::RED) == 7);
+  test_assert("board_tests#3.9", board.getGameContext()->getHoldingMeepleCount(MeepleColor::GREEN) == 6);
+
+  // turn 4
+  test_assert("board_tests#4.0", board.canPlaceTile(tile4, -1, 0, 1));
+  board.placeTile(tile4, -1, 0, 1, &meeple_place_candidates);
+  board.endTurn();
+  test_assert("board_tests#4.1", meeple_place_candidates.size() == 3);
   meeple_place_candidates.clear();
+  board.endTurn();
+  test_assert("board_tests#4.2", count_unmerged_region<CityRegion>(board.getCityRegions()) == 1);
+  test_assert("board_tests#4.3", count_unmerged_region<CloisterRegion>(board.getCloisterRegions()) == 1);
+  test_assert("board_tests#4.4", count_unmerged_region<FieldRegion>(board.getFieldRegions()) == 3);
+  test_assert("board_tests#4.5", count_unmerged_region<RoadRegion>(board.getRoadRegions()) == 1);
+  test_assert("board_tests#4.6", board.getGameContext()->getTotalPoint(MeepleColor::RED) == 4);
+  test_assert("board_tests#4.7", board.getGameContext()->getTotalPoint(MeepleColor::GREEN) == 0);
+  test_assert("board_tests#4.8", board.getGameContext()->getHoldingMeepleCount(MeepleColor::RED) == 7);
+  test_assert("board_tests#4.9", board.getGameContext()->getHoldingMeepleCount(MeepleColor::GREEN) == 6);
 
-  int region_count = 0;
-  const std::vector<CityRegion*>* city_regions = board.getCityRegions();
-  for (auto it = city_regions->begin(); it != city_regions->end(); it++) {
-    CityRegion* r = *it;
-    if (!r->isMerged()) {
-      region_count++;
-    }
-  }
-  test_assert("board_tests#7", region_count == 1);
+  test_assert("board_tests#5.0", board.isUndoable());
+  tile = board.undo(); // turn4を取り消し
+  test_assert("board_tests#5.1", tile == tile4);
+  test_assert("board_tests#5.2", board.isUndoable());
+  tile = board.undo(); // turn3を取り消し
+  test_assert("board_tests#5.3", tile == tile3);
+  test_assert("board_tests#5.4", board.isUndoable());
+  tile = board.undo(); // turn1を取り消し
+  test_assert("board_tests#5.5", !board.isUndoable());
 
-  region_count = 0;
-  const std::vector<CloisterRegion*>* cloister_regions = board.getCloisterRegions();
-  for (auto it = cloister_regions->begin(); it != cloister_regions->end(); it++) {
-    CloisterRegion* r = *it;
-    if (!r->isMerged()) {
-      region_count++;
-    }
-  }
-  test_assert("board_tests#8", region_count == 1);
-
-  region_count = 0;
-  const std::vector<FieldRegion*>* field_regions = board.getFieldRegions();
-  for (auto it = field_regions->begin(); it != field_regions->end(); it++) {
-    FieldRegion* r = *it;
-    if (!r->isMerged()) {
-      region_count++;
-    }
-  }
-  test_assert("board_tests#9", region_count == 3);
-
-  region_count = 0;
-  const std::vector<RoadRegion*>* road_regions = board.getRoadRegions();
-  for (auto it = road_regions->begin(); it != road_regions->end(); it++) {
-    RoadRegion* r = *it;
-    if (!r->isMerged()) {
-      region_count++;
-    }
-  }
-  test_assert("board_tests#10", region_count == 1);
-  region_count = 0;
+  test_assert("board_tests#6.0", count_unmerged_region<CityRegion>(board.getCityRegions()) == 1);
+  test_assert("board_tests#6.1", count_unmerged_region<CloisterRegion>(board.getCloisterRegions()) == 0);
+  test_assert("board_tests#6.2", count_unmerged_region<FieldRegion>(board.getFieldRegions()) == 2);
+  test_assert("board_tests#6.3", count_unmerged_region<RoadRegion>(board.getRoadRegions()) == 1);
+  test_assert("board_tests#6.4", board.getGameContext()->getTotalPoint(MeepleColor::RED) == 0);
+  test_assert("board_tests#6.5", board.getGameContext()->getTotalPoint(MeepleColor::GREEN) == 0);
+  test_assert("board_tests#6.6", board.getGameContext()->getHoldingMeepleCount(MeepleColor::RED) == 7);
+  test_assert("board_tests#6.7", board.getGameContext()->getHoldingMeepleCount(MeepleColor::GREEN) == 7);
 
   delete tile0;
   delete tile1;
@@ -488,6 +579,7 @@ void tests() {
   tile_position_map_tests();
   tile_tests();
   segment_tests();
+  region_iterator_tests();
   cloister_region_tests();
   city_region_tests();
   field_region_tests();
