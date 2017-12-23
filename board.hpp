@@ -123,8 +123,8 @@ class Board {
     const std::vector<FieldRegion*>* getFieldRegions() const;
     const std::vector<RoadRegion*>* getRoadRegions() const;
     void registerMeeple(MeepleColor color);
-    bool canPlaceTile(Tile* tile, int x, int y, int rotation);
-    bool hasPossiblePlacement(Tile* tile);
+    bool canPlaceTile(Tile* tile, int x, int y, int rotation) const;
+    bool hasPossiblePlacement(Tile* tile) const;
     void setInitialTile(Tile* tile);
     void setInitialTile(Tile* tile, int rotation);
     bool placeTile(Tile* tile, int x, int y, int rotation,
@@ -137,9 +137,10 @@ class Board {
     bool isUndoable() const;
     Tile* undo();
   private:
-    bool adjacencyIsValid(Tile* tile, int x, int y, int rotation);
+    bool adjacencyIsValid(Tile* tile, int x, int y, int rotation) const;
     void undoPlaceTile(TilePlacementEvent* tile_event);
     void undoPlaceMeeple(MeeplePlacementEvent* meeple_event);
+    void removeRegionFromBoard(Region* region);
     int region_id_;
     TilePositionMap tile_map_;
     GameContext context_;

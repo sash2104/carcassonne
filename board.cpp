@@ -17,19 +17,19 @@ Board::Board(int tile_n, int initial_meeple_n)
 }
 
 Board::~Board() {
-  for (auto it = city_regions_.begin(); it != city_regions_.end(); it++) {
+  for (auto it = city_regions_.begin(); it != city_regions_.end(); ++it) {
     CityRegion* region = *it;
     delete region;
   }
-  for (auto it = cloister_regions_.begin(); it != cloister_regions_.end(); it++) {
+  for (auto it = cloister_regions_.begin(); it != cloister_regions_.end(); ++it) {
     CloisterRegion* region = *it;
     delete region;
   }
-  for (auto it = field_regions_.begin(); it != field_regions_.end(); it++) {
+  for (auto it = field_regions_.begin(); it != field_regions_.end(); ++it) {
     FieldRegion* region = *it;
     delete region;
   }
-  for (auto it = road_regions_.begin(); it != road_regions_.end(); it++) {
+  for (auto it = road_regions_.begin(); it != road_regions_.end(); ++it) {
     RoadRegion* region = *it;
     delete region;
   }
@@ -63,14 +63,14 @@ void Board::registerMeeple(MeepleColor color) {
   context_.registerMeeple(color);
 }
 
-bool Board::canPlaceTile(Tile* tile, int x, int y, int rotation) {
+bool Board::canPlaceTile(Tile* tile, int x, int y, int rotation) const {
   if (!tile_map_.isPlacablePosition(x, y)) {
     return false;
   }
   return adjacencyIsValid(tile, x, y, rotation);
 }
 
-bool Board::hasPossiblePlacement(Tile* tile) {
+bool Board::hasPossiblePlacement(Tile* tile) const {
   const std::set<BoardPosition>* positions = tile_map_.getPlacablePositions();
   for (auto it = positions->cbegin(); it != positions->cend(); it++) {
     BoardPosition pos(*it);
@@ -83,7 +83,7 @@ bool Board::hasPossiblePlacement(Tile* tile) {
   return false;
 }
 
-bool Board::adjacencyIsValid(Tile* tile, int x, int y, int rotation) {
+bool Board::adjacencyIsValid(Tile* tile, int x, int y, int rotation) const {
   Tile* top_tile = tile_map_.getPlacedTile(x, y + 1);
   if (top_tile != nullptr && !top_tile->canBottomAdjacentWith(tile, rotation)) {
     return false;
@@ -117,21 +117,21 @@ void Board::setInitialTile(Tile* tile, int rotation) {
   tile_map_.placeTile(tile, 0, 0);
   TilePlacementEvent* tile_event = new TilePlacementEvent(tile);
   const std::vector<Segment*>* city_segments = tile->getCitySegments();
-  for (auto it = city_segments->cbegin(); it != city_segments->cend(); it++) {
+  for (auto it = city_segments->cbegin(); it != city_segments->cend(); ++it) {
     Segment* s = *it;
     CityRegion* region = new CityRegion(region_id_++, s, this);
     city_regions_.push_back(region);
     tile_event->addGeneratedRegion(region);
   }
   const std::vector<Segment*>* field_segments = tile->getFieldSegments();
-  for (auto it = field_segments->cbegin(); it != field_segments->cend(); it++) {
+  for (auto it = field_segments->cbegin(); it != field_segments->cend(); ++it) {
     Segment* s = *it;
     FieldRegion* region = new FieldRegion(region_id_++, s, this);
     field_regions_.push_back(region);
     tile_event->addGeneratedRegion(region);
   }
   const std::vector<Segment*>* road_segments = tile->getRoadSegments();
-  for (auto it = road_segments->cbegin(); it != road_segments->cend(); it++) {
+  for (auto it = road_segments->cbegin(); it != road_segments->cend(); ++it) {
     Segment* s = *it;
     RoadRegion* region = new RoadRegion(region_id_++, s, this);
     road_regions_.push_back(region);
@@ -165,7 +165,7 @@ bool Board::placeTile(Tile* tile, int x, int y, int rotation, std::vector<Segmen
   std::vector<Region*> adjacent_regions;
 
   const std::vector<Segment*>* city_segments = tile->getCitySegments();
-  for (auto it = city_segments->cbegin(); it != city_segments->cend(); it++) {
+  for (auto it = city_segments->cbegin(); it != city_segments->cend(); ++it) {
     Segment* my_s = *it;
     for (int d = 0; d < 4; d++) {
       if (around_tiles[d] == nullptr) {
@@ -205,7 +205,7 @@ bool Board::placeTile(Tile* tile, int x, int y, int rotation, std::vector<Segmen
   }
 
   const std::vector<Segment*>* road_segments = tile->getRoadSegments();
-  for (auto it = road_segments->cbegin(); it != road_segments->cend(); it++) {
+  for (auto it = road_segments->cbegin(); it != road_segments->cend(); ++it) {
     Segment* my_s = *it;
     for (int d = 0; d < 4; d++) {
       if (around_tiles[d] == nullptr) {
@@ -245,7 +245,7 @@ bool Board::placeTile(Tile* tile, int x, int y, int rotation, std::vector<Segmen
   }
 
   const std::vector<Segment*>* field_segments = tile->getFieldSegments();
-  for (auto it = field_segments->cbegin(); it != field_segments->cend(); it++) {
+  for (auto it = field_segments->cbegin(); it != field_segments->cend(); ++it) {
     Segment* my_s = *it;
     for (int d = 0; d < 8; d++) {
       if (around_tiles[d / 2] == nullptr) {
@@ -282,7 +282,7 @@ bool Board::placeTile(Tile* tile, int x, int y, int rotation, std::vector<Segmen
     adjacent_regions.clear();
   }
 
-  for (auto it = cloister_regions_.begin(); it != cloister_regions_.end(); it++) {
+  for (auto it = cloister_regions_.begin(); it != cloister_regions_.end(); ++it) {
     CloisterRegion* region = *it;
     if (region->isCompleted() && !region->pointIsTransfered()) {
       region->transferPoint(&context_, true);
@@ -320,25 +320,25 @@ bool Board::placeMeeple(Segment* segment, MeepleColor color) {
 }
 
 void Board::transferRemainingPoints(bool return_meeple) {
-  for (auto it = city_regions_.begin(); it != city_regions_.end(); it++) {
+  for (auto it = city_regions_.begin(); it != city_regions_.end(); ++it) {
     CityRegion* region = *it;
     if (!region->isMerged() && !region->pointIsTransfered()) {
       region->transferPoint(&context_, return_meeple);
     }
   }
-  for (auto it = cloister_regions_.begin(); it != cloister_regions_.end(); it++) {
+  for (auto it = cloister_regions_.begin(); it != cloister_regions_.end(); ++it) {
     CloisterRegion* region = *it;
     if (!region->isMerged() && !region->pointIsTransfered()) {
       region->transferPoint(&context_, return_meeple);
     }
   }
-  for (auto it = field_regions_.begin(); it != field_regions_.end(); it++) {
+  for (auto it = field_regions_.begin(); it != field_regions_.end(); ++it) {
     FieldRegion* region = *it;
     if (!region->isMerged() && !region->pointIsTransfered()) {
       region->transferPoint(&context_, return_meeple);
     }
   }
-  for (auto it = road_regions_.begin(); it != road_regions_.end(); it++) {
+  for (auto it = road_regions_.begin(); it != road_regions_.end(); ++it) {
     RoadRegion* region = *it;
     if (!region->isMerged() && !region->pointIsTransfered()) {
       region->transferPoint(&context_, return_meeple);
@@ -391,44 +391,7 @@ void Board::undoPlaceTile(TilePlacementEvent* tile_event) {
   while (!generated_regions->empty()) {
     Region* generated_region = generated_regions->back();
     generated_regions->pop_back();
-    // TODO: リファクタリング(効率悪い(?)し、汚い)
-    switch (generated_region->getType()) {
-    case RegionType::CITY:
-      for (auto it2 = city_regions_.begin(); it2 != city_regions_.end(); ++it2) {
-	Region* region = *it2;
-	if (generated_region == region) {
-	  city_regions_.erase(it2);
-	  break;
-	}
-      }
-      break;
-    case RegionType::CLOISTER:
-      for (auto it2 = cloister_regions_.begin(); it2 != cloister_regions_.end(); ++it2) {
-	Region* region = *it2;
-	if (generated_region == region) {
-	  cloister_regions_.erase(it2);
-	  break;
-	}
-      }
-      break;
-    case RegionType::FIELD:
-      for (auto it2 = field_regions_.begin(); it2 != field_regions_.end(); ++it2) {
-	Region* region = *it2;
-	if (generated_region == region) {
-	  field_regions_.erase(it2);
-	  break;
-	}
-      }
-      break;
-    case RegionType::ROAD:
-      for (auto it2 = road_regions_.begin(); it2 != road_regions_.end(); ++it2) {
-	Region* region = *it2;
-	if (generated_region == region) {
-	  road_regions_.erase(it2);
-	  break;
-	}
-      }
-    }
+    removeRegionFromBoard(generated_region);
     delete generated_region;
   }
 
@@ -445,6 +408,50 @@ void Board::undoPlaceTile(TilePlacementEvent* tile_event) {
     }
     base_region->undoAddSegment(s);
   }
+}
+
+inline void Board::removeRegionFromBoard(Region* region_to_remove) {
+  // TODO: リファクタリング(効率悪い(?)し、汚い)
+  switch (region_to_remove->getType()) {
+  case RegionType::CITY:
+    for (auto it = city_regions_.begin(); it != city_regions_.end(); ++it) {
+      Region* region = *it;
+      if (region_to_remove == region) {
+        city_regions_.erase(it);
+        return;
+      }
+    }
+    break;
+  case RegionType::CLOISTER:
+    for (auto it = cloister_regions_.begin(); it != cloister_regions_.end(); ++it) {
+      Region* region = *it;
+      if (region_to_remove == region) {
+        cloister_regions_.erase(it);
+        return;
+      }
+    }
+    break;
+  case RegionType::FIELD:
+    for (auto it = field_regions_.begin(); it != field_regions_.end(); ++it) {
+      Region* region = *it;
+      if (region_to_remove == region) {
+        field_regions_.erase(it);
+        return;
+      }
+    }
+    break;
+  case RegionType::ROAD:
+    for (auto it = road_regions_.begin(); it != road_regions_.end(); ++it) {
+      Region* region = *it;
+      if (region_to_remove == region) {
+        road_regions_.erase(it);
+        return;
+      }
+    }
+    break;
+  }
+  // ここに到達してはいけない
+  assert(false);
 }
 
 void Board::undoPlaceMeeple(MeeplePlacementEvent* meeple_event) {
