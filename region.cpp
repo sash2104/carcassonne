@@ -114,7 +114,7 @@ SegmentIterator Region::segmentEnd() const {
 
 bool Region::mergeRegion(Region* region) {
   assert(getType() == region->getType());
-  if (this != region && !region->isMerged()) {
+  if (this != region && !isMerged() && !region->isMerged()) {
     for (auto it = region->segmentBegin(); it != region->segmentEnd(); ++it) {
       Segment* s = *it;
       s->setRegion(this);
