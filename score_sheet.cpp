@@ -4,10 +4,12 @@
 #include <string>
 #include <vector>
 
+#include "board.hpp"
 #include "json.hpp"
 #include "meeple_color.hpp"
 #include "score_sheet.hpp"
 #include "segment.hpp"
+#include "tile_factory.hpp"
 
 using json = nlohmann::json;
 
@@ -132,4 +134,89 @@ MeeplePlacement* __constructMeeplePlacement(json& j) {
   int segment_index = j["meeplePlacement"]["segmentIndex"];
   MeeplePlacement* meeple_placement = new MeeplePlacement(type, segment_index);
   return meeple_placement;
+}
+
+bool validateScoreSheet(const TileFactory& tile_factory, const ScoreSheet& score_sheet) {
+  const std::vector<Placement*>* placements = score_sheet.getPlacements();
+  if (placements->size() == 0) {
+    return false;
+  }
+  const std::vector<MeepleColor>* players = score_sheet.getPlayers();
+  assert(players->size() == 2); // 今は二人対戦しか扱わない
+  Board board(placements->size(), 7);
+  board.registerMeeple(players->at(0));
+  board.registerMeeple(players->at(1));
+
+  int tile_id = 0;
+  int turn = 0;
+  const TilePlacement* tile_placement;
+  const MeeplePlacement* meeple_placement;
+  Placement* placement;
+  Tile* tile;
+  MeepleColor player;
+  std::vector<Segment*> meeple_place_candidates;
+  std::vector<Tile*> tiles;
+
+  placement = placements->at(turn++);
+  if (placement->getType() != PlacementType::INITIAL) {
+    return false;
+  }
+  tile = tile_factory.newFromName(placement->getTileName(), tile_id++);
+  tiles.push_back(tile);
+  if (tile == nullptr) {
+    return false;
+  }
+  tile_placement = placement->getTilePlacement();
+  board.setInitialTile(tile, tile_placement->getRotation());
+
+  while (turn < (int) placements->size()) {
+    placement = placements->at(turn++);
+    tile = tile_factory.newFromName(placement->getTileName(), tile_id++);
+    tiles.push_back(tile);
+    switch (placement->getType()) {
+    case PlacementType::INITIAL:
+      return false;
+    case PlacementType::SKIPPED:
+      if (board.hasPossiblePlacement(tile)) {
+        return false;
+      }
+      break;
+    case PlacementType::REGULAR:
+      player = placement->getPlayer();
+      tile_placement = placement->getTilePlacement();
+      if (!board.canPlaceTile(tile, tile_placement->getX(), tile_placement->getY(), tile_placement->getRotation())) {
+        return false;
+      }
+      board.placeTile(tile, tile_placement->getX(), tile_placement->getY(),
+        tile_placement->getRotation(), &meeple_place_candidates);
+      meeple_placement = placement->getMeeplePlacement();
+      if (meeple_placement != nullptr) {
+        bool segment_found = false;
+        for (auto it = meeple_place_candidates.begin(); it != meeple_place_candidates.end(); ++it) {
+          Segment* s = *it;
+          if (meeple_placement->getSegmentType() == s->getType() &&
+              meeple_placement->getSegmentIndex() == s->getIndex()) {
+           if (!board.placeMeeple(s, player)) {
+             return false;
+           }
+            segment_found = true;
+            break;
+          }
+        }
+        if (!segment_found) {
+          return false;
+        }
+      }
+    }
+    meeple_place_candidates.clear();
+    board.endTurn();
+  }
+  board.transferRemainingPoints(true);
+  board.endGame();
+  const GameContext* context = board.getGameContext();
+  int red_point = context->getTotalPoint(MeepleColor::RED);
+  int green_point = context->getTotalPoint(MeepleColor::GREEN);
+  std::cout << "RED POINT: " << red_point << ", ";
+  std::cout << "GREEN POINT: " << green_point << std::endl;
+  return true;
 }

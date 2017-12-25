@@ -6,6 +6,7 @@
 
 enum class MeepleColor;
 enum class SegmentType;
+class TileFactory;
 
 SegmentType stringToSegmentType(std::string& str);
 
@@ -121,5 +122,9 @@ class ScoreSheet {
 };
 
 ScoreSheet* readScoreSheetFile(const std::string& file_name);
+
+// 非合法手を打ってないかを判定する
+// 全て合法手の場合だけtrueを返す
+bool validateScoreSheet(const TileFactory& tile_factory, const ScoreSheet& score_sheet);
 
 #endif

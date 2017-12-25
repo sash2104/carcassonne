@@ -17,7 +17,7 @@ class TileFactory {
     TileFactory();
     ~TileFactory();
     void loadResource(const std::string& resource_file);
-    Tile* newFromName(const std::string name, int tile_id);
+    Tile* newFromName(const std::string name, int tile_id) const;
   private:
     class TileParts {
       public:
