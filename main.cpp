@@ -26,7 +26,7 @@ int main(int argc, char const* argv[])
   TileFactory f;
   f.loadResource("tiles.json");
   std::string file_name("doc/championship_japan_2015_final.json");
-  ScoreSheet* score_sheet = readScoreSheetFile(file_name);
+  ScoreSheet* score_sheet = readScoreSheetFromFile(file_name);
   bool is_valid = validateScoreSheet(f, *score_sheet);
   if (is_valid) {
     std::cout << "valid" << std::endl;

@@ -1,6 +1,7 @@
 #include <cassert>
 #include <fstream>
 #include <iostream>
+#include <memory>
 #include <string>
 #include <vector>
 
@@ -27,7 +28,7 @@ SegmentType stringToSegmentType(std::string& str) {
   } else if (str == "field") {
     return SegmentType::FIELD;
   }
-  assert(false);
+  return SegmentType::INVALID;
 }
 
 PlacementType stringToPlacementType(std::string& str) {
@@ -38,16 +39,16 @@ PlacementType stringToPlacementType(std::string& str) {
   } else if (str == "regular") {
     return PlacementType::REGULAR;
   }
-  assert(false);
+  return PlacementType::INVALID;
 }
 
-ScoreSheet* readScoreSheetFile(const std::string& file_name) {
+ScoreSheet* readScoreSheetFromFile(const std::string& file_name) {
   std::ifstream i(file_name.c_str());
   json j;
   i >> j;
 
   if (j.find("info") == j.end() || j["info"].find("players") == j["info"].end()) {
-    assert(false);
+    return nullptr;
   }
   json players_j = j["info"]["players"];
   std::vector<std::string> players;
@@ -65,6 +66,11 @@ ScoreSheet* readScoreSheetFile(const std::string& file_name) {
 
   for (json::iterator it = j["placements"].begin(); it != j["placements"].end(); ++it) {
     Placement* placement = __constructPlacement(*it, player_map);
+    if (placement == nullptr) {
+      delete placement;
+      delete score_sheet;
+      return nullptr;
+    }
     score_sheet->addPlacement(placement);
   }
   return score_sheet;
@@ -73,6 +79,9 @@ ScoreSheet* readScoreSheetFile(const std::string& file_name) {
 Placement* __constructPlacement(json& j, std::map<std::string, MeepleColor>& player_map) {
   std::string type_name = j["type"];
   PlacementType type = stringToPlacementType(type_name);
+  if (type == PlacementType::INVALID) {
+    return nullptr;
+  }
   MeepleColor player;
   if (type == PlacementType::INITIAL) {
     player = MeepleColor::NOT_PLACED; // playerなしを表すため代用
@@ -80,16 +89,26 @@ Placement* __constructPlacement(json& j, std::map<std::string, MeepleColor>& pla
     if (j.find("player") != j.end()) {
       std::string player_name = j["player"];
       if (player_map.find(player_name) == player_map.end()) {
-	assert(false);
+	return nullptr;
       }
       player = player_map[player_name];
     } else {
-      assert(false);
+	return nullptr;
     }
   }
   std::string tile_name = j["tile"];
   TilePlacement* tile_placement = __constructTilePlacement(j, type);
+  if (tile_placement == nullptr) {
+    return nullptr;
+  }
+  if (j.find("meeplePlacement") == j.end()) {
+    return new Placement(type, player, tile_name, tile_placement, nullptr);
+  }
   MeeplePlacement* meeple_placement = __constructMeeplePlacement(j);
+  if (meeple_placement == nullptr) {
+    delete tile_placement;
+    return nullptr;
+  }
   return new Placement(type, player, tile_name, tile_placement, meeple_placement);
 }
 
@@ -98,7 +117,7 @@ TilePlacement* __constructTilePlacement(json& j, PlacementType type) {
     if (type == PlacementType::INITIAL) {
       return new TilePlacement(0, 0, 0);
     } else {
-      assert(false);
+      return nullptr;
     }
   }
   json tile_placement_j = j["tilePlacement"];
@@ -118,7 +137,9 @@ TilePlacement* __constructTilePlacement(json& j, PlacementType type) {
   } else {
     rotation = 0;
   }
-  assert(rotation >= 0 && rotation < 4);
+  if (rotation < 0 || rotation >= 4) {
+    return nullptr;
+  }
   if (type == PlacementType::INITIAL) {
     x = y = 0;
   }
@@ -126,11 +147,12 @@ TilePlacement* __constructTilePlacement(json& j, PlacementType type) {
 }
 
 MeeplePlacement* __constructMeeplePlacement(json& j) {
-  if (j.find("meeplePlacement") == j.end()) {
-    return nullptr;
-  }
+  assert(j.find("meeplePlacement") != j.end());
   std::string segment_name = j["meeplePlacement"]["segmentType"];
   SegmentType type = stringToSegmentType(segment_name);
+  if (type == SegmentType::INVALID) {
+    return nullptr;
+  }
   int segment_index = j["meeplePlacement"]["segmentIndex"];
   MeeplePlacement* meeple_placement = new MeeplePlacement(type, segment_index);
   return meeple_placement;
@@ -155,24 +177,27 @@ bool validateScoreSheet(const TileFactory& tile_factory, const ScoreSheet& score
   Tile* tile;
   MeepleColor player;
   std::vector<Segment*> meeple_place_candidates;
-  std::vector<Tile*> tiles;
+  std::vector<std::unique_ptr<Tile>> tiles;
 
   placement = placements->at(turn++);
   if (placement->getType() != PlacementType::INITIAL) {
     return false;
   }
   tile = tile_factory.newFromName(placement->getTileName(), tile_id++);
-  tiles.push_back(tile);
   if (tile == nullptr) {
     return false;
   }
+  tiles.push_back(std::unique_ptr<Tile>(tile));
   tile_placement = placement->getTilePlacement();
   board.setInitialTile(tile, tile_placement->getRotation());
 
   while (turn < (int) placements->size()) {
     placement = placements->at(turn++);
     tile = tile_factory.newFromName(placement->getTileName(), tile_id++);
-    tiles.push_back(tile);
+    if (tile == nullptr) {
+      return false;
+    }
+    tiles.push_back(std::unique_ptr<Tile>(tile));
     switch (placement->getType()) {
     case PlacementType::INITIAL:
       return false;
@@ -207,6 +232,9 @@ bool validateScoreSheet(const TileFactory& tile_factory, const ScoreSheet& score
           return false;
         }
       }
+      break;
+      case PlacementType::INVALID:
+	return false;
     }
     meeple_place_candidates.clear();
     board.endTurn();

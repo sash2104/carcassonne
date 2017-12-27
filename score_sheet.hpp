@@ -45,7 +45,8 @@ class MeeplePlacement {
 };
 
 enum class PlacementType {
-  INITIAL, SKIPPED, REGULAR
+  INITIAL, SKIPPED, REGULAR,
+  INVALID // 不正なタイプであることを表す
 };
 
 PlacementType stringToPlacementType(std::string& str);
@@ -93,7 +94,6 @@ class Placement {
     MeeplePlacement* meeple_placement_; // nullptrを許す
 };
 
-
 class ScoreSheet {
   public:
     ScoreSheet() : placements_(), players_() {
@@ -121,10 +121,12 @@ class ScoreSheet {
     std::vector<MeepleColor> players_;
 };
 
-ScoreSheet* readScoreSheetFile(const std::string& file_name);
+// ファイルから棋譜を読み込む
+// (主にシンタックスの面で)不正な棋譜の場合はnullptrを返す
+ScoreSheet* readScoreSheetFromFile(const std::string& file_name);
 
-// 非合法手を打ってないかを判定する
-// 全て合法手の場合だけtrueを返す
+// 非合法手順がないかを判定する
+// 全て合法な手順の場合だけtrueを返す
 bool validateScoreSheet(const TileFactory& tile_factory, const ScoreSheet& score_sheet);
 
 #endif

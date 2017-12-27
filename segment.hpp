@@ -6,7 +6,8 @@ class Region;
 class Tile;
 
 enum class SegmentType {
-  CITY, CLOISTER, ROAD, FIELD
+  CITY, CLOISTER, ROAD, FIELD,
+  INVALID // 不正なタイプであることを表す
 };
 
 // タイル中でミープルを置く対象となる個々の場所を表すクラス
