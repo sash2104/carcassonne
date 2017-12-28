@@ -5,28 +5,6 @@
 #include "tile.hpp"
 #include "tile_position_map.hpp"
 
-BoardPosition::BoardPosition(int x, int y) : x_(x), y_(y) {
-}
-
-BoardPosition::BoardPosition(const BoardPosition& that) : x_(that.x_), y_(that.y_) {
-}
-
-inline int BoardPosition::getX() const {
-  return x_;
-}
-
-inline int BoardPosition::getY() const {
-  return y_;
-}
-
-bool BoardPosition::operator<(const BoardPosition& that) const {
-  if (getX() == that.getX()) {
-    return getY() < that.getY();
-  } else {
-    return getX() < that.getX();
-  }
-}
-
 TilePositionMap::TilePositionMap(int tile_n) {
   assert(tile_n > 0);
   // ゲームに使われるタイルの枚数がtile_nのとき
