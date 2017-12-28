@@ -104,8 +104,6 @@ class CloisterRegion : public Region {
     RegionType getType() const;
   private:
     void rewindRegionState();
-    // キャッシュ用の変数なのでmutableにする
-    mutable bool completed_;
 };
 
 class FieldRegion : public Region {

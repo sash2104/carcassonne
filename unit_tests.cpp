@@ -575,6 +575,49 @@ void board_tests() {
   delete tile4;
 }
 
+void cloister_completion_undo_board_tests() {
+  TileFactory tile_factory;
+  tile_factory.loadResource("tiles.json");
+  Board board(20, 7);
+  board.registerMeeple(MeepleColor::RED);
+  board.registerMeeple(MeepleColor::GREEN);
+  std::vector<Segment*> meeple_place_candidates;
+  Tile* tile0 = tile_factory.newFromName("B", 0);
+  Tile* tile1 = tile_factory.newFromName("B", 1);
+  Tile* tile2 = tile_factory.newFromName("B", 2);
+  Tile* tile3 = tile_factory.newFromName("B", 3);
+  Tile* tile4 = tile_factory.newFromName("B", 4);
+  Tile* tile5 = tile_factory.newFromName("B", 5);
+  Tile* tile6 = tile_factory.newFromName("B", 6);
+  Tile* tile7 = tile_factory.newFromName("B", 7);
+  Tile* tile8 = tile_factory.newFromName("B", 8);
+
+  board.setInitialTile(tile0);
+  board.placeTile(tile1,  1,  0, 0, &meeple_place_candidates); meeple_place_candidates.clear();
+  board.placeTile(tile2, -1,  0, 0, &meeple_place_candidates); meeple_place_candidates.clear();
+  board.placeTile(tile3, -1,  1, 0, &meeple_place_candidates); meeple_place_candidates.clear();
+  board.placeTile(tile4,  0,  1, 0, &meeple_place_candidates); meeple_place_candidates.clear();
+  board.placeTile(tile5,  1,  1, 0, &meeple_place_candidates); meeple_place_candidates.clear();
+  board.placeTile(tile6, -1, -1, 0, &meeple_place_candidates); meeple_place_candidates.clear();
+  board.placeTile(tile7,  0, -1, 0, &meeple_place_candidates); meeple_place_candidates.clear();
+  Region* r = tile0->getCloisterSegment()->getRegion();
+  test_assert("cloister_completion_undo_board_tests#0", !r->isCompleted());
+  board.placeTile(tile8, 1, -1, 0, &meeple_place_candidates); meeple_place_candidates.clear();
+  test_assert("cloister_completion_undo_board_tests#1", r->isCompleted());
+  board.undo();
+  test_assert("cloister_completion_undo_board_tests#2", !r->isCompleted());
+
+  delete tile0;
+  delete tile1;
+  delete tile2;
+  delete tile3;
+  delete tile4;
+  delete tile5;
+  delete tile6;
+  delete tile7;
+  delete tile8;
+}
+
 void tests() {
   tile_position_map_tests();
   tile_tests();
@@ -586,6 +629,7 @@ void tests() {
   road_region_tests();
   game_context_tests();
   board_tests();
+  cloister_completion_undo_board_tests();
 }
 
 int main(int argc, char* argv[]) {

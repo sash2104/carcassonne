@@ -342,20 +342,17 @@ void CityRegion::rewindRegionState() {
 }
 
 
-CloisterRegion::CloisterRegion(int id, Segment* segment, Board* board) : Region(id, segment, board), completed_(false) {
+CloisterRegion::CloisterRegion(int id, Segment* segment, Board* board) : Region(id, segment, board) {
 }
 
 bool CloisterRegion::isCompleted() const {
-  if (completed_) {
-    return true;
-  }
+  // 修道院は完成したかどうかの状態がRegion外の状態に依存する特殊なRegionであり、
+  // 完成した情報をメンバ変数にキャッシュすると、適切なタイミングでキャッシュを無効化
+  // できないので、キャッシュを行わない。
   return calculatePoint() == 9;
 }
 
 int CloisterRegion::calculatePoint() const {
-  if (completed_) {
-    return 9;
-  }
   const TilePositionMap* m = getBoard()->getTilePositionMap();
   assert(segments_.size() == 1);
   const Segment* segment = segments_.at(0);
@@ -370,9 +367,6 @@ int CloisterRegion::calculatePoint() const {
       }
     }
   }
-  if (point == 9) {
-    completed_ = true;
-  }
   return point;
 }
 
@@ -381,7 +375,6 @@ inline RegionType CloisterRegion::getType() const {
 }
 
 void CloisterRegion::rewindRegionState() {
-  completed_ = false;
 }
 
 
