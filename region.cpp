@@ -27,15 +27,15 @@ SegmentIterator& SegmentIterator::operator++() {
   return *this;
 }
 
-Segment* SegmentIterator::operator*() {
+Segment* SegmentIterator::operator*() const {
   return *iter_;
 }
 
-bool SegmentIterator::operator==(const SegmentIterator& iter) {
+bool SegmentIterator::operator==(const SegmentIterator& iter) const {
   return root_ == iter.root_ && current_ == iter.current_ && iter_ == iter.iter_;
 }
 
-bool SegmentIterator::operator!=(const SegmentIterator& iter) {
+bool SegmentIterator::operator!=(const SegmentIterator& iter) const {
   return root_ != iter.root_ || current_ != iter.current_ || iter_ != iter.iter_;
 }
 
@@ -285,7 +285,7 @@ void Region::debugPrint() const {
 CityRegion::CityRegion(int id, Segment* segment, Board* board) : Region(id, segment, board), completed_(false) {
 }
 
-bool CityRegion::isCompleted() {
+bool CityRegion::isCompleted() const {
   if (completed_) {
     return true;
   }
@@ -316,7 +316,7 @@ bool CityRegion::isCompleted() {
   return true;
 }
 
-int CityRegion::calculatePoint() {
+int CityRegion::calculatePoint() const {
   int pennant_count = 0;
   std::set<int> uniq_tiles;
   for (auto it = segmentBegin(); it != segmentEnd(); ++it) {
@@ -344,14 +344,14 @@ void CityRegion::rewindRegionState() {
 CloisterRegion::CloisterRegion(int id, Segment* segment, Board* board) : Region(id, segment, board), completed_(false) {
 }
 
-bool CloisterRegion::isCompleted() {
+bool CloisterRegion::isCompleted() const {
   if (completed_) {
     return true;
   }
   return calculatePoint() == 9;
 }
 
-int CloisterRegion::calculatePoint() {
+int CloisterRegion::calculatePoint() const {
   if (completed_) {
     return 9;
   }
@@ -387,16 +387,16 @@ void CloisterRegion::rewindRegionState() {
 FieldRegion::FieldRegion(int id, Segment* segment, Board* board) : Region(id, segment, board) {
 }
 
-bool FieldRegion::isCompleted() {
+bool FieldRegion::isCompleted() const {
   return false;
 }
 
-int FieldRegion::calculatePoint() {
+int FieldRegion::calculatePoint() const {
  const std::vector<CityRegion*>* city_regions = getBoard()->getCityRegions();
  return calculatePoint(city_regions);
 }
 
-int FieldRegion::calculatePoint(const std::vector<CityRegion*>* city_regions) {
+int FieldRegion::calculatePoint(const std::vector<CityRegion*>* city_regions) const {
   int point = 0;
   for (auto it = city_regions->cbegin(); it != city_regions->cend(); it++) {
     CityRegion* region = *it;
@@ -411,7 +411,7 @@ inline RegionType FieldRegion::getType() const {
   return RegionType::FIELD;
 }
 
-bool FieldRegion::isAdjacentWith(const CityRegion* city_region) {
+bool FieldRegion::isAdjacentWith(const CityRegion* city_region) const {
   for (auto field_it = segmentBegin(); field_it != segmentEnd(); ++field_it) {
     Segment* field_s = *field_it;
     Tile* field_t = field_s->getTile();
@@ -436,7 +436,7 @@ void FieldRegion::rewindRegionState() {
 RoadRegion::RoadRegion(int id, Segment* segment, Board* board) : Region(id, segment, board), completed_(false) {
 }
 
-bool RoadRegion::isCompleted() {
+bool RoadRegion::isCompleted() const {
   if (completed_) {
     return true;
   }
@@ -467,7 +467,7 @@ bool RoadRegion::isCompleted() {
   return true;
 }
 
-int RoadRegion::calculatePoint() {
+int RoadRegion::calculatePoint() const {
   std::set<int> uniq_tiles;
   for (auto it = segmentBegin(); it != segmentEnd(); ++it) {
     Segment* s = *it;

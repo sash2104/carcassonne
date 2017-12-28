@@ -18,9 +18,9 @@ class SegmentIterator {
     friend Region;
     SegmentIterator(const SegmentIterator& iter);
     SegmentIterator& operator++();
-    Segment* operator*();
-    bool operator==(const SegmentIterator& iter);
-    bool operator!=(const SegmentIterator& iter);
+    Segment* operator*() const;
+    bool operator==(const SegmentIterator& iter) const;
+    bool operator!=(const SegmentIterator& iter) const;
   private:
     SegmentIterator(const Region* root, const Region* current,
       std::vector<Segment*>::const_iterator iter);
@@ -62,8 +62,8 @@ class Region {
     void transferPoint(GameContext* context, bool return_meeple);
     void undoTransferPoint(GameContext* context, bool undo_return_meeple);
     bool pointIsTransfered() const;
-    virtual bool isCompleted() = 0;
-    virtual int calculatePoint() = 0;
+    virtual bool isCompleted() const = 0;
+    virtual int calculatePoint() const = 0;
     virtual RegionType getType() const = 0;
     void debugPrint() const;
   protected:
@@ -87,48 +87,50 @@ class Region {
 class CityRegion : public Region {
   public:
     CityRegion(int id, Segment* segment, Board* board);
-    bool isCompleted();
-    int calculatePoint();
+    bool isCompleted() const;
+    int calculatePoint() const;
     RegionType getType() const;
   private:
     void rewindRegionState();
-    bool completed_;
+    // キャッシュ用の変数なのでmutableにする
+    mutable bool completed_;
 };
 
 class CloisterRegion : public Region {
   public:
     CloisterRegion(int id, Segment* segment, Board* board);
-    bool isCompleted();
-    int calculatePoint();
+    bool isCompleted() const;
+    int calculatePoint() const;
     RegionType getType() const;
   private:
     void rewindRegionState();
-    bool completed_;
+    // キャッシュ用の変数なのでmutableにする
+    mutable bool completed_;
 };
 
 class FieldRegion : public Region {
   public:
     FieldRegion(int id, Segment* segment, Board* board);
-    bool isCompleted();
-    int calculatePoint();
+    bool isCompleted() const;
+    int calculatePoint() const;
     // テストをしやすくするため
-    int calculatePoint(const std::vector<CityRegion*>* city_regions);
+    int calculatePoint(const std::vector<CityRegion*>* city_regions) const;
     RegionType getType() const;
-    bool isAdjacentWith(const CityRegion* city_region);
+    bool isAdjacentWith(const CityRegion* city_region) const;
   private:
     void rewindRegionState();
-    bool completed_;
 };
 
 class RoadRegion : public Region {
   public:
     RoadRegion(int id, Segment* segment, Board* board);
-    bool isCompleted();
-    int calculatePoint();
+    bool isCompleted() const;
+    int calculatePoint() const;
     RegionType getType() const;
   private:
     void rewindRegionState();
-    bool completed_;
+    // キャッシュ用の変数なのでmutableにする
+    mutable bool completed_;
 };
 
 #endif
