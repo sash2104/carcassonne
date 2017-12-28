@@ -253,7 +253,7 @@ void cloister_region_tests() {
   tile.setX(0).setY(0).setRotation(0);
   s.setTile(&tile);
   CloisterRegion region(0, &s, &board);
-  TilePositionMap* map = board.getTilePositionMap();
+  TilePositionMap* map = const_cast<TilePositionMap*>(board.getTilePositionMap());
   map->placeTile(&tile, 0, 0);
   test_assert("cloister_region_tests#0", !region.isCompleted());
   test_assert("cloister_region_tests#1", region.calculatePoint() == 1);

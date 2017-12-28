@@ -35,7 +35,7 @@ Board::~Board() {
   }
 }
 
-TilePositionMap* Board::getTilePositionMap() {
+const TilePositionMap* Board::getTilePositionMap() const {
   return &tile_map_;
 }
 
