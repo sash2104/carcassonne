@@ -463,7 +463,7 @@ void game_context_tests() {
 template <typename R>
 int count_unmerged_region(const std::vector<R*>* regions) {
   int region_count = 0;
-  for (auto it = regions->begin(); it != regions->end(); it++) {
+  for (auto it = regions->begin(); it != regions->end(); ++it) {
     R* r = *it;
     if (!r->isMerged()) {
       region_count++;

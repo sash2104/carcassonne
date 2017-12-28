@@ -19,7 +19,7 @@ TilePositionMap::TilePositionMap(int tile_n) {
   shift_ = tile_n - 1;
   size_ = tile_n * 2 - 1;
   tiles_ = new Tile*[size_*size_];
-  for (int i = 0, n = size_ * size_; i < n; i++) {
+  for (int i = 0, n = size_ * size_; i < n; ++i) {
     tiles_[i] = nullptr;
   }
 }

@@ -13,7 +13,7 @@ Tile::Tile(int id, const std::string& name, BorderType* border_types, const int*
   : id_(id), name_(name), city_segments_(city_segments),
     field_segments_(field_segments), road_segments_(road_segments),
     cloister_segment_(cloister_segment) {
-  for (int i = 0; i < 4; i++) {
+  for (int i = 0; i < 4; ++i) {
     border_types_[i] = border_types[i];
     cities_[i] = cities[i];
     roads_[i] = roads[i];
@@ -21,15 +21,15 @@ Tile::Tile(int id, const std::string& name, BorderType* border_types, const int*
     fields_[2*i+1] = fields[2*i+1];
   }
 
-  for (auto it = city_segments_->begin(); it != city_segments_->end(); it++) {
+  for (auto it = city_segments_->begin(); it != city_segments_->end(); ++it) {
     Segment* s = *it;
     s->setTile(this);
   }
-  for (auto it = field_segments_->begin(); it != field_segments_->end(); it++) {
+  for (auto it = field_segments_->begin(); it != field_segments_->end(); ++it) {
     Segment* s = *it;
     s->setTile(this);
   }
-  for (auto it = road_segments_->begin(); it != road_segments_->end(); it++) {
+  for (auto it = road_segments_->begin(); it != road_segments_->end(); ++it) {
     Segment* s = *it;
     s->setTile(this);
   }
@@ -46,17 +46,17 @@ Tile::Tile(int id) : id_(id), name_("") {
 }
 
 Tile::~Tile() {
-  for (auto iter = city_segments_->begin(); iter != city_segments_->end(); iter++) {
+  for (auto iter = city_segments_->begin(); iter != city_segments_->end(); ++iter) {
     Segment* s = *iter;
     delete s;
   }
   delete city_segments_;
-  for (auto iter = road_segments_->begin(); iter != road_segments_->end(); iter++) {
+  for (auto iter = road_segments_->begin(); iter != road_segments_->end(); ++iter) {
     Segment* s = *iter;
     delete s;
   }
   delete road_segments_;
-  for (auto iter = field_segments_->begin(); iter != field_segments_->end(); iter++) {
+  for (auto iter = field_segments_->begin(); iter != field_segments_->end(); ++iter) {
     Segment* s = *iter;
     delete s;
   }
@@ -202,7 +202,7 @@ bool Tile::isAdjacentDirection(int field_d, int city_d) const {
 void Tile::print_info() const {
   std::cout << "{name: " << name_ << ", ";
   std::cout << "cities: [";
-  for (int i = 0; i < 4; i++) {
+  for (int i = 0; i < 4; ++i) {
     std::cout << cities_[i] << ", ";
   }
   std::cout << "]";

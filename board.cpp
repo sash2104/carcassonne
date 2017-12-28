@@ -72,7 +72,7 @@ bool Board::canPlaceTile(Tile* tile, int x, int y, int rotation) const {
 
 bool Board::hasPossiblePlacement(Tile* tile) const {
   const std::set<BoardPosition>* positions = tile_map_.getPlacablePositions();
-  for (auto it = positions->cbegin(); it != positions->cend(); it++) {
+  for (auto it = positions->cbegin(); it != positions->cend(); ++it) {
     BoardPosition pos(*it);
     for (int rotation = 0; rotation < 4; rotation++) {
       if (adjacencyIsValid(tile, pos.getX(), pos.getY(), rotation)) {
@@ -187,8 +187,8 @@ bool Board::placeTile(Tile* tile, int x, int y, int rotation, std::vector<Segmen
       region->addSegment(my_s);
       RegionCompositionEvent* composition_event = new RegionCompositionEvent(my_s);
       auto it = adjacent_regions.cbegin();
-      it++;
-      for (; it != adjacent_regions.cend(); it++) {
+      ++it;
+      for (; it != adjacent_regions.cend(); ++it) {
         if (region->mergeRegion(*it)) {
 	  composition_event->addMergedRegion(*it);
 	}
@@ -227,8 +227,8 @@ bool Board::placeTile(Tile* tile, int x, int y, int rotation, std::vector<Segmen
       region->addSegment(my_s);
       RegionCompositionEvent* composition_event = new RegionCompositionEvent(my_s);
       auto it = adjacent_regions.cbegin();
-      it++;
-      for (; it != adjacent_regions.cend(); it++) {
+      ++it;
+      for (; it != adjacent_regions.cend(); ++it) {
         if (region->mergeRegion(*it)) {
 	  composition_event->addMergedRegion(*it);
 	}
@@ -268,8 +268,8 @@ bool Board::placeTile(Tile* tile, int x, int y, int rotation, std::vector<Segmen
       region->addSegment(my_s);
       RegionCompositionEvent* composition_event = new RegionCompositionEvent(my_s);
       auto it = adjacent_regions.cbegin();
-      it++;
-      for (; it != adjacent_regions.cend(); it++) {
+      ++it;
+      for (; it != adjacent_regions.cend(); ++it) {
         if (region->mergeRegion(*it)) {
 	  composition_event->addMergedRegion(*it);
 	}

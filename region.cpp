@@ -392,7 +392,7 @@ int FieldRegion::calculatePoint() const {
 
 int FieldRegion::calculatePoint(const std::vector<CityRegion*>* city_regions) const {
   int point = 0;
-  for (auto it = city_regions->cbegin(); it != city_regions->cend(); it++) {
+  for (auto it = city_regions->cbegin(); it != city_regions->cend(); ++it) {
     CityRegion* region = *it;
     if (!region->isMerged() && region->isCompleted() && isAdjacentWith(region)) {
       point += 3;
