@@ -3,8 +3,6 @@
 
 #include <set>
 
-#include "tile.hpp"
-
 class Tile;
 
 class BoardPosition {

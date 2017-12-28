@@ -9,6 +9,7 @@
 #include "game_context.hpp"
 #include "region.hpp"
 #include "segment.hpp"
+#include "tile.hpp"
 #include "utils.hpp"
 
 SegmentIterator::SegmentIterator(const SegmentIterator& iter)
