@@ -73,7 +73,7 @@ TileFactory::TileParts* TileFactory::constractTileParts(json* j) {
   return parts;
 }
 
-Tile* TileFactory::newFromName(const std::string name, int tile_id) {
+Tile* TileFactory::newFromName(const std::string name, int tile_id) const {
   auto it = parts_map_.find(name);
   if (it == parts_map_.end()) {
     return nullptr;
