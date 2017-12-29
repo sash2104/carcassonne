@@ -15,9 +15,9 @@
 
 using json = nlohmann::json;
 
-Placement* __constructPlacement(json& j, std::map<std::string, MeepleColor>& player_map);
-TilePlacement* __constructTilePlacement(json& j, PlacementType type);
-MeeplePlacement* __constructMeeplePlacement(json& j);
+Placement* __constructPlacement(const json& j, const std::map<std::string, MeepleColor>& player_map);
+TilePlacement* __constructTilePlacement(const json& j, PlacementType type);
+MeeplePlacement* __constructMeeplePlacement(const json& j);
 
 SegmentType stringToSegmentType(std::string& str) {
   if (str == "city") {
@@ -77,7 +77,7 @@ ScoreSheet* readScoreSheetFromFile(const std::string& file_name) {
   return score_sheet;
 }
 
-Placement* __constructPlacement(json& j, std::map<std::string, MeepleColor>& player_map) {
+Placement* __constructPlacement(const json& j, const std::map<std::string, MeepleColor>& player_map) {
   std::string type_name = j["type"];
   PlacementType type = stringToPlacementType(type_name);
   if (type == PlacementType::INVALID) {
@@ -89,10 +89,12 @@ Placement* __constructPlacement(json& j, std::map<std::string, MeepleColor>& pla
   } else {
     if (j.find("player") != j.end()) {
       std::string player_name = j["player"];
-      if (player_map.find(player_name) == player_map.end()) {
+      auto it = player_map.find(player_name);
+      if (it == player_map.end()) {
 	return nullptr;
+      } else {
+	player = it->second;
       }
-      player = player_map[player_name];
     } else {
 	return nullptr;
     }
@@ -113,7 +115,7 @@ Placement* __constructPlacement(json& j, std::map<std::string, MeepleColor>& pla
   return new Placement(type, player, tile_name, tile_placement, meeple_placement);
 }
 
-TilePlacement* __constructTilePlacement(json& j, PlacementType type) {
+TilePlacement* __constructTilePlacement(const json& j, PlacementType type) {
   if (j.find("tilePlacement") == j.end()) {
     if (type == PlacementType::INITIAL) {
       return new TilePlacement(0, 0, 0);
@@ -147,7 +149,7 @@ TilePlacement* __constructTilePlacement(json& j, PlacementType type) {
   return new TilePlacement(x, y, rotation);
 }
 
-MeeplePlacement* __constructMeeplePlacement(json& j) {
+MeeplePlacement* __constructMeeplePlacement(const json& j) {
   assert(j.find("meeplePlacement") != j.end());
   std::string segment_name = j["meeplePlacement"]["segmentType"];
   SegmentType type = stringToSegmentType(segment_name);
