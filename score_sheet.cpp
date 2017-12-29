@@ -244,10 +244,12 @@ bool validateScoreSheet(const TileFactory& tile_factory, const ScoreSheet& score
   }
   board.transferRemainingPoints(true);
   board.endGame();
+#ifdef DEBUG
   const GameContext* context = board.getGameContext();
   int red_point = context->getTotalPoint(MeepleColor::RED);
   int green_point = context->getTotalPoint(MeepleColor::GREEN);
   std::cout << "RED POINT: " << red_point << ", ";
   std::cout << "GREEN POINT: " << green_point << std::endl;
+#endif
   return true;
 }
