@@ -8,6 +8,7 @@
 
 Segment::Segment(int index, SegmentType type, bool has_pennant) :
   index_(index), type_(type), tile_(nullptr), region_(nullptr), has_pennant_(has_pennant), placed_meeple_(MeepleColor::NOT_PLACED) {
+  assert(type_ != SegmentType::INVALID);
 }
 
 int Segment::getIndex() const {
@@ -61,6 +62,9 @@ bool Segment::isAdjacentTo(int direction) const {
     return tile_->getFields()[pre_rotated_d] == index_;
   case SegmentType::CLOISTER:
     return false;
+  default:
+    // ここには到達しない
+    assert(false);
   }
   // ここには到達しない
   assert(false);
