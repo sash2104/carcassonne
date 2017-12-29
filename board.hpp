@@ -130,7 +130,7 @@ class Board {
   public:
     Board(int tile_n, int initial_meeple_n);
     ~Board();
-    TilePositionMap* getTilePositionMap();
+    const TilePositionMap* getTilePositionMap() const;
     const GameContext* getGameContext() const;
     const std::vector<CityRegion*>* getCityRegions() const;
     const std::vector<CloisterRegion*>* getCloisterRegions() const;

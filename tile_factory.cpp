@@ -80,15 +80,15 @@ Tile* TileFactory::newFromName(const std::string name, int tile_id) {
   }
   TileParts* parts = (*it).second;
   std::vector<Segment*>* city_segments = new std::vector<Segment*>();
-  for (int i = 0; i < parts->getCitySegmentNum(); i++) {
+  for (int i = 0; i < parts->getCitySegmentNum(); ++i) {
     city_segments->push_back(new Segment(i, SegmentType::CITY, parts->getPennants()[i]));
   }
   std::vector<Segment*>* road_segments = new std::vector<Segment*>();
-  for (int i = 0; i < parts->getRoadSegmentNum(); i++) {
+  for (int i = 0; i < parts->getRoadSegmentNum(); ++i) {
     road_segments->push_back(new Segment(i, SegmentType::ROAD, false));
   }
   std::vector<Segment*>* field_segments = new std::vector<Segment*>();
-  for (int i = 0; i < parts->getFieldSegmentNum(); i++) {
+  for (int i = 0; i < parts->getFieldSegmentNum(); ++i) {
     field_segments->push_back(new Segment(i, SegmentType::FIELD, false));
   }
 
@@ -115,30 +115,30 @@ Tile* TileFactory::newFromName(const std::string name, int tile_id) {
 TileFactory::TileParts::TileParts(const std::string name,
   const int* cities, const int* roads, const int* fields,
   bool has_cloister, bool* pennants, int pennants_n) : name_(name), has_cloister_(has_cloister), pennants_n_(pennants_n) {
-  for (int i = 0; i < 4; i++) {
+  for (int i = 0; i < 4; ++i) {
     cities_[i] = cities[i];
     roads_[i] = roads[i];
     fields_[2 * i] = fields[2 * i];
     fields_[2 * i + 1] = fields[2 * i + 1];
   }
   pennants_ = new bool[pennants_n_];
-  for (int i = 0; i < pennants_n_; i++) {
+  for (int i = 0; i < pennants_n_; ++i) {
     pennants_[i] = pennants[i];
   }
   city_segment_n_ = 0;
-  for (int i = 0; i < 4; i++) {
+  for (int i = 0; i < 4; ++i) {
     if (city_segment_n_ < cities_[i] + 1) {
       city_segment_n_ = cities_[i] + 1;
     }
   }
   road_segment_n_ = 0;
-  for (int i = 0; i < 4; i++) {
+  for (int i = 0; i < 4; ++i) {
     if (road_segment_n_ < roads_[i] + 1) {
       road_segment_n_ = roads_[i] + 1;
     }
   }
   field_segment_n_ = 0;
-  for (int i = 0; i < 8; i++) {
+  for (int i = 0; i < 8; ++i) {
     if (field_segment_n_ < fields_[i] + 1) {
       field_segment_n_ = fields_[i] + 1;
     }
@@ -192,17 +192,17 @@ inline int TileFactory::TileParts::getFieldSegmentNum() const {
 void TileFactory::TileParts::print() const {
   std::cout << name_ << std::endl;
   std::cout << "cities: ";
-  for (int i = 0; i < 4; i++) {
+  for (int i = 0; i < 4; ++i) {
     std::cout << cities_[i] << " ";
   }
   std::cout << std::endl;
   std::cout << "fields: ";
-  for (int i = 0; i < 8; i++) {
+  for (int i = 0; i < 8; ++i) {
     std::cout <<fields_[i] << " ";
   }
   std::cout << std::endl;
   std::cout << "pennants: ";
-  for (int i = 0; i < pennants_n_; i++) {
+  for (int i = 0; i < pennants_n_; ++i) {
     std::cout << pennants_[i] << " ";
   }
   std::cout << std::endl;

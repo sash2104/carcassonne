@@ -30,11 +30,11 @@ void GameContext::registerMeeple(MeepleColor color) {
 }
 
 void GameContext::endTurn() {
-  for (auto it = containers_.begin(); it != containers_.end(); it++) {
+  for (auto it = containers_.begin(); it != containers_.end(); ++it) {
     Container* c = it->second;
     c->holdingMeepleCount() += c->returnedMeepleCount();
     c->returnedMeepleCount() = 0;
-    for (auto it2 = c->gainedPoints().begin(); it2 != c->gainedPoints().end(); it2++) {
+    for (auto it2 = c->gainedPoints().begin(); it2 != c->gainedPoints().end(); ++it2) {
       int point = it2->second;
       c->totalPoint() += point;
       it2->second = 0;
@@ -89,7 +89,7 @@ int GameContext::getGainedPoint(MeepleColor color) const {
   assert(it != containers_.end());
   Container* c = (*it).second;
   int point = 0;
-  for (auto it = c->gainedPoints().begin(); it != c->gainedPoints().end(); it++) {
+  for (auto it = c->gainedPoints().begin(); it != c->gainedPoints().end(); ++it) {
     point += it->second;
   }
   return point;
