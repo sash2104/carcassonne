@@ -13,7 +13,7 @@ Tile::Tile(int id, const std::string& name, BorderType* border_types, const int*
   : id_(id), name_(name), city_segments_(city_segments),
     field_segments_(field_segments), road_segments_(road_segments),
     cloister_segment_(cloister_segment) {
-  for (int i = 0; i < 4; i++) {
+  for (int i = 0; i < 4; ++i) {
     border_types_[i] = border_types[i];
     cities_[i] = cities[i];
     roads_[i] = roads[i];
@@ -21,15 +21,15 @@ Tile::Tile(int id, const std::string& name, BorderType* border_types, const int*
     fields_[2*i+1] = fields[2*i+1];
   }
 
-  for (auto it = city_segments_->begin(); it != city_segments_->end(); it++) {
+  for (auto it = city_segments_->begin(); it != city_segments_->end(); ++it) {
     Segment* s = *it;
     s->setTile(this);
   }
-  for (auto it = field_segments_->begin(); it != field_segments_->end(); it++) {
+  for (auto it = field_segments_->begin(); it != field_segments_->end(); ++it) {
     Segment* s = *it;
     s->setTile(this);
   }
-  for (auto it = road_segments_->begin(); it != road_segments_->end(); it++) {
+  for (auto it = road_segments_->begin(); it != road_segments_->end(); ++it) {
     Segment* s = *it;
     s->setTile(this);
   }
@@ -46,17 +46,17 @@ Tile::Tile(int id) : id_(id), name_("") {
 }
 
 Tile::~Tile() {
-  for (auto iter = city_segments_->begin(); iter != city_segments_->end(); iter++) {
+  for (auto iter = city_segments_->begin(); iter != city_segments_->end(); ++iter) {
     Segment* s = *iter;
     delete s;
   }
   delete city_segments_;
-  for (auto iter = road_segments_->begin(); iter != road_segments_->end(); iter++) {
+  for (auto iter = road_segments_->begin(); iter != road_segments_->end(); ++iter) {
     Segment* s = *iter;
     delete s;
   }
   delete road_segments_;
-  for (auto iter = field_segments_->begin(); iter != field_segments_->end(); iter++) {
+  for (auto iter = field_segments_->begin(); iter != field_segments_->end(); ++iter) {
     Segment* s = *iter;
     delete s;
   }
@@ -92,11 +92,11 @@ Tile& Tile::setRotation(int rotation) {
   return *this;
 }
 
-BorderType Tile::getBorderType(int direction) {
+BorderType Tile::getBorderType(int direction) const {
   return getBorderType(direction, getRotation());
 }
 
-BorderType Tile::getBorderType(int direction, int rotation) {
+BorderType Tile::getBorderType(int direction, int rotation) const {
   assert(direction >= 0 && direction < 4);
   assert(rotation >= 0 && rotation < 4);
   return border_types_[modBy4(direction - rotation)];
@@ -144,27 +144,27 @@ const std::vector<Segment*>* Tile::getRoadSegments() const {
   return road_segments_;
 }
 
-Segment* Tile::getCloisterSegment() {
+Segment* Tile::getCloisterSegment() const {
   return cloister_segment_;
 }
 
-bool Tile::canTopAdjacentWith(Tile* tile, int rotation) {
+bool Tile::canTopAdjacentWith(Tile* tile, int rotation) const {
   return canAdjacentWith(0, tile, rotation);
 }
 
-bool Tile::canRightAdjacentWith(Tile* tile, int rotation) {
+bool Tile::canRightAdjacentWith(Tile* tile, int rotation) const {
   return canAdjacentWith(1, tile, rotation);
 }
 
-bool Tile::canBottomAdjacentWith(Tile* tile, int rotation) {
+bool Tile::canBottomAdjacentWith(Tile* tile, int rotation) const {
   return canAdjacentWith(2, tile, rotation);
 }
 
-bool Tile::canLeftAdjacentWith(Tile* tile, int rotation) {
+bool Tile::canLeftAdjacentWith(Tile* tile, int rotation) const {
   return canAdjacentWith(3, tile, rotation);
 }
 
-bool Tile::canAdjacentWith(int direction, Tile* tile, int rotation) {
+bool Tile::canAdjacentWith(int direction, Tile* tile, int rotation) const {
   assert(direction >= 0 && direction < 4);
   assert(rotation >= 0 && rotation < 4);
   BorderType my_border_type = getBorderType(direction);
@@ -172,7 +172,7 @@ bool Tile::canAdjacentWith(int direction, Tile* tile, int rotation) {
   return my_border_type == your_border_type;
 }
 
-bool Tile::isTwoSegmentAdjacent(int field_segment_index, int city_segment_index) {
+bool Tile::isTwoSegmentAdjacent(int field_segment_index, int city_segment_index) const {
   assert(field_segment_index >= 0 && field_segment_index < (int) field_segments_->size());
   assert(city_segment_index >= 0 && city_segment_index < (int) city_segments_->size());
   for (int field_d = 0; field_d < 8; field_d++) {
@@ -191,7 +191,7 @@ bool Tile::isTwoSegmentAdjacent(int field_segment_index, int city_segment_index)
   return false;
 }
 
-bool Tile::isAdjacentDirection(int field_d, int city_d) {
+bool Tile::isAdjacentDirection(int field_d, int city_d) const {
   assert(field_d >= 0 && field_d < 8);
   assert(city_d >= 0 && city_d < 4);
   int city_d1 = city_d * 2;
@@ -199,10 +199,10 @@ bool Tile::isAdjacentDirection(int field_d, int city_d) {
   return modBy8(city_d1 - 1) == field_d || modBy8(city_d2 + 1) == field_d;
 }
 
-void Tile::print_info() {
+void Tile::print_info() const {
   std::cout << "{name: " << name_ << ", ";
   std::cout << "cities: [";
-  for (int i = 0; i < 4; i++) {
+  for (int i = 0; i < 4; ++i) {
     std::cout << cities_[i] << ", ";
   }
   std::cout << "]";

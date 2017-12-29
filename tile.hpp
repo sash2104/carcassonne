@@ -25,8 +25,8 @@ class Tile {
     Tile& setX(int x);
     Tile& setY(int y);
     Tile& setRotation(int rotation);
-    BorderType getBorderType(int direction);
-    BorderType getBorderType(int direction, int rotation);
+    BorderType getBorderType(int direction) const;
+    BorderType getBorderType(int direction, int rotation) const;
     const int* getCities() const;
     const int* getRoads() const;
     const int* getFields() const;
@@ -36,19 +36,19 @@ class Tile {
     const std::vector<Segment*>* getCitySegments() const;
     const std::vector<Segment*>* getFieldSegments() const;
     const std::vector<Segment*>* getRoadSegments() const;
-    Segment* getCloisterSegment();
+    Segment* getCloisterSegment() const;
     // rotation回転した状態のtileをこのタイルの上に置けるかどうか
-    bool canTopAdjacentWith(Tile* tile, int rotation);
+    bool canTopAdjacentWith(Tile* tile, int rotation) const;
     // rotation回転した状態のtileをこのタイルの右に置けるかどうか
-    bool canRightAdjacentWith(Tile* tile, int rotation);
+    bool canRightAdjacentWith(Tile* tile, int rotation) const;
     // rotation回転した状態のtileをこのタイルの下に置けるかどうか
-    bool canBottomAdjacentWith(Tile* tile, int rotation);
+    bool canBottomAdjacentWith(Tile* tile, int rotation) const;
     // rotation回転した状態のtileをこのタイルの左に置けるかどうか
-    bool canLeftAdjacentWith(Tile* tile, int rotation);
+    bool canLeftAdjacentWith(Tile* tile, int rotation) const;
     // rotation回転した状態のtileをこのタイルのdirectionの位置に置けるかどうか
-    bool canAdjacentWith(int direction, Tile* tile, int rotation);
-    bool isTwoSegmentAdjacent(int field_segment_index, int city_segment_index);
-    void print_info();
+    bool canAdjacentWith(int direction, Tile* tile, int rotation) const;
+    bool isTwoSegmentAdjacent(int field_segment_index, int city_segment_index) const;
+    void print_info() const;
   private:
     int id_; // タイルごとに固有のid
     std::string name_;
@@ -63,7 +63,7 @@ class Tile {
     std::vector<Segment*>* field_segments_;
     std::vector<Segment*>* road_segments_;
     Segment* cloister_segment_; // nullptrも許す
-    bool isAdjacentDirection(int field_d, int city_d);
+    bool isAdjacentDirection(int field_d, int city_d) const;
 };
 
 #endif

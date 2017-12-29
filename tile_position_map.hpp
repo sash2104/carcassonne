@@ -3,20 +3,30 @@
 
 #include <set>
 
-#include "tile.hpp"
-
 class Tile;
 
 class BoardPosition {
   public:
-    BoardPosition(int x, int y);
-    BoardPosition(const BoardPosition& that);
-    int getX() const;
-    int getY() const;
-    bool operator<(const BoardPosition& that) const;
+    BoardPosition(int x, int y) : x_(x), y_(y) {
+    }
+    BoardPosition(const BoardPosition& that) : x_(that.x_), y_(that.y_) {
+    }
+    int getX() const {
+      return x_;
+    }
+    int getY() const {
+      return y_;
+    }
+    bool operator<(const BoardPosition& that) const {
+      if (x_ == that.x_) {
+	return y_ < that.y_;
+      } else {
+	return x_ < that.x_;
+      }
+    }
   private:
-    int x_;
-    int y_;
+    const int x_;
+    const int y_;
 };
 
 // 置かれたタイルの位置を管理するクラス
