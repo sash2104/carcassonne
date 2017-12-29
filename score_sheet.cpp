@@ -10,6 +10,7 @@
 #include "meeple_color.hpp"
 #include "score_sheet.hpp"
 #include "segment.hpp"
+#include "tile.hpp"
 #include "tile_factory.hpp"
 
 using json = nlohmann::json;
