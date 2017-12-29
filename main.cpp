@@ -1,5 +1,6 @@
 #include <cassert>
 #include <iostream>
+#include <memory>
 #include <set>
 #include <string>
 
@@ -26,12 +27,16 @@ int main(int argc, char const* argv[])
   TileFactory f;
   f.loadResource("tiles.json");
   std::string file_name("doc/championship_japan_2015_final.json");
-  ScoreSheet* score_sheet = readScoreSheetFromFile(file_name);
-  bool is_valid = validateScoreSheet(f, *score_sheet);
-  if (is_valid) {
-    std::cout << "valid" << std::endl;
+  std::unique_ptr<ScoreSheet> score_sheet(readScoreSheetFromFile(file_name));
+  if (score_sheet.get() == nullptr) {
+    std::cout << "Failed to read score sheet file" << std::endl;
   } else {
-    std::cout << "invaid" << std::endl;
+    bool is_valid = validateScoreSheet(f, *score_sheet.get());
+    if (is_valid) {
+      std::cout << "valid" << std::endl;
+    } else {
+      std::cout << "invaid" << std::endl;
+    }
   }
 
   return 0;

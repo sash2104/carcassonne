@@ -60,7 +60,7 @@ class Placement {
     }
     ~Placement() {
       delete tile_placement_;
-      if (meeple_placement_ == nullptr) {
+      if (meeple_placement_ != nullptr) {
 	delete meeple_placement_;
       }
     }
