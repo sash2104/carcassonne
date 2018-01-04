@@ -3,6 +3,7 @@
 
 #include <vector>
 
+enum class MeepleColor;
 class Board;
 class GameContext;
 class Segment;

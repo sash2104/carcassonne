@@ -4,8 +4,9 @@
 #include <vector>
 
 #include "board.hpp"
-#include "player.hpp"
-#include "tile.hpp"
+
+class Player;
+class Tile;
 
 // TODO : 設定ファイル(最低限, 参加プレーヤー数と使うタイルセットのファイルの情報)の作成と読み込み
 
