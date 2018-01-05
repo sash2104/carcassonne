@@ -1,7 +1,7 @@
 carcassonne
-unittest
-sample_unittest
+tests
 *.o
+*.a
 
 # gtags generated files
 GPATH
