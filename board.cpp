@@ -396,7 +396,7 @@ void Board::undoPlaceTile(TilePlacementEvent* tile_event) {
   }
 
   std::vector<RegionCompositionEvent*>* comp_events = tile_event->getRegionCompositionEvents();
-  for (auto it = comp_events->begin(); it != comp_events->end(); ++it) {
+  for (auto it = comp_events->rbegin(); it != comp_events->rend(); ++it) {
     RegionCompositionEvent* comp_event = *it;
     Segment* s = comp_event->getAddedSegment();
     Region* base_region = s->getRegion();
