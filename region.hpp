@@ -3,6 +3,7 @@
 
 #include <vector>
 
+enum class MeepleColor;
 class Board;
 class GameContext;
 class Segment;
@@ -87,11 +88,11 @@ class Region {
 class CityRegion : public Region {
   public:
     CityRegion(int id, Segment* segment, Board* board);
-    bool isCompleted() const;
-    int calculatePoint() const;
-    RegionType getType() const;
+    bool isCompleted() const override;
+    int calculatePoint() const override;
+    RegionType getType() const override;
   private:
-    void rewindRegionState();
+    void rewindRegionState() override;
     // キャッシュ用の変数なのでmutableにする
     mutable bool completed_;
 };
@@ -99,34 +100,34 @@ class CityRegion : public Region {
 class CloisterRegion : public Region {
   public:
     CloisterRegion(int id, Segment* segment, Board* board);
-    bool isCompleted() const;
-    int calculatePoint() const;
-    RegionType getType() const;
+    bool isCompleted() const override;
+    int calculatePoint() const override;
+    RegionType getType() const override;
   private:
-    void rewindRegionState();
+    void rewindRegionState() override;
 };
 
 class FieldRegion : public Region {
   public:
     FieldRegion(int id, Segment* segment, Board* board);
-    bool isCompleted() const;
-    int calculatePoint() const;
+    bool isCompleted() const override;
+    int calculatePoint() const override;
     // テストをしやすくするため
     int calculatePoint(const std::vector<CityRegion*>* city_regions) const;
-    RegionType getType() const;
+    RegionType getType() const override;
     bool isAdjacentWith(const CityRegion* city_region) const;
   private:
-    void rewindRegionState();
+    void rewindRegionState() override;
 };
 
 class RoadRegion : public Region {
   public:
     RoadRegion(int id, Segment* segment, Board* board);
-    bool isCompleted() const;
-    int calculatePoint() const;
-    RegionType getType() const;
+    bool isCompleted() const override;
+    int calculatePoint() const override;
+    RegionType getType() const override;
   private:
-    void rewindRegionState();
+    void rewindRegionState() override;
     // キャッシュ用の変数なのでmutableにする
     mutable bool completed_;
 };

@@ -5,7 +5,6 @@
 #include <vector>
 
 #include "game_context.hpp"
-#include "meeple_color.hpp"
 #include "tile_position_map.hpp"
 
 enum class MeepleColor;
