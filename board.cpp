@@ -5,7 +5,6 @@
 
 #include "board.hpp"
 #include "game_context.hpp"
-#include "meeple_color.hpp"
 #include "region.hpp"
 #include "segment.hpp"
 #include "tile.hpp"

@@ -1,8 +1,11 @@
 carcassonne
-test
+tests
 *.o
+*.a
 
 # gtags generated files
 GPATH
 GRTAGS
 GTAGS
+
+/lib/googletest

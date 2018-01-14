@@ -1,6 +1,8 @@
-#include <fstream>
 #include <iostream>
+
 #include "game.hpp"
+#include "player.hpp"
+#include "tile.hpp"
 
 // TODO : n_players_ とタイルの種類はconfigファイルから読み込む
 Game::Game()
