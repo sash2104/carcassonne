@@ -166,3 +166,53 @@ TEST(Board, ColoisterRegionCompletionUndo) {
   delete tile7;
   delete tile8;
 }
+
+// https://github.com/sash2104/carcassonne/issues/14
+// のバグ修正確認のためのテスト
+TEST(Board, Undo) {
+  TileFactory tile_factory;
+  tile_factory.loadResource("tiles.json");
+  Board board(20, 7);
+  board.registerMeeple(MeepleColor::RED);
+  board.registerMeeple(MeepleColor::GREEN);
+  std::vector<Segment*> meeple_place_candidates;
+  Tile* tile_q = tile_factory.newFromName("Q", 0);
+  Tile* tile_j = tile_factory.newFromName("J", 1);
+  Tile* tile_w = tile_factory.newFromName("W", 2);
+  Tile* tile_m = tile_factory.newFromName("M", 3);
+  Tile* tile_v = tile_factory.newFromName("V", 4);
+  Tile* tile_b = tile_factory.newFromName("B", 5);
+  Tile* tile_a = tile_factory.newFromName("A", 6);
+  Tile* tile_u = tile_factory.newFromName("U", 7);
+  Tile* tile_k = tile_factory.newFromName("K", 8);
+
+  board.setInitialTile(tile_q, 2);
+  ASSERT_TRUE(board.canPlaceTile(tile_j, 1, 0, 3));
+  board.placeTile(tile_j, 1,  0, 3, &meeple_place_candidates); meeple_place_candidates.clear();
+  ASSERT_TRUE(board.canPlaceTile(tile_w, 2, 0, 2));
+  board.placeTile(tile_w, 2,  0, 2, &meeple_place_candidates); meeple_place_candidates.clear();
+  ASSERT_TRUE(board.canPlaceTile(tile_m, 0, -1, 1));
+  board.placeTile(tile_m, 0, -1, 1, &meeple_place_candidates); meeple_place_candidates.clear();
+  ASSERT_TRUE(board.canPlaceTile(tile_v, 2, -1, 0));
+  board.placeTile(tile_v, 2, -1, 0, &meeple_place_candidates); meeple_place_candidates.clear();
+  ASSERT_TRUE(board.canPlaceTile(tile_b, 0, -2, 0));
+  board.placeTile(tile_b, 0, -2, 0, &meeple_place_candidates); meeple_place_candidates.clear();
+  ASSERT_TRUE(board.canPlaceTile(tile_a, 1, -2, 2));
+  board.placeTile(tile_a, 1, -2, 2, &meeple_place_candidates); meeple_place_candidates.clear();
+  ASSERT_TRUE(board.canPlaceTile(tile_u, 2, -2, 0));
+  board.placeTile(tile_u, 2, -2, 0, &meeple_place_candidates); meeple_place_candidates.clear();
+  ASSERT_TRUE(board.canPlaceTile(tile_k, 1, -1, 2));
+  board.placeTile(tile_k, 1, -1, 2, &meeple_place_candidates); meeple_place_candidates.clear();
+  ASSERT_TRUE(board.isUndoable());
+  board.undo();
+
+  delete tile_q;
+  delete tile_j;
+  delete tile_w;
+  delete tile_m;
+  delete tile_v;
+  delete tile_b;
+  delete tile_a;
+  delete tile_u;
+  delete tile_k;
+}
